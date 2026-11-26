@@ -1,6 +1,7 @@
 """Validação do quadro realmente composto, sem alterar o progresso do jogador."""
 import os
 import unittest
+from unittest.mock import patch
 
 os.environ.setdefault("SDL_VIDEODRIVER","dummy")
 os.environ.setdefault("SDL_AUDIODRIVER","dummy")
@@ -57,6 +58,36 @@ class MapaELuzTest(unittest.TestCase):
         self.assertGreater(luminosidade(self.s,(425,py-10,50,30)),15)
         self.assertGreater(luminosidade(self.s,(30,160,80,100)),5)
         self.assertFalse(j.em_vertical)
+
+    def test_terra_e_casca_barram_o_fundo_na_sombra_do_bosque(self):
+        from src import abertura_bosque
+        j = Jornada()
+        j.recolocar((799,248))
+        j.camera = 454
+        pontos = ((850,478), (690,257), (845,116))
+        def desenhar_com_fundo(cor):
+            with patch.object(abertura_bosque, "fundo", lambda s,*args: s.fill(cor)):
+                self.p.desenhar(self.s,j,j.tempo)
+                return [self.s.get_at(p) for p in pontos]
+        escuro = desenhar_com_fundo((16,10,17))
+        claro = desenhar_com_fundo((210,215,230))
+        self.assertFalse(j.visivel((pontos[1][0]+j.camera,pontos[1][1])))
+        self.assertEqual(escuro[:2], claro[:2])
+        self.assertGreater(claro[2].b, escuro[2].b+60)
+
+    def test_pintura_no_inicio_preserva_detalhe_de_um_pixel(self):
+        from src import abertura_bosque
+        from src.ilustracao import original
+        from src.paisagem import nevoa_distante
+        self.assertEqual(abertura_bosque.fundo_sombrio().get_size(),
+                         original("bosque_figueira_tinta.png").get_size())
+        detalhe = pygame.Surface((16,16))
+        detalhe.set_at((8,8),(200,160,120))
+        amostra = pygame.Surface((3,3))
+        nitido = pygame.Surface((16,16))
+        nevoa_distante(detalhe,nitido,amostra,1,cor=(255,255,255),nitidez=1)
+        self.assertEqual(detalhe.get_at((8,8)), nitido.get_at((8,8)))
+        self.assertEqual(detalhe.get_at((7,8)), nitido.get_at((7,8)))
 
     def test_mapa_e_rumo_do_clarao_nao_mutam_a_partida(self):
         j=Jornada(etapa=1)

@@ -1,6 +1,6 @@
 """Fagulha pousada, leitura do terreno e reação a uma luz lançada."""
 from dataclasses import dataclass
-from math import dist, pi, sin
+from math import dist
 
 from .combate import Vetor, segmento_bloqueado
 from .taticas import Habitante
@@ -9,7 +9,7 @@ CHEGADA = (1038, 237)
 CORTE_PRATICADO = "praticado_corte_morcego"
 ORIGEM_MORCEGO = 875  # Identificador já usado em saves da campanha.
 CUSTO = 26.
-VOO = .38
+VELOCIDADE_VOO = 1050.
 DURACAO = 7.
 RAIO = 160
 FORA_DA_MARCA = "Vire até a marca brilhar antes de lançar."
@@ -27,20 +27,35 @@ class Fagulha:
     origem: tuple[float, float]
     destino: tuple[float, float]
 
+    @property
+    def duracao_voo(self):
+        return min(.30, max(.10, dist(self.origem, self.destino) / VELOCIDADE_VOO))
+
+    @property
+    def pouso_em(self):
+        return self.inicio + self.duracao_voo
+
     def progresso(self, agora):
-        return min(1., max(0., (agora-self.inicio)/VOO))
+        if agora >= self.pouso_em:
+            return 1.
+        return max(0., (agora-self.inicio)/self.duracao_voo)
 
     def restante(self, agora):
-        return min(1., max(0., (self.inicio+VOO+DURACAO-agora)/DURACAO))
+        return min(1., max(0., (self.pouso_em+DURACAO-agora)/DURACAO))
 
     def posicao(self, agora):
         t = self.progresso(agora)
+        if t == 1.:
+            return self.destino
+        # O impulso inicial se acomoda ao chegar à marca.
+        t *= 1. + .18*(1.-t)
         x, y = self.origem
-        return x+(self.destino[0]-x)*t, y+(self.destino[1]-y)*t-37*sin(pi*t)
+        return x+(self.destino[0]-x)*t, y+(self.destino[1]-y)*t
 
     def raio(self, agora):
-        if self.progresso(agora) < 1:
-            return 36
+        t = self.progresso(agora)
+        if t < 1.:
+            return round(92 + 28*t)
         return round(RAIO*min(1., self.restante(agora)*5))
 
 
@@ -83,12 +98,17 @@ def _preparar(j):
     destino = _destino(j)
     if destino is None:
         return None, "Vire para um chão ou galho onde a fagulha possa pousar."
-    fagulha = Fagulha(j.tempo, tuple(j.lume.rect.center), destino)
-    paredes = [t for t in j.solidos if not t.atravessavel]
-    pontos = [fagulha.posicao(j.tempo+i*VOO/12) for i in range(13)]
-    if any(segmento_bloqueado(a,b,paredes) for a,b in zip(pontos,pontos[1:])):
-        return None, "A parede bloqueia o lançamento."
-    return fagulha, ""
+    corpo = j.lume.rect
+    abdomen = (corpo.centerx-j.lume.face*corpo.w*.45, corpo.bottom-corpo.h*.55)
+    terrenos = j.solidos
+    if segmento_bloqueado(abdomen, destino, terrenos):
+        from .desvios_fagulha import destino as marca_do_desvio
+        # Na beira das Costelas, o topo da lanterna ainda enxerga a marca por cima da quina.
+        topo_da_luz = (abdomen[0], abdomen[1]-3)
+        if destino != marca_do_desvio(j) or segmento_bloqueado(topo_da_luz, destino, terrenos):
+            return None, "A parede bloqueia o lançamento."
+        abdomen = topo_da_luz
+    return Fagulha(j.tempo, abdomen, destino), ""
 
 
 def prever_marca(j):
@@ -116,8 +136,9 @@ def lancar(j):
 
 def avisar_pouso(j, tempo_anterior):
     f = j.fagulha_ativa
-    if not f or not tempo_anterior < f.inicio+VOO <= j.tempo:
+    if not f or not tempo_anterior < f.pouso_em <= j.tempo:
         return
+    j.sons_espaciais.append(("pouso_fagulha", f.destino[0]))
     if j.boss and j.boss.marcas_fagulha() and j.boss.marca_fagulha(f) is None:
         j.notificar(FORA_DA_MARCA,3.6)
     elif na_borda(j) and f.destino != CHEGADA:
@@ -167,18 +188,6 @@ def reagir(j,e,dt,terrenos):
     e.destino_fagulha = Vetor(x,y)
     j.sons_espaciais.append((e.ficha.som,e.rect.centerx))
     return True
-
-
-def desenhar(s,j,cx):
-    from .ilustracao import brilho, claroes_suaves, sprite
-    f = j.fagulha_ativa
-    if not f:
-        return
-    wx,wy = f.posicao(j.tempo)
-    x,y = round(wx-cx),round(wy)
-    if not claroes_suaves():
-        brilho(s,(x,y),20+round(15*f.restante(j.tempo)))
-    sprite(s,"hud_fagulha",x,y+10,20,20)
 
 
 @dataclass(frozen=True)

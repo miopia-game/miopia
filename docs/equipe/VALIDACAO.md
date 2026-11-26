@@ -1,3 +1,9 @@
+# Nitidez do Bosque e voo da fagulha · prévia de 26/11
+
+A gravação usa os comandos da App pela História. O piloto parte do começo do Bosque, lança da borda de Véspera, cruza até o poleiro, vence o primeiro morcego e lança de volta. Foram 1.231 quadros a 60 fps com áudio estéreo do mixer do jogo. O tiro para a direita passou de 23 para 15 atualizações até o pouso e consumiu 26 de brilho nas duas versões. O morcego caiu no quadro 1.009 nas duas gravações. [Vídeo da partida](../midia/bosque-em-jogo.mp4) · [Comparar o disparo e o pouso nas duas versões](../midia/fagulha-antes-e-depois.mp4)
+
+A suíte completa passou em 479 testes e 176 subtestes. O lançador do macOS abriu menu e Bosque. As regressões cobrem voo em ambos os sentidos, colisão com paredes, área iluminada durante o voo, contraste da pintura, câmera vertical, som localizado de contato e alcance das duas marcas opcionais de todas as posições horizontais de partida. [Testes da trajetória](../../tests/test_voo_fagulha.py) · [Testes da pintura e do rastro](../../tests/test_arte_fagulha.py)
+
 # Verificação do acabamento visual
 
 O playtest em SDL Cocoa, 960 × 540, saiu do menu, pousou no primeiro

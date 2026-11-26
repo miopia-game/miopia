@@ -4,7 +4,7 @@ from math import sin
 
 import pygame
 
-from .fases import CHAO, FASES
+from .fases import CHAO, FASES, GALHO_DO_MORCEGO, Terreno
 from .ilustracao import alto_contraste, imagem, original, sprite
 
 BORDA = (238, 184, 112)
@@ -96,25 +96,81 @@ def terreno(s, t, camera):
     if t.tipo == "chao":
         _solo(s, r)
         return
+    if (t.rect.x, t.rect.y, t.rect.w) == GALHO_DO_MORCEGO:
+        tronco = _tronco_poleiro()
+        s.blit(tronco, tronco.get_rect(bottomright=(r.right+7, CHAO+2)))
     arte, dx, dy = _pintura(*_modelo_apoio(t))
     s.blit(arte, (r.x+dx, r.y+dy))
 
 
-@lru_cache(maxsize=2)
-def _azulejo(espelho):
-    faixa = imagem("pintado_solo.png", 248, 98, espelho)
-    return faixa.subsurface((12,3,224,95)).copy()
+@lru_cache(maxsize=1)
+def _tronco_poleiro():
+    # A madeira do suporte recua um plano em relação à borda jogável.
+    tronco = imagem("pintado_raiz.png", 218, 251, True).copy()
+    tronco.fill((121, 140, 155), special_flags=pygame.BLEND_RGB_MULT)
+    return tronco
+
+
+def terreno_fixo(t, fim):
+    if t.tipo == "chao":
+        return t.rect.x < FASES[0].pisos[0][1]
+    return t.tipo == "plataforma" and t.rect.x < fim
+
+
+@lru_cache(maxsize=4)
+def _silhueta_terreno(geometria, contraste):
+    largura = max(x+w for x,y,w,h,tipo in geometria) + 16
+    altura = max(y+h for x,y,w,h,tipo in geometria)
+    camada = pygame.Surface((largura, altura), pygame.SRCALPHA)
+    for x, y, w, h, tipo in geometria:
+        terreno(camada, Terreno(pygame.Rect(x, y, w, h), tipo), 0)
+    camada.fill((87, 99, 115, 255), special_flags=pygame.BLEND_RGBA_MULT)
+    return camada
+
+
+def sombrear_terreno_fixo(fundo, j, cx, cy, fim, intensidade):
+    """A madeira e a terra opacas ocultam a floresta também fora do halo."""
+    geometria = tuple((*t.rect, t.tipo) for t in j.solidos if terreno_fixo(t, fim))
+    if geometria:
+        camada = _silhueta_terreno(geometria, alto_contraste())
+        camada.set_alpha(round(255 * intensidade))
+        fundo.blit(camada, (-round(cx), -cy))
+
+
+@lru_cache(maxsize=3)
+def _leito(largura, altura):
+    """Monta a margem com cortes em várias escalas da pintura de terra."""
+    margem = pygame.Surface((largura, altura), pygame.SRCALPHA)
+    margem.fill((24,20,38), (0,3,largura,altura-3))
+    trechos = ((402,149,13,369,False), (375,134,41,312,False),
+               (451,158,35,391,True), (337,135,11,307,False))
+    x = 0
+    n = 0
+    while x < largura:
+        w, h, inicio, corte, espelho = trechos[n % len(trechos)]
+        terra = imagem("pintado_solo.png", w, h, espelho)
+        camada = terra.subsurface((inicio, 3, corte, min(h-3, altura))).copy()
+        # Uma transição curta entre bordas de terra evita a costura espelhada.
+        sobreposicao = 18 if n else 0
+        for coluna in range(sobreposicao):
+            camada.fill((255,255,255,round(255*coluna/sobreposicao)), (coluna,0,1,altura),
+                         special_flags=pygame.BLEND_RGBA_MULT)
+        x -= sobreposicao
+        margem.blit(camada, (x, 0))
+        x += corte
+        n += 1
+    for y in range(altura):
+        profundidade = min(1., max(0., (y-10)/max(1, altura-25)))
+        tinta = tuple(255-round(atenuacao*profundidade) for atenuacao in (83,77,60))
+        margem.fill((*tinta,255), (0,y,largura,1), special_flags=pygame.BLEND_RGBA_MULT)
+    return margem
 
 
 def _solo(s, r):
     area = s.get_clip().clip(r)
     if not area.width:
         return
-    pygame.draw.rect(s,(24,20,38),area)
-    for n in range((area.left-r.left)//224,(area.right-1-r.left)//224+1):
-        x = r.x+n*224
-        largura = min(224,r.right-x)
-        s.blit(_azulejo(n%2==0),(x,r.y),(0,0,largura,95))
+    s.blit(_leito(r.w, r.h), r.topleft)
     if alto_contraste():
         pygame.draw.line(s, BORDA, (area.left, r.y), (area.right-1, r.y), 3)
 

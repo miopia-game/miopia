@@ -1,6 +1,6 @@
 # Cenário e esquiva do Bosque
 
-A figueira oca, as samambaias e o arco de raízes compõem o fundo do primeiro trecho da floresta. As bordas finas da pintura ficam mais visíveis na abertura e a névoa volta gradualmente ao sair dela. A luz da fagulha revela o pouso e o morcego. [Pintura do Bosque](../../assets/arte/bosque_figueira_tinta.png) · [Vídeo da campanha](../midia/bosque-em-jogo.mp4)
+A figueira oca, as samambaias e o arco de raízes compõem o fundo do primeiro trecho da floresta. As bordas finas da pintura ficam mais visíveis na abertura e a névoa volta gradualmente ao sair dela. A abertura usa a pintura em resolução original. O chão e os galhos permanentes cobrem as folhas distantes. O galho do morcego tem um tronco visível até o chão. Durante o voo da fagulha, a luz acompanha a semente e aquece a pintura por onde ela passa. [Pintura do Bosque](../../assets/arte/bosque_figueira_tinta.png) · [Vídeo da campanha](../midia/bosque-em-jogo.mp4)
 
 No chão, experimente Shift com Lume parado e virado para cada lado. Ao encontrar o primeiro morcego, observe as dicas de abaixar no rasante, sair do mergulho e virar para cortar. As instruções de mapa e cipó cedem espaço ao combate. Quando o espinho acerta, o pó luminoso sai do ponto de contato. No golpe final, o morcego recolhe as asas e cai. A opção **Clarões suaves** reduz a intensidade do efeito. [Testes do encontro](../../tests/test_travessia_fagulha.py)
 

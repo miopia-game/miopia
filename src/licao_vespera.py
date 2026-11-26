@@ -1,10 +1,9 @@
 """A vigia aponta a marca. O jogador decide se ilumina e atravessa."""
-from math import pi, sin
-
 import pygame
 
-from .ilustracao import AMBAR, brilho, claroes_suaves, dica_local, sprite
-from .travessia_fagulha import CHEGADA, prever_marca
+from .arte_fagulha import desenhar_voo
+from .ilustracao import AMBAR, brilho, claroes_suaves, dica_local
+from .travessia_fagulha import CHEGADA, Fagulha, prever_marca
 
 POSTO = (755, 248)
 PRATICADO = "praticado_fagulha_vespera"
@@ -36,13 +35,12 @@ def desenhar(s,j,cx):
 
     # O lampejo da vigia indica a posição da marca. Só a luz de Lume ilumina o pouso.
     if PRATICADO not in j.tutorial and not f and .28 < idade < 1.2:
-        p = (idade-.28)/.92
-        x = round(px+17+(mx-px-17)*p)
-        origem_y = POSTO[1]-50
-        y = round(origem_y+(my-origem_y)*p-39*sin(pi*p))
-        if not claroes_suaves():
-            brilho(s,(x,y),13)
-        sprite(s,"hud_fagulha",x,y+6,12,12)
+        sinal = Fagulha(.28, (POSTO[0]+17, POSTO[1]-50), CHEGADA)
+        if idade < sinal.pouso_em:
+            desenhar_voo(s, sinal, idade, cx, .68)
+        else:
+            raio = max(1, round(3*(1.2-idade)/(1.2-sinal.pouso_em)))
+            pygame.draw.circle(s, AMBAR, (mx,my), raio)
     if iluminou:
         return
     if prever_marca(j) == CHEGADA:

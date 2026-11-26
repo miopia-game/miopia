@@ -1,3 +1,5 @@
+Nesta prévia local, a fagulha atravessa o vão em linha reta, ilumina a pintura durante o voo e acende a casca no contato. O poleiro do morcego ganhou um tronco, e a terra encobre os elementos de fundo. O vídeo da abertura inclui o áudio da partida. [Jogar e ver a travessia](../../README.md)
+
 A prévia do primeiro combate traz o terreno pintado e a resposta do morcego aos cortes. A rota automatizada chega ao poleiro, vence a luta e permite comparar as duas versões com os mesmos comandos. [Playtest da prévia](../midia/bosque-em-jogo.mp4) · [Roteiro para a equipe](GUIA_DE_CONTINUIDADE.md)
 
 A revisão jogável pós-S40 reúne a nova fauna, a fagulha, a abertura do Bosque e a interface contextual. Os resultados abaixo pertencem às entregas anteriores.

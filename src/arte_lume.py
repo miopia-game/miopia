@@ -1,5 +1,6 @@
 """Quadros de Lume desenhados a partir de uma folha de quatro por dois."""
 from functools import lru_cache
+from math import pi, sin
 
 import pygame
 
@@ -39,9 +40,18 @@ def imagem_lume(pose, quadro, largura, altura, espelho=False):
     return pygame.transform.flip(imagem, True, False) if espelho else imagem
 
 
-def desenhar_lume(s, lume, x, pe, medida, tempo):
+def desenhar_lume(s, lume, x, pe, medida, tempo, fagulha=None):
     pose = lume.pose
     passos = movimento_arte.deslocamento(lume, lume.rect.centerx, tempo, lume.face)
+    if fagulha and pose in {"parado", "andar", "correr", "pulo", "queda", "planar"}:
+        fase = (tempo-fagulha.inicio)/.17
+        if 0 <= fase < 1:
+            recuo = sin(pi*fase**.65)*(1-fase)
+            lado = 1 if fagulha.destino[0] >= fagulha.origem[0] else -1
+            quadro = round(4+fase*18)
+            return movimento_arte.desenhar(s, "lume-voo", quadro, x-lado*4*recuo,
+                                          pe-medida[1]/2-2*recuo, medida, lume.face,
+                                          centro=True, angulo=round(10*recuo*lado*lume.face))
     if pose in {"andar", "correr"}:
         quadro = movimento_arte.por_distancia(passos.distancia, 55.)
         return movimento_arte.desenhar(s,"lume-andar",quadro,x,pe,medida,lume.face)

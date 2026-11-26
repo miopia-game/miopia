@@ -226,6 +226,7 @@ def desenhar_ponto(camada,o,j,cx):
 
 
 def desenhar(s,j,t,nivel_brilho):
+    from . import arte_fagulha
     from .paisagem import lume, terreno, aplicar_nevoa, compor_luz, capturar_fundo
     from .ilustracao import claroes_suaves
     bg, camada, luz=camadas()
@@ -299,17 +300,17 @@ def desenhar(s,j,t,nivel_brilho):
     from .luzes_mundo import desenhar as globos
     globos(camada,j,cx)
     nivel=min(3,nivel_brilho+int(j.concluida))
+    arte_fagulha.iluminar_cenario(camada,j,cx)
     compor_luz(luz,j,cx,cy,nivel)
     aplicar_nevoa(camada,luz,cy,fundo_visao,nivel)
     for v in j.vestigios:
         if v.raio(t)>16:
             if not claroes_suaves():
                 brilho(camada,(v.x-cx,v.y),20)
-    from .travessia_fagulha import desenhar as desenhar_fagulha
-    desenhar_fagulha(camada,j,cx)
+    arte_fagulha.desenhar(camada,j,cx)
     for e in j.inimigos:
         projeteis(camada,e,cx,j.lume,j.raio,j.visivel)
-    lume(camada,j.lume,cx,t)
+    lume(camada,j.lume,cx,t,j.fagulha_ativa)
     s.blit(camada,(0,0),tela)
     camada.set_clip(None)
 

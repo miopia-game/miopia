@@ -34,7 +34,7 @@ No Windows, use `py -3.12 -m venv .venv` com o Python 3.12 e substitua `.venv/bi
 
 Em **Ajustes** você pode remapear os comandos, ampliar o texto e suavizar clarões. Se você já usava G para outra ação na S40, essa ação continua em G. As dicas mostram a tecla livre que o jogo atribuiu à fagulha.
 
-No galho de Véspera, observe o lampejo da vigia e vire Lume para o pouso. O clarão revela o que está perto. A fagulha deixa luz no lugar onde cai.
+No galho de Véspera, observe o lampejo da vigia e vire Lume para o pouso. A fagulha sai do abdômen de Lume em linha reta. A luz percorre a folhagem e se fixa no galho por sete segundos. O estalo de pouso vem do lado onde ela tocou. [Ver a mudança no lançamento](docs/midia/fagulha-antes-e-depois.mp4)
 
 ## Continuar o desenvolvimento
 

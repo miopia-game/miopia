@@ -8,7 +8,7 @@ PASTA=Path(__file__).resolve().parents[1]/"assets"/"sons"
 ALIASES={"etapa":"abertura","selo":"seiva","chefe_exposto":"vulneravel","chefe_acerto":"acerto",
          "chefe_vencido":"vencer","chefe_resolvido":"vencer","investida":"deslize","parede":"impacto","brasa":"seiva",
          "vulneravel":"vulneravel","exposto":"vulneravel","madeira":"impacto","barril":"valvula",
-         'sacrificio':'dano', 'rebote_casulo':'corda', 'fagulha':'seiva', 'brecha_fagulha':'vulneravel', 'teia_queimada':'seiva', 'casco_presaseiva':'seiva'}
+         'sacrificio':'dano', 'rebote_casulo':'corda', 'brecha_fagulha':'vulneravel', 'teia_queimada':'seiva', 'casco_presaseiva':'seiva'}
 ALERTAS={"aviso":5,"dano":6,"acerto":7,"sino":8,"impacto":9,"vulneravel":8,
          "raiz":9,"porta":8,"seiva":8,'casco_muda':5,'coruja_muda':5}
 PRESENCA = {"asa_perto", "patas_perto", "sopro_perto", "zurro_perto", "casco_perto", "silvo_perto"}
@@ -114,7 +114,7 @@ class Audio:
         ganho = self.volume_efeitos * (.72 if presenca else 1.)
         livre.set_volume(esq*ganho, dire*ganho)
         livre.play(som)
-        if not presenca:
+        if not presenca and nome != "pouso_fagulha":
             self.silencio = .38
         return True
 

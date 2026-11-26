@@ -7,7 +7,7 @@ import pygame
 from .avisos import pista_interacao
 from .fases import Terreno
 from .hud_reservas import desenhar as reservas
-from .ilustracao import OSSO, PALIDO, alto_contraste, claroes_suaves, dica_local, imagem, placa, texto
+from .ilustracao import OSSO, PALIDO, alto_contraste, claroes_suaves, dica_local, imagem, original, placa, texto
 from .tutorial import pouso_para_mapa
 from .travessia_fagulha import (CHEGADA, CORTE_PRATICADO, CUSTO, FORA_DA_MARCA,
                                 MorcegoDoGalho, na_borda)
@@ -31,8 +31,9 @@ def intensidade(j):
 
 
 @lru_cache(maxsize=2)
-def fundo_sombrio(largura, altura):
-    arte = imagem("bosque_figueira_tinta.png", largura, altura).copy()
+def fundo_sombrio(largura=None, altura=None):
+    nome = "bosque_figueira_tinta.png"
+    arte = (original(nome) if largura is None else imagem(nome, largura, altura)).copy()
     arte.fill((180,192,201), special_flags=pygame.BLEND_RGB_MULT)
     return arte
 
@@ -41,9 +42,9 @@ def fundo(s, j, cx, cy):
     opacidade = round(255 * intensidade(j))
     if not opacidade:
         return
-    arte = fundo_sombrio(1850, 925)
+    arte = fundo_sombrio()
     arte.set_alpha(opacidade)
-    s.blit(arte, (-round(cx*.54), cy-196))
+    s.blit(arte, (-round(cx*.54), cy-177))
 
 
 def cor_distante(j, nivel, normal):
