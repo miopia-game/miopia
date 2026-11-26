@@ -5,7 +5,7 @@ import unicodedata
 from functools import lru_cache
 from . import pygame_hd as pygame
 from . import abertura_bosque, arte_bosque, arte_ilustrada, desvios_fagulha, licao_vespera, travessia_fagulha
-from . import arte_fagulha, agua_pintada, vento_pintado
+from . import arte_fagulha, agua_pintada, vento_pintado, folhagem_trilha
 from .arte_arena import sinais_encontro
 from .arte_combate import inimigo, projeteis, golpe_lume, tranca
 from .arte_lume import desenhar_lume
@@ -48,14 +48,14 @@ def fundo(i):
     return pintura
 
 
-def desenhar_panorama(s, etapa, origem, tempo, cobertura_abertura=0.):
+def desenhar_panorama(s, etapa, origem, tempo, cobertura_abertura=0., *, passagem=None, camera=0., luz=None):
     s.blit(fundo(etapa), origem)
     if etapa == 1:
-        agua_pintada.corrego(s, origem, tempo)
+        agua_pintada.corrego(s, origem, tempo, luz.na_pintura(origem) if luz else None)
     elif etapa == 3:
-        agua_pintada.gruta(s, origem, tempo)
+        agua_pintada.gruta(s, origem, tempo, luz.na_pintura(origem) if luz else None)
     elif cobertura_abertura < 1:
-        vento_pintado.folhagem(s, PANORAMAS[etapa], origem, tempo)
+        vento_pintado.folhagem(s, PANORAMAS[etapa], origem, tempo, passagem, camera)
 
 
 @lru_cache(maxsize=4)
@@ -618,7 +618,8 @@ class Paisagem:
         margem = panorama.get_width() - recorte.w
         deslocamento = margem * cx / max(1, j.fase.width-recorte.w)
         origem = (-deslocamento, cy-108)
-        desenhar_panorama(s, i, origem, t, intensidade)
+        reflexo = agua_pintada.luz_da_fagulha(j,cx) if i in (1,3) else None
+        desenhar_panorama(s, i, origem, t, intensidade, passagem=j.passagem, camera=cx, luz=reflexo)
         abertura_bosque.fundo(s,j,cx,cy)
         if cy>60:
             # As raízes cobrem progressivamente o céu ao descer, no mesmo mundo.
@@ -639,6 +640,7 @@ class Paisagem:
             for n in range(4):
                 y=nivel+n*10
                 pygame.draw.lines(s,(108,154,145),False,[(left+k,y+math.sin(k*.07+t*2)*2) for k in range(0,right-left+1,10)],1)
+            agua_pintada.reflexo_canal(s,reflexo,cx,nivel,t)
         fundo_visao=capturar_fundo(s,cy)
         if intensidade:
             arte_ilustrada.sombrear_terreno_fixo(fundo_visao,j,cx,cy,limite_arte,intensidade)
@@ -655,6 +657,7 @@ class Paisagem:
                 pygame.draw.lines(s,(120,147,119),False,[(px-cx,440),(px+5-cx,436),(px+9-cx,438)],2)
         if hasattr(j,"sala_id"): sustentar_galho_do_duelo(s,j,cx)
         primeiro = FASES[0].plataformas[0] if i==0 and not hasattr(j,"sala_id") else None
+        folhagem_trilha.desenhar(s,j,cx)
         for tr in j.solidos:
             r = tr.rect
             apoio_inicial = (r.x,r.y,r.w) == primeiro and tr.tipo == "plataforma"

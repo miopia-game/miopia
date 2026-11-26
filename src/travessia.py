@@ -4,6 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import math
 import pygame
+from .passagem_lume import Passagem
 from .visao import DURACAO, Vestigio
 from .combate import Arma, Inimigo
 from .taticas import Habitante
@@ -721,6 +722,7 @@ class Jornada:
         return ""
 
     def recolocar(self, pos):
+        self.passagem = Passagem()
         self.lume.rect.size = (24, self.lume.ALTURA)
         self.lume.rect.midbottom = pos
         self.retorno_queda = tuple(pos)
@@ -1104,6 +1106,7 @@ class Jornada:
         if self.em_vertical:
             corte_vertical.passo(self,dt,cmd,clarao)
             return
+        posicao_anterior = l.rect.center
         estava_chao, estava_corda = l.chao, l.em_corda
         if l.em_corda:
             alvo = l.corda_destino if l.corda_destino is not None else 240 if self.etapa == 0 else 242
@@ -1123,6 +1126,8 @@ class Jornada:
             if l.bateu:
                 self.eventos.append("impacto")
         l.rect.left = max(0, min(l.rect.left, self.fase.width - l.rect.w))
+        if self.etapa in (0, 2) and not hasattr(self, "sala_id"):
+            self.passagem.mover(self.tempo, posicao_anterior, l.rect.center)
         pouso = not estava_chao and l.chao
         if pouso: self.eventos.append("pouso")
         pos_pouso = l.rect.midbottom if pouso and not estava_corda else None

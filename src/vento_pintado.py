@@ -49,7 +49,17 @@ def _pose(bioma, nome, passo):
     return im, x, y
 
 
-def folhagem(s, bioma, origem, tempo):
+# Pontas e ramos da pintura mais próximos do plano de jogo.
+CONTATOS = {
+    "fronde_central": (458, 438),
+    "fronde_baixa": (624, 384),
+    "colmos": (133, 386),
+    "ramagem": (433, 239),
+    "touceira": (809, 229),
+}
+
+
+def folhagem(s, bioma, origem, tempo, passagem=None, camera=0.0):
     ox, oy = (round(v * s.escala) for v in origem)
     for nome, (x, y, direita, baixo), velocidade, atraso in PLANTAS[bioma]:
         # A rajada passa de uma planta à seguinte; a folha continua oscilando entre rajadas.
@@ -58,6 +68,16 @@ def folhagem(s, bioma, origem, tempo):
             + 0.27 * sin(tempo * 2.13 - atraso * 1.7)
             + 0.11 * sin(tempo * 3.07 + atraso)
         )
+        if passagem is not None and nome in CONTATOS:
+            px, py = CONTATOS[nome]
+            impulso = passagem.flexao(
+                camera + origem[0] + px * 4 / 3,
+                origem[1] + py * 4 / 3,
+                tempo,
+                bambu=bioma == "taquaral",
+                alcance=64,
+            )
+            vento = max(-1.0, min(1.0, vento + 0.80 * impulso))
         passo = round(PASSOS * vento)
         if passo == 0:
             continue  # O panorama já contém exatamente a pose central.

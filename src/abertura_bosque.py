@@ -3,6 +3,7 @@ from functools import lru_cache
 from math import dist, sin
 
 from . import pygame_hd as pygame
+from .folhagem_trilha import curvar
 
 from .avisos import pista_interacao
 from .fases import Terreno
@@ -76,9 +77,8 @@ def primeiro_plano(s,j,cx,cy):
             if nome == "bosque_samambaias.png":
                 # A raiz fica presa à terra. As pontas recebem a rajada antes de voltar.
                 amplitude = 5.5*sin(j.tempo*1.45-mundo*.003) + 2*sin(j.tempo*2.31-mundo*.005)
-                for y in range(0, altura, 2):
-                    curva = (1-y/altura)**1.7
-                    s.blit(planta, (pos.x+amplitude*curva, pos.y+y), (0,y,largura,min(2,altura-y)))
+                contato = j.passagem.flexao(cx+x,pe-altura*.78,j.tempo,alcance=64)
+                curvar(s, planta, x, pe, amplitude+contato*altura*.38)
             else:
                 s.blit(planta, (pos.x, pos.y+round(2*sin(j.tempo*1.4+mundo))))
 

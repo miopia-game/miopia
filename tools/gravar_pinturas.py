@@ -18,7 +18,33 @@ QUADROS = 480
 TRECHOS = (("bosque", 2944), ("corrego", 262), ("taquaral", 65), ("gruta", 260))
 
 
-def gravar(indice, pasta, modo):
+PARTIDA_REACOES = (2932, 184, 65, 202)
+
+
+def controles_reacao(indice, quadro):
+    import pygame
+
+    teclas = set()
+    if indice in (0, 2):
+        if 63 <= quadro < 135 or 316 <= quadro < 415:
+            teclas.add(pygame.K_d)
+        elif 168 <= quadro < 251:
+            teclas.add(pygame.K_a)
+        if quadro == 332:
+            teclas.add(pygame.K_SPACE)
+    else:
+        if 40 <= quadro < 69 or 250 <= quadro < 350:
+            teclas.add(pygame.K_d)
+        elif 350 <= quadro < 393:
+            teclas.add(pygame.K_a)
+        if quadro == 97:
+            teclas.add(pygame.K_g)
+        if quadro == 282:
+            teclas.add(pygame.K_SPACE)
+    return teclas
+
+
+def gravar(indice, pasta, modo, *, reacoes=False):
     import imageio_ffmpeg
     import pygame
     from pygame._sdl2.mixer import set_post_mix
@@ -32,6 +58,8 @@ def gravar(indice, pasta, modo):
     app.jogar()
     j = app.jogo
     j.entrar(indice)
+    if reacoes:
+        partida = PARTIDA_REACOES[indice]
     j.recolocar((partida, CHAO))
     for _ in range(75):
         app.atualizar(1 / FPS, presso=defaultdict(bool))
@@ -86,19 +114,22 @@ def gravar(indice, pasta, modo):
                 time.sleep(max(0, proximo - time.perf_counter()))
                 fronteiras.append(time.perf_counter())
                 proximo = max(proximo, fronteiras[-1] - 0.001) + 1 / FPS
-            pressionadas = set()
-            if 18 <= n < 258 or 382 <= n < 465:
-                pressionadas.add(pygame.K_d)
-            elif 275 <= n < 369:
-                pressionadas.add(pygame.K_a)
-            if n in (60, 153, 268, 328, 401):
-                pressionadas.add(pygame.K_SPACE)
-            if n == 100:
-                pressionadas.add(pygame.K_g)
-            if n == 220:
-                pressionadas.add(pygame.K_k)
-            if n in (195, 312):
-                pressionadas.add(pygame.K_j)
+            if reacoes:
+                pressionadas = controles_reacao(indice, n)
+            else:
+                pressionadas = set()
+                if 18 <= n < 258 or 382 <= n < 465:
+                    pressionadas.add(pygame.K_d)
+                elif 275 <= n < 369:
+                    pressionadas.add(pygame.K_a)
+                if n in (60, 153, 268, 328, 401):
+                    pressionadas.add(pygame.K_SPACE)
+                if n == 100:
+                    pressionadas.add(pygame.K_g)
+                if n == 220:
+                    pressionadas.add(pygame.K_k)
+                if n in (195, 312):
+                    pressionadas.add(pygame.K_j)
             for tecla in anteriores - pressionadas:
                 app.evento(pygame.event.Event(pygame.KEYUP, key=tecla))
             for tecla in sorted(pressionadas - anteriores):
@@ -145,7 +176,9 @@ def gravar(indice, pasta, modo):
         app.janela.fechar()
         pygame.quit()
     desloc = round(max(l[2] for l in rota) - min(l[2] for l in rota), 2)
-    assert desloc > 220 and all(l[-1] == "jogo" and l[-2] > 0 for l in rota), (
+    assert desloc > (55 if reacoes else 220) and all(
+        l[-1] == "jogo" and l[-2] > 0 for l in rota
+    ), (
         nome,
         desloc,
         rota[-1],
@@ -289,6 +322,11 @@ if __name__ == "__main__":
     parser.add_argument(
         "--modo", choices=("filme", "amostras", "rota"), default="filme"
     )
+    parser.add_argument(
+        "--reacoes",
+        action="store_true",
+        help="Cruzar a folhagem nos dois sentidos e lançar perto da água.",
+    )
     parser.add_argument("--fase", choices=[n for n, _ in TRECHOS])
     args = parser.parse_args()
     with tempfile.TemporaryDirectory(prefix="miopia-pinturas-") as perfil:
@@ -297,6 +335,6 @@ if __name__ == "__main__":
         )
         for i, (nome, _) in enumerate(TRECHOS):
             if args.fase in (None, nome):
-                gravar(i, args.saida / nome, args.modo)
+                gravar(i, args.saida / nome, args.modo, reacoes=args.reacoes)
         if args.modo == "filme" and args.fase is None:
             montar_filme(args.saida)

@@ -26,7 +26,6 @@ def vegetacao(s,cx):
     for mundo, pe, largura, altura, nome, espelho in (
         (107,CHAO,77,39,"bosque_fungos",False),
         (455,CHAO,93,56,"bosque_juncos",True),
-        (810,CHAO,101,67,"bosque_samambaias",False),
         (1181,CHAO,98,49,"bosque_sarcas",True),
     ):
         x = mundo-cx

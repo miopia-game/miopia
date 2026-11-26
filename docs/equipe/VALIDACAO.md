@@ -1,3 +1,9 @@
+# AMB-02 · Resposta à passagem e à fagulha
+
+O playtest da História parte de quatro pontos preparados e exercita duas passagens em sentidos opostos ou um lançamento real com G. O filme decodificado contém 1.920 quadros, 32 segundos, 1920 × 1080 a 60 fps e áudio estéreo a 44,1 kHz. O comparativo tem 840 quadros e 14 segundos. Ele usa o mesmo jogo e a mesma iluminação geral nas duas colunas. O controle desliga apenas a resposta à passagem e o reflexo no material. O recorte da gota foi ampliado igualmente nas duas colunas. [Playtest com som](../midia/reacao-ao-lume-em-jogo.mp4) · [Ver a diferença lado a lado](../midia/reacao-ao-lume-detalhes.mp4)
+
+Em cada bioma, os dois percursos coincidiram em posição de Lume, câmera, vida e estado de jogo nos 480 quadros. O quadro de repouso 35 coincidiu pixel a pixel nas saídas diretas da App. Durante a movimentação e os lançamentos houve diferença visível na região de cada material. Os testes exercitam aproximação pelos dois lados, distância, repouso, cadência de atualização, trajetória e extinção da fagulha, limites das margens e mudança de nível do canal. A regressão passou em 507 testes e 176 subtestes. O lançador do macOS abriu menu e Bosque em 1920 × 1080. [Testes das reações](../../tests/test_reacao_ao_lume.py) · [Reproduzir as gravações](../arte/PINTURAS_DOS_BIOMAS.md)
+
 # AMB-01 · Movimento nos quatro cenários
 
 O piloto repetiu os pontos iniciais e os comandos do playtest de `0df105a`. Cada capítulo mostra oito segundos de jogo a 1920 × 1080 e 60 fps, com áudio estéreo do mixer. Outra gravação usa quatro recortes físicos 1:1 do mesmo compositor, por seis segundos, com a câmera parada. Ela mostra a flexão das frondes, os colmos e folhas ao vento, a segunda queda do Córrego e as gotas chegando ao espelho d’água da Gruta. [Playtest](../midia/cenarios-vivos-em-jogo.mp4) · [Quatro recortes](../midia/cenarios-vivos-em-detalhe.mp4)

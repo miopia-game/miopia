@@ -1,3 +1,5 @@
+Na trilha, Lume desloca as samambaias e os colmos ao passar. A água perto da fagulha ganha reflexos âmbar durante o voo e depois do pouso. [Ver a passagem de Lume e os reflexos](../midia/reacao-ao-lume-em-jogo.mp4)
+
 Os quatro cenários ganharam movimento ambiental durante a partida. [Ver a caminhada pelos quatro cenários](../midia/cenarios-vivos-em-jogo.mp4) · [Observar o vento e a água com a câmera fixa](../midia/cenarios-vivos-em-detalhe.mp4)
 
 As quatro pinturas laterais foram redesenhadas com o traço do elenco. A câmera percorre panoramas de 2560 × 1440 e exibe 1920 × 1080 pixels por quadro. [Ver as quatro fases em movimento](../midia/quatro-pinturas-em-jogo.mp4) · [Mestres e produção](../arte/PINTURAS_DOS_BIOMAS.md)

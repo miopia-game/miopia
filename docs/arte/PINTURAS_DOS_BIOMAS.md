@@ -28,6 +28,19 @@ python -m tools.animar_folhagem
 python -m tools.gravar_detalhes_ambientais --saida work/detalhes-ambientais.mp4
 ```
 
+## A passagem de Lume e a luz refletida
+
+A simulação guarda pouco mais de um segundo do deslocamento real do corpo. Ao cruzar uma touceira, as pontas cedem na direção da passagem. A raiz permanece presa ao apoio. A samambaia recupera a pose mais rápido que o bambu. O impulso depende da distância em ambos os eixos, do sentido e da velocidade. A câmera, o Lume parado e os trechos distantes da pintura deixam o vento ambiente agir por si. O atlas do Bosque fornece as samambaias da trilha. Os colmos junto aos apoios do Taquaral são desenhados em Pygame, com nós, ramos e folhas. [Passagem no mundo](../../src/passagem_lume.py) · [Folhagem junto à trilha](../../src/folhagem_trilha.py)
+
+No Córrego, a posição e o raio reais da fagulha determinam quais trechos das quedas e do remanso ganham luz. As pinceladas horizontais ficam dentro das margens. No canal jogável, elas acompanham a mudança de nível quando a água é drenada. Na Gruta, a face iluminada de cada gota acompanha a queda. O anel que nasce no impacto também recebe luz se estiver ao alcance. A contribuição acompanha o voo, o pouso e a extinção. O ajuste **Clarões suaves** reduz sua intensidade. [Água e luz](../../src/agua_pintada.py)
+
+O playtest usa quatro inícios preparados e comandos da História. Nos dois biomas vegetais, o piloto cruza as plantas e troca de direção. Nos outros dois, lança com G e deixa a água em movimento sob a fagulha pousada. O comparativo repete os mesmos comandos e enquadramentos. A coluna esquerda conserva vento, água, movimento do jogador e iluminação geral. A coluna direita inclui a resposta da folhagem e o reflexo do material. A gota é ampliada 2× nas duas colunas. [Partida em 1080p60](../midia/reacao-ao-lume-em-jogo.mp4) · [Comparativo](../midia/reacao-ao-lume-detalhes.mp4)
+
+```sh
+python -m tools.gravar_pinturas --reacoes --saida work/reacao-ao-lume
+python -m tools.comparar_reacoes --jogo work/reacao-ao-lume --saida work/reacao-detalhes.mp4
+```
+
 ## Repetir o playtest
 
 A gravação abre uma partida descartável por bioma. Os quatro pontos iniciais são preparados e a câmera se estabiliza. Daí em diante, o piloto envia os comandos de andar, pular, lançar a fagulha, golpear e acionar o clarão. Cada capítulo dura oito segundos. O arquivo de cada fase inclui o trajeto e quatro quadros integrais em PNG. O comparativo usa recortes em escala 1:1 do mesmo quadro da base e da nova versão, com os mesmos comandos e brilho. [Vídeo com quatro capítulos](../midia/quatro-pinturas-em-jogo.mp4) · [Antes e depois](../midia/quatro-pinturas-antes-e-depois.png)
