@@ -12,53 +12,9 @@ MEDIDAS = {
     "caruncho": (106, 69), "cobra-dos-bercos": (108, 87),
 }
 def efeito(s, nome, centro, dimensoes, espelho=False):
-    if nome=="avanco": nome="corte3"
-    if nome in ('pesado','quebra','retorno','aurora'):nome='corte3' if nome!='retorno' else 'corte2'
     asset = "efeito_" + nome
     textura = imagem(asset + ".png", *dimensoes, espelho)
     pygame.blit(s, textura, textura.get_rect(center=centro))
-
-
-def golpe_lume(s, lume, cx):
-    ataque = lume.arma
-    if not ataque.tipo:
-        return
-    perfil = ataque.perfil
-    if ataque.tempo < perfil.espera:
-        losango(s, lume.rect.centerx-cx+ataque.face*18, lume.rect.centery-8, 3, OSSO)
-        return
-    x, y = lume.rect.centerx-cx, lume.rect.centery
-    if ataque.equipamento == 'agulha':
-        # Haste e ponta próprias; nenhum sprite de arma externa foi importado.
-        ponta = x + ataque.face * perfil.alcance
-        pygame.draw.line(s, (157,177,138), (x,y+5), (ponta,y-4), 3)
-        pygame.draw.lines(s, OSSO, False, [(ponta-ataque.face*12,y-10),(ponta,y-4),(ponta-ataque.face*10,y+2)],2)
-    progresso = min(1., (ataque.tempo-perfil.espera)/perfil.ativo)
-    restante = 1 - max(0., ataque.tempo - perfil.espera - perfil.ativo) / .12
-    if restante <= 0:
-        return
-    tinta = tuple(int(v * (.53 + .47*min(1., restante))) for v in AMBAR)
-    if ataque.luminoso:
-        tinta=(159,226,214)
-        brilho(s,(round(x+ataque.face*25),round(y)),28)
-    if ataque.tipo == "queda":
-        y = lume.rect.bottom-4
-        maior = int(18 + progresso*perfil.alcance)
-        efeito(s, "queda", (round(x),round(y+maior/2)), (56,maior+15))
-        pygame.draw.lines(s, tinta, False, [(x-12,y+3),(x-2,y+maior),(x+10,y+7)], 2)
-    else:
-        face = ataque.face
-        alcance = int(perfil.alcance*(.58 + .42*progresso))
-        seno = -1 if ataque.tipo == "corte2" else 1
-        centro = (round(x+face*alcance*.52), round(y))
-        efeito(s, ataque.tipo, centro, (alcance+12, 63 if ataque.tipo != "corte3" else 77), face<0)
-        # Um filete sobre a pintura dá a direção e o limite real do contato.
-        angulo = -1.25 + progresso*2.28
-        arco = []
-        for n in range(12):
-            a = angulo - (11-n)*.095
-            arco.append((x+face*alcance*(.16+.84*math.cos(a)), y+seno*30*math.sin(a)))
-        pygame.draw.lines(s, tinta, False, arco, 2 if ataque.tipo != "corte3" else 3)
 
 
 def criatura(e):

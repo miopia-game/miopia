@@ -273,6 +273,7 @@ class Jornada:
         self.configurar_dificuldade(dificuldade.lower())
         self.dificuldade_pendente = None
         self.vestigios = []
+        self.impactos_corte = []
         self.em_vertical = False
         self.camera_y = 0.
         self.cartografia = set()
@@ -722,6 +723,7 @@ class Jornada:
         return ""
 
     def recolocar(self, pos):
+        self.impactos_corte.clear()
         self.passagem = Passagem()
         self.lume.rect.size = (24, self.lume.ALTURA)
         self.lume.rect.midbottom = pos
@@ -1095,6 +1097,8 @@ class Jornada:
             aula_sino.pisar(self)
         antes = self.tempo
         self.tempo += dt
+        while self.impactos_corte and self.tempo-self.impactos_corte[0].inicio >= .34:
+            self.impactos_corte.pop(0)
         avisar_pouso(self,antes)
         desvios_fagulha.revelar(self)
         while self.vestigios and self.tempo - self.vestigios[0].inicio >= self.vestigios[0].duracao:
@@ -1180,6 +1184,7 @@ class Jornada:
             l.rect.left = max(l.rect.left, ARENA)
             ruido = 1.0 if l.slide > 0 or pouso else min(.66, abs(l.vx) / 360) if l.chao else .08
             vida_chefe=self.boss.vida
+            serie_anterior=self.boss.ultimo_corte
             fagulha = self.fagulha_ativa
             if fagulha and fagulha.progresso(self.tempo) < 1:
                 fagulha = None
@@ -1189,7 +1194,10 @@ class Jornada:
                                        dano_corte=2*l.arma.perfil.dano if l.arma.perfil else 2.,
                                        fagulha=fagulha)
             self.eventos.extend(e for e in eventos if e != "dano_jogador")
-            if self.boss.vida<vida_chefe and golpe and self.boss.ultimo_corte==l.arma.serie:self.acertou_combo()
+            if self.boss.vida<vida_chefe and golpe and self.boss.ultimo_corte==l.arma.serie:
+                self.acertou_combo()
+                if serie_anterior != l.arma.serie and not clarao and self.boss.contato_corte:
+                    self.registrar_impacto(self.boss.contato_corte, self.boss.vencido)
             if 'gota_final' in eventos:
                 l.energia=max(l.energia,32.+5*self.boss.aliados)
                 self.notificar('Orvalho do ninho: um pulso guardado. K perto da marca devolve o sinal.',5.)
@@ -1227,6 +1235,12 @@ class Jornada:
         if any(ganho):
             l.ganho_abate=ganho;l.abate_ate=self.tempo+1.4;self.eventos.append('coleta')
 
+    def registrar_impacto(self, ponto, abate):
+        arma = self.lume.arma
+        marca = ImpactoDoCorte(self.tempo, ponto, arma.face, abate, arma.luminoso)
+        self.impactos_corte.append(marca)
+        return marca
+
     def acertou_combo(self):
         l=self.lume
         if l.vida<=0:return
@@ -1252,9 +1266,9 @@ class Jornada:
             resultado = e.acertar(lume.arma, golpe, clarao, lume)
             if e.vida < vida_antes and golpe and lume.arma.serie == e.ultimo_corte:
                 self.acertou_combo()
-                if self.modo == "historia" and isinstance(e, MorcegoDoGalho) and not clarao:
-                    e.impacto_corte = ImpactoDoCorte(self.tempo, golpe.clip(e.rect).center,
-                                                    lume.arma.face, not e.ativo)
+                marca = None if clarao else self.registrar_impacto(golpe.clip(e.rect).center, not e.ativo)
+                if self.modo == "historia" and isinstance(e, MorcegoDoGalho) and marca:
+                    e.impacto_corte = marca
                     if lume.arma.tipo in ("corte1", "corte2", "corte3", "avanco", "retorno", "queda"):
                         self.tutorial.add(CORTE_PRATICADO)
             if resultado:

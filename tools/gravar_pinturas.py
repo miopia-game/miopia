@@ -162,12 +162,7 @@ def gravar(indice, pasta, modo, *, reacoes=False):
     finally:
         if filmar:
             # O mixer chama Python em outra thread. Soltar o GIL ao desregistrar evita um impasse.
-            biblioteca = "SDL2_mixer.dll" if os.name == "nt" else pygame.mixer.__file__
-            retirar = ctypes.CDLL(biblioteca).Mix_SetPostMix
-            retirar.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
-            retirar.restype = None
-            retirar(None, None)
-            set_post_mix(None)
+            encerrar_mix()
         if video:
             video.stdin.close()
             if video.wait():
@@ -217,6 +212,18 @@ def gravar(indice, pasta, modo, *, reacoes=False):
             check=True,
         )
     print(nome, desloc, "unidades de câmera", flush=True)
+
+
+def encerrar_mix():
+    from pygame._sdl2.mixer import set_post_mix
+    import pygame
+
+    biblioteca = "SDL2_mixer.dll" if os.name == "nt" else pygame.mixer.__file__
+    retirar = ctypes.CDLL(biblioteca).Mix_SetPostMix
+    retirar.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
+    retirar.restype = None
+    retirar(None, None)
+    set_post_mix(None)
 
 
 def sincronizar_audio(buffers, fronteiras, caminho):

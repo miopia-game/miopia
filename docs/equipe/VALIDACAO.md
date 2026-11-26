@@ -1,3 +1,20 @@
+# SPR-02 · Animação e resposta dos golpes em 60 fps
+
+Na História, um piloto de teclado percorreu a abertura desde o chão, passou por Véspera, usou G para iluminar o pouso e venceu o primeiro morcego com o espinho. O primeiro quadro do lançamento aparece aos 11,28 s. O combo de três cortes começa aos 14,42 s. As quatro marcas de contato na partida coincidem com perda de vida do morcego. Os dois filmes têm 1.076 quadros decodificados, 17,93 s, 1920 × 1080 a 60 fps e áudio estéreo a 44,1 kHz. O segundo amplia um recorte móvel de 800 × 450 do primeiro, na mesma velocidade. Para gravar a rota, use `.venv/bin/python -m tools.gravar_bosque --saida work/previa`. [Partida completa](../midia/lume-combate-60fps.mp4) · [Detalhe](../midia/lume-combate-detalhe-60fps.mp4)
+
+A medição em janela nativa no Mac, com perfil temporário, fez Lume correr, saltar e golpear no Bosque. No laço normal da App, a média de 600 intervalos entre apresentações foi de 60,01 fps e o percentil 95 foi de 18,03 ms. Em uma execução separada, sem espera entre quadros, atualizar, desenhar e apresentar levou 12,86 ms na mediana e 13,98 ms no p95. Dos 480 quadros medidos após aquecimento, 478 ficaram dentro de 16,67 ms. Na base `15253c0`, o mesmo ensaio tinha mediana de 15,16 ms, p95 de 17,68 ms e 419 quadros dentro da meta. A percepção de resposta com teclado físico e o desempenho no notebook da equipe dependem de teste local.
+
+Também foram cronometrados 480 intervalos de apresentação após aquecimento em cada bioma. Os percursos partiram de pontos preparados na História, com releitura do teclado e desenho em janela nativa, contando apenas a tela de jogo.
+
+| Trecho | Média | Intervalo no p95 |
+|---|---:|---:|
+| Bosque | 60,00 fps | 17,55 ms |
+| Córrego | 59,99 fps | 17,82 ms |
+| Taquaral | 60,00 fps | 18,49 ms |
+| Gruta | 59,99 fps | 17,71 ms |
+
+O lançador do macOS abriu menu e Bosque em Full HD com perfil temporário. A regressão local passou em 514 testes e 176 subtestes. A verificação das pinturas compara todos os pixels da composição HD com as operações de referência. Os testes de Lume conferem o instante do comando, os apoios, as âncoras e as silhuetas de corte e estocada. [Testes do personagem](../../tests/test_lume_ilustrado.py) · [Composição em Full HD](../../tests/test_pinturas_biomas.py)
+
 # S41 · Lume no traço do elenco
 
 O piloto da História saiu da abertura, passou por Véspera, lançou a fagulha, atravessou o vão e venceu o primeiro morcego com o espinho. A captura contém 532 quadros a 30 fps, 1920 × 1080 e áudio do mixer da App. A imagem da dupla vem do quadro 324. [Vídeo](../midia/lume-no-bosque.mp4) · [Lume e Véspera](../midia/lume-com-vespera.png)

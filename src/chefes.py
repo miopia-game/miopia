@@ -104,6 +104,7 @@ class Encontro:
         self.tempo, self.relogio = 1.65, 0.
         self.progresso = 0
         self.vida = self.vida_max = 100.
+        self.contato_corte = None
         self.ultimo_corte = None
         self.ultimo_golpe_t = -1.
         self.vencido = False
@@ -587,6 +588,7 @@ class Encontro:
         pulso_perto = clarao and hypot(corpo.centerx-self.x,corpo.centery-self.y)<214
         if (novo and acertou) or pulso_perto:
             if novo and acertou:
+                self.contato_corte = corpo_chefe.clip(golpe).center
                 self.ultimo_corte=serie
                 self.ultimo_golpe_t=self.relogio
             if not fraco:
@@ -604,6 +606,7 @@ class Encontro:
             self._usar(corpo, eventos)
         if self.estado == "aberto":
             if fraco and golpe is not None and self.indice != 3:
+                self.contato_corte = self._marca()
                 self.ultimo_corte = serie
                 self.ultimo_golpe_t = self.relogio
             self._atualizar_aberto(corpo, golpe, clarao, eventos, permitir=fraco)

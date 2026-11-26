@@ -1,10 +1,15 @@
-"""Prepara os quadros HD de Lume com as cinco poses pintadas do elenco."""
+"""Prepara os quadros HD de Lume a partir das pinturas de guarda e movimento."""
 from functools import lru_cache
 import json
-from math import cos, pi, radians, sin, tau
+from math import cos, radians, sin, tau
 from pathlib import Path
 
-from PIL import Image, ImageChops, ImageDraw
+from PIL import Image, ImageDraw
+
+if __package__:
+    from . import cels_lume
+else:
+    import cels_lume
 
 RAIZ = Path(__file__).resolve().parents[1]
 FONTES = RAIZ / "docs/arte/fontes/lume"
@@ -12,8 +17,6 @@ DESTINO = RAIZ / "assets/arte/lume"
 CELULA = (192, 160)
 PE = 132
 SS = 2
-FAIXAS = ("guarda", "passo", "corrida", "voo", "queda", "planeio", "agachar",
-          "deslizar", "escalar", "parede", "golpe", "mergulho", "recuo", "clarao", "lancar")
 
 
 def limpar(im):
@@ -31,40 +34,6 @@ def pintura(nome):
     x, y = indice % 2, indice // 2
     w, h = folha.size
     return limpar(folha.crop((x*w//2, y*h//2, (x+1)*w//2, (y+1)*h//2)))
-
-
-@lru_cache
-def roupa_e_botas():
-    """Separa as botas da guarda para alternar o apoio sem deformar a máscara."""
-    im = pintura("guarda")
-    w,h = im.size
-    m = Image.new("L", im.size)
-    d = ImageDraw.Draw(m)
-    limites = (
-        ((.19,.90),(.29,.88),(.32,.86),(.333,.835),(.405,.824),(.41,.856),(.48,.87),(.48,1),(.19,1)),
-        ((.53,.85),(.57,.81),(.627,.798),(.665,.804),(.71,.823),(.81,.89),(.81,1),(.53,1)),
-    )
-    botas = []
-    for i, limite in enumerate(limites):
-        d.polygon([(round(x*w),round(y*h)) for x,y in limite],fill=255)
-        x0,x1 = ((.20,.46),(.53,.79))[i]
-        bota = im.crop((round(w*x0),round(.882*h),round(w*x1),h))
-        botas.append(bota.crop(bota.getchannel("A").getbbox()))
-    roupa = im.copy()
-    roupa.putalpha(ImageChops.subtract(im.getchannel("A"),m))
-    return roupa, botas
-
-
-def escolha(nome, t):
-    if nome in ("agachar","deslizar"):
-        return "baixa", 56 if nome == "agachar" else 52
-    if nome in ("voo","queda","planeio","mergulho"):
-        return "salto", 88
-    if nome in ("escalar","parede"):
-        return "escalada", 96
-    if nome in ("golpe","lancar") and .18 <= t <= .78:
-        return "bote", 85
-    return "guarda", 107
 
 
 def desenhar_asas(im, raiz, t, planar):
@@ -114,33 +83,18 @@ def pano(im, t, nome):
 
 
 def quadro(nome, t):
-    chave,altura = escolha(nome,t)
-    andando = nome in ("passo","corrida")
-    base = roupa_e_botas()[0] if andando else pintura(chave)
+    chave = "escalada" if nome in ("escalar","parede") else "baixa" if nome == "agachar" else "guarda"
+    altura = {"escalada":96,"baixa":56,"guarda":107}[chave]
+    base = pintura(chave)
     largura = round(altura*base.width/base.height)
     im = pano(base.resize((largura*SS,altura*SS),Image.Resampling.LANCZOS),t,nome)
     ciclo = tau*t
-    angulo,dx,dy = 0.,0.,0.
-    eixo = {"guarda":.54, "baixa":.59, "bote":.59, "salto":.57, "escalada":.68}[chave]
-    if andando:
-        angulo = (-13 if nome == "corrida" else -6)+2*cos(2*ciclo)
-        dy = (-2.5 if nome == "corrida" else -1.6)*(1-cos(2*ciclo))
-    elif nome in ("voo","queda","planeio","mergulho"):
-        angulo = {"voo":5, "queda":-7, "planeio":-16, "mergulho":-34}[nome]+1.6*sin(ciclo)
-        dy = -3.5
-    elif nome in ("golpe","lancar"):
-        impulso = sin(pi*min(1,max(0,(t-.13)/.78)))
-        preparar = sin(pi*min(1.,t/.18))
-        angulo = 7*preparar - 8*impulso
-        dx = -3*preparar + (6 if nome == "golpe" else -4)*impulso
-    elif nome == "recuo":
+    eixo = {"guarda":.54,"baixa":.59,"escalada":.68}[chave]
+    angulo, dx, dy = 1.2*sin(ciclo), 0., 0.
+    if nome == "recuo":
         angulo, dx = 10+2*sin(ciclo),-3
-    elif nome == "deslizar":
-        angulo, dx = -6,2
-    elif nome == "escalar":
-        dy = -2*(1-cos(ciclo))
-    else:
-        angulo = 1.2*sin(ciclo)
+    if nome == "escalar":
+        angulo, dy = 0., -2*(1-cos(ciclo))
     # Rotações acontecem em torno da bacia. Os pés de apoio usam a linha do chão.
     px,py = eixo*largura,altura*.79
     ox,oy = CELULA[0]/2+dx, PE-altura+py+dy
@@ -150,21 +104,6 @@ def quadro(nome, t):
         return ((ox+x*c+y*s)*SS,(oy-x*s+y*c)*SS)
     inversa = (c,-s,(px-c*ox+s*oy)*SS,s,c,(py-s*ox-c*oy)*SS)
     out = Image.new("RGBA",tuple(x*SS for x in CELULA))
-    if andando:
-        d = ImageDraw.Draw(out)
-        for i, bota in enumerate(roupa_e_botas()[1]):
-            f = ciclo + i*pi
-            coxa = mundo((.365,.64)[i],.805)
-            alcance = 15 if nome == "corrida" else 10
-            x = (CELULA[0]/2+(-7,6)[i]+alcance*cos(f))*SS
-            y = (PE-(12 if nome == "corrida" else 8)*max(0.,sin(f)))*SS
-            h = round(altura*.118*SS)
-            b = bota.resize((round(h*bota.width/bota.height),h),Image.Resampling.LANCZOS)
-            joelho = ((coxa[0]+x)*.5+3*SS*max(0.,sin(f)),(coxa[1]+y-h)*.5)
-            d.line([coxa,joelho,(x,y-h*.55)],fill="#382031",width=round(5.8*SS),joint="curve")
-            out.alpha_composite(b,(round(x-b.width*.48),round(y-b.height)))
-    if nome in ("voo","queda","planeio","mergulho"):
-        desenhar_asas(out,mundo(.58,.44),t,nome in ("planeio","mergulho"))
     out.alpha_composite(im.transform(out.size,Image.Transform.AFFINE,inversa,Image.Resampling.BICUBIC))
     # Posição pintada dos segmentos de âmbar em cada chave.
     farol = mundo(*{"guarda":(.17,.745), "baixa":(.213,.747), "bote":(.205,.778),
@@ -181,15 +120,27 @@ def quadro(nome, t):
 def preparar():
     DESTINO.mkdir(parents=True,exist_ok=True)
     farois = {}
-    for nome in FAIXAS:
+    for nome in ("guarda","agachar","escalar","parede","recuo"):
         folha = Image.new("RGBA",(CELULA[0]*4,CELULA[1]*4))
         farois[nome] = []
         for i in range(16):
-            t = i/(15 if nome in ("golpe","lancar","mergulho") else 16)
+            t = i/16
             im,farol = quadro(nome,t)
             folha.paste(im.resize(CELULA,Image.Resampling.LANCZOS),(CELULA[0]*(i%4),CELULA[1]*(i//4)))
             farois[nome].append(farol)
         folha.save(DESTINO / (nome+".png"),optimize=True)
+    maos,ombros = {},{}
+    for nome in cels_lume.SERIES:
+        folha,farois[nome],maos[nome],ombros[nome] = cels_lume.preparar(nome)
+        folha.save(DESTINO / (nome+".png"),optimize=True)
+    for planar,nome in ((False,"asas"),(True,"asas-planeio")):
+        folha = Image.new("RGBA",(CELULA[0]*10,CELULA[1]*6))
+        for i in range(60):
+            im = Image.new("RGBA",tuple(v*SS for v in CELULA))
+            desenhar_asas(im,(96*SS,80*SS),i/60,planar)
+            folha.paste(im.resize(CELULA,Image.Resampling.LANCZOS),(CELULA[0]*(i%10),CELULA[1]*(i//10)))
+        folha.save(DESTINO / (nome+".png"),optimize=True)
+    (DESTINO / "juntas.json").write_text(json.dumps({"punho":maos,"ombro":ombros})+"\n",encoding="utf-8")
     (DESTINO / "farol.json").write_text(json.dumps(farois)+"\n",encoding="utf-8")
 
 

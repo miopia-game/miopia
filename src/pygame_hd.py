@@ -178,6 +178,11 @@ class _Desenho:
 
 class _Transformacao:
     @staticmethod
+    def invert(surface, dest_surface):
+        sdl.transform.invert(destino(surface).pixels, destino(dest_surface).pixels)
+        return dest_surface
+
+    @staticmethod
     def smoothscale(surface, size, dest_surface=None):
         fonte = destino(surface)
         alvo = destino(dest_surface) if dest_surface is not None else None

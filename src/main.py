@@ -4,6 +4,7 @@ import argparse
 import os
 from pathlib import Path
 import sys
+import time
 if __package__ in ("",None):
     sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 os.environ.setdefault("SDL_RENDER_SCALE_QUALITY","1")
@@ -15,7 +16,7 @@ from src.janela_hd import Janela, LOGICA
 from src.audio import Audio
 from src.controles import ACOES, EVENTOS_PAD, PADRAO, Controles, Gamepad
 from src.ensaios import ENSAIOS, INDICE_ARANHA, SEMENTE_ARANHA, preparar_ensaio
-from src.arte_lume import imagem_lume
+from src.arte_lume import imagem_lume, preparar as preparar_lume
 from src.ilustracao import estilo, fonte, tinta, linhas
 from src.memoria import Memoria
 from src.paisagem import Paisagem, hud
@@ -255,6 +256,7 @@ class App:
             self.jogar()
 
     def jogar(self):
+        preparar_lume()
         self.mudar("jogo")
         self.musica(self.tema_jornada())
 
@@ -813,10 +815,19 @@ class App:
         renderer[self.estado](self,s)
 
     def rodar(self):
-        clock=pygame.time.Clock()
+        periodo = 1 / 60
+        anterior = time.perf_counter()
+        prazo = anterior + periodo
         try:
             while self.rodando:
-                dt=min(.07,clock.tick(60)/1000)
+                restante = prazo - time.perf_counter()
+                if restante > 0:
+                    time.sleep(restante)
+                agora = time.perf_counter()
+                dt = min(.07, agora - anterior)
+                anterior = agora
+                # Absorve pequenos atrasos. Uma janela suspensa recomeça sem rajada de quadros.
+                prazo = (agora if agora - prazo >= periodo else prazo) + periodo
                 for e in pygame.event.get(): self.evento(self.janela.evento_logico(e))
                 if not self.rodando: break
                 self.atualizar(dt)

@@ -5,10 +5,11 @@ from math import dist, sin
 from . import pygame_hd as pygame
 from .folhagem_trilha import curvar
 
+from .arte_espinho import desenhar_impactos as desenhar_impacto
 from .avisos import pista_interacao
 from .fases import Terreno
 from .hud_reservas import desenhar as reservas
-from .ilustracao import OSSO, PALIDO, alto_contraste, claroes_suaves, dica_local, imagem, original, placa, texto
+from .ilustracao import OSSO, PALIDO, alto_contraste, dica_local, imagem, original, placa, texto
 from .tutorial import pouso_para_mapa
 from .travessia_fagulha import (CHEGADA, CORTE_PRATICADO, CUSTO, FORA_DA_MARCA,
                                 MorcegoDoGalho, na_borda)
@@ -168,39 +169,6 @@ def pista(j):
     if j.aviso_t > 0 and j.aviso.startswith("Mochila de ervas recolhida."):
         return "", "Leve a mochila a Mimo", ponto
     return None
-
-
-def desenhar_impacto(s, j, cx):
-    """Lascas da luz de Lume partem do contato real entre o corte e o morcego."""
-    for alvo in j.inimigos:
-        if not isinstance(alvo, MorcegoDoGalho) or alvo.impacto_corte is None:
-            continue
-        marca = alvo.impacto_corte
-        idade = j.tempo - marca.inicio
-        duracao = .48 if marca.abate else .30
-        if not 0 <= idade < duracao or not j.visivel(marca.ponto, 18):
-            continue
-        x, y = marca.ponto
-        x -= cx
-        lado = marca.lado
-        suave = claroes_suaves()
-        contraste = alto_contraste()
-        tinta = (248, 224, 163) if contraste else (218, 166, 103)
-        # O núcleo fica no contato. Só o pó do espinho acompanha a direção do golpe.
-        if idade < .10:
-            raio = max(2, round((1 - idade/.10) * (7 if suave else 13)))
-            nucleo = [(x-lado*raio, y+2), (x-2, y-2), (x+lado*raio*.5, y-raio),
-                      (x+lado*3, y-2), (x+lado*raio, y+1), (x+1, y+3), (x-2, y+raio*.55)]
-            pygame.draw.polygon(s, tinta if suave else OSSO, nucleo)
-        velocidades = ((68, -65), (99, -26), (48, 22), (-34, -45), (76, -90), (-43, 8))
-        quantidade = 3 if suave else 6 if marca.abate else 4
-        for vx, vy in velocidades[:quantidade]:
-            px = round(x + lado*vx*idade)
-            py = round(y + vy*idade + 96*idade*idade)
-            comprimento = max(1, round((1-idade/duracao)*6))
-            pontos = [(px-lado*comprimento, py+2), (px, py-1), (px+lado*2, py), (px, py+2)]
-            pygame.draw.polygon(s, (58, 40, 37), pontos)
-            pygame.draw.line(s, tinta, pontos[0], pontos[1], 2 if contraste else 1)
 
 
 def hud(s, j):

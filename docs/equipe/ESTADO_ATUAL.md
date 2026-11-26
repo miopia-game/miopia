@@ -1,3 +1,5 @@
+O passo e a corrida de Lume acompanham a distância percorrida. O lançamento da fagulha tem um gesto próprio, e o combo alterna o sentido do espinho. O rastro acompanha a mão e as lascas partem do contato com o inimigo. [Do Bosque até o morcego, em 1080p a 60 fps](../midia/lume-combate-60fps.mp4) · [Mesma sequência em detalhe](../midia/lume-combate-detalhe-60fps.mp4)
+
 Lume veste o mesmo traço de Mimo, Nira e Véspera. A máscara clara, o lenço vermelho e os dois segmentos de luz aparecem na guarda, na corrida, no voo e no combate. [Lume ao lado de Véspera](../midia/lume-com-vespera.png) · [Do Bosque ao primeiro morcego, com som](../midia/lume-no-bosque.mp4)
 
 Na trilha, Lume desloca as samambaias e os colmos ao passar. A água perto da fagulha ganha reflexos âmbar durante o voo e depois do pouso. [Ver a passagem de Lume e os reflexos](../midia/reacao-ao-lume-em-jogo.mp4)

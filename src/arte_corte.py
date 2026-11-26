@@ -3,6 +3,7 @@ from functools import lru_cache
 import math
 
 from . import pygame_hd as pygame
+from .arte_espinho import desenhar_impactos
 from .arte_combate import inimigo, projeteis
 from . import arquivo_casca, arte_fio, corte_vertical as corte, fio_corte
 from .ilustracao import AMBAR, OSSO, PALIDO, TEAL, brilho, imagem, losango, manivela, original, sprite, texto
@@ -340,6 +341,7 @@ def desenhar(s,j,t,nivel_brilho):
     for e in j.inimigos:
         projeteis(camada,e,cx,j.lume,j.raio,j.visivel)
     lume(camada,j.lume,cx,t,j.fagulha_ativa)
+    desenhar_impactos(camada,j,cx)
     s.blit(camada,(0,0),tela)
     camada.set_clip(None)
 

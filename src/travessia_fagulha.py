@@ -196,6 +196,7 @@ class ImpactoDoCorte:
     ponto: tuple[float, float]
     lado: int
     abate: bool
+    luminoso: bool = False
 
 
 class MorcegoDoGalho(Habitante):

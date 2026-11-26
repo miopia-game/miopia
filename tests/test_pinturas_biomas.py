@@ -36,3 +36,36 @@ def test_quatro_pinturas_entram_na_campanha_sem_reduzir_a_resolucao(
     monkeypatch.setattr(paisagem, "nevoa_distante", observar)
     app.desenhar()
     assert opcoes == [((1920, 1080), 1.0)]
+
+
+def test_composicao_hd_no_mundo_equivale_a_mascara_com_buffers(app):
+    from src import pygame_hd as hd
+
+    app.iniciar("historia")
+    app.jogar()
+    mundo = hd.Surface((960, 600))
+    mundo.fill((173, 49, 213))
+    fundo = hd.Surface((960, 540))
+    fundo.fill((30, 190, 83))
+    pygame.draw.circle(fundo.pixels, (170, 18, 240), (441, 558), 180)
+    luz = hd.Surface((960, 540))
+    referencia_luz = luz.copy()
+    paisagem.compor_luz(referencia_luz, app.jogo, 0, 39, 1)
+    referencia_luz.fill((46,) * 3, special_flags=pygame.BLEND_RGB_MAX)
+    paisagem.compor_luz(luz, app.jogo, 0, 39, 1, minimo=46)
+    assert pygame.image.tobytes(luz.pixels, "RGB") == pygame.image.tobytes(referencia_luz.pixels, "RGB")
+
+    esperado = mundo.pixels.copy()
+    area = pygame.Rect(0, 78, 1920, 1080)
+    claro = esperado.subsurface(area).copy()
+    inversa = pygame.Surface(area.size)
+    inversa.fill("white")
+    inversa.blit(luz.pixels, (0, 0), special_flags=pygame.BLEND_RGB_SUB)
+    distante = fundo.pixels.copy()
+    distante.fill(paisagem.TINTAS_NEVOA[1], special_flags=pygame.BLEND_RGB_MULT)
+    distante.blit(inversa, (0, 0), special_flags=pygame.BLEND_RGB_MULT)
+    claro.blit(luz.pixels, (0, 0), special_flags=pygame.BLEND_RGB_MULT)
+    claro.blit(distante, (0, 0), special_flags=pygame.BLEND_RGB_ADD)
+    esperado.blit(claro, area)
+    paisagem.aplicar_nevoa(mundo, luz, 39, fundo, nitidez=1., consumir_fundo=True)
+    assert pygame.image.tobytes(esperado, "RGB") == pygame.image.tobytes(mundo.pixels, "RGB")

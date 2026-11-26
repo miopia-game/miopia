@@ -7,7 +7,7 @@ from . import pygame_hd as pygame
 from . import abertura_bosque, arte_bosque, arte_ilustrada, desvios_fagulha, licao_vespera, travessia_fagulha
 from . import arte_fagulha, agua_pintada, vento_pintado, folhagem_trilha
 from .arte_arena import sinais_encontro
-from .arte_combate import inimigo, projeteis, golpe_lume, tranca
+from .arte_combate import inimigo, projeteis, tranca
 from . import arte_margens
 from .arte_lume import desenhar_lume
 from .fases import FASES
@@ -114,7 +114,8 @@ def capturar_fundo(camada,cy=0):
 def nevoa_distante(fundo, borrado, amostra, nivel, cor=None, nitidez=0.):
     borrado = pygame.destino(borrado)
     if nitidez >= 1:
-        borrado.blit(fundo, (0, 0))
+        if fundo is not borrado:
+            borrado.blit(fundo, (0, 0))
     else:
         pygame.transform.smoothscale(fundo, amostra.get_size(), amostra)
         pygame.transform.smoothscale(amostra, borrado.get_size(), borrado)
@@ -126,19 +127,30 @@ def nevoa_distante(fundo, borrado, amostra, nivel, cor=None, nitidez=0.):
     borrado.fill(TINTAS_NEVOA[nivel] if cor is None else cor, special_flags=pygame.BLEND_RGB_MULT)
 
 
-def aplicar_nevoa(camada, luz, cy=0, fundo=None, nivel=1, cor=None, nitidez=0.):
+def aplicar_nevoa(camada, luz, cy=0, fundo=None, nivel=1, cor=None, nitidez=0., *, consumir_fundo=False):
     """Fora da luz só existe o fundo distante. Não vaza a silhueta do terreno."""
     camada = pygame.destino(camada)
     area=pygame.Rect(0,cy,960,540)
     nitido,borrado,inversa,pequeno,_=buffers_nevoa()
-    nitido.blit(camada,(0,0),area)
+    no_mundo = camada.escala == nitido.escala and camada.get_clip().contains(area)
+    if no_mundo:
+        nitido = camada.subsurface(area)
+    else:
+        nitido.blit(camada,(0,0),area)
+    if consumir_fundo and fundo is not None and nitidez >= 1:
+        borrado = fundo
     nevoa_distante(fundo if fundo is not None else nitido, borrado, pequeno, nivel, cor, nitidez)
-    inversa.fill((255,255,255))
-    inversa.blit(luz,(0,0),special_flags=pygame.BLEND_RGB_SUB)
+    luz = pygame.destino(luz)
+    if luz.escala == inversa.escala:
+        pygame.transform.invert(luz,inversa)
+    else:
+        inversa.fill((255,255,255))
+        inversa.blit(luz,(0,0),special_flags=pygame.BLEND_RGB_SUB)
     borrado.blit(inversa,(0,0),special_flags=pygame.BLEND_RGB_MULT)
     nitido.blit(luz,(0,0),special_flags=pygame.BLEND_RGB_MULT)
-    borrado.blit(nitido,(0,0),special_flags=pygame.BLEND_RGB_ADD)
-    camada.blit(borrado,(0,cy))
+    nitido.blit(borrado,(0,0),special_flags=pygame.BLEND_RGB_ADD)
+    if not no_mundo:
+        camada.blit(nitido,(0,cy))
 
 
 @lru_cache(maxsize=16)
@@ -162,11 +174,11 @@ def buffer_luz():
     return pygame.Surface((960,540))
 
 
-def compor_luz(luz,j,cx,cy,brilho_mata):
+def compor_luz(luz,j,cx,cy,brilho_mata, minimo=0):
     luz = pygame.destino(luz)
     from .visao import fontes
     from .ilustracao import claroes_suaves
-    luz.fill((0,0,0))
+    luz.fill((minimo,)*3)
     from .luzes_mundo import compor_zonas
     compor_zonas(luz,j,cx,cy)
     modo_suave = claroes_suaves()
@@ -507,7 +519,6 @@ def objeto(s,o,j,cx,tempo):
 def lume(s,l,cx,t,fagulha=None):
     x=l.rect.centerx-cx
     y=l.rect.bottom
-    golpe_lume(s,l,cx)
     desenhar_lume(s, l, x, y, t, fagulha)
     if l.batida_asa>0:
         # Dois rastros curtos marcam o impulso extra sem iluminar a tela inteira.
@@ -696,15 +707,13 @@ class Paisagem:
         globos(s,j,cx)
         nivel=min(3,self.brilho_mata+int(j.concluida))
         arte_fagulha.iluminar_cenario(s,j,cx)
-        compor_luz(self.luz,j,cx,cy,nivel)
+        # Todas as fontes compõem por máximo, inclusive o piso de luz distante.
+        minimo = round((38,52,70,87)[nivel]*intensidade)
+        compor_luz(self.luz,j,cx,cy,nivel,minimo)
         cor = TONS_PANORAMA[nivel]
         if abertura_bosque.ativa(j):
             cor = abertura_bosque.cor_distante(j,nivel,cor)
-        if intensidade:
-            # O fundo frio permanece escuro. Um mínimo de luz revela as silhuetas desenhadas.
-            escuro = round((38,52,70,87)[nivel]*intensidade)
-            self.luz.fill((escuro,escuro,escuro),special_flags=pygame.BLEND_RGB_MAX)
-        aplicar_nevoa(s,self.luz,cy,fundo_visao,nivel,cor,nitidez=1.)
+        aplicar_nevoa(s,self.luz,cy,fundo_visao,nivel,cor,nitidez=1.,consumir_fundo=True)
         if limite_arte and cx < limite_arte:
             arte_ilustrada.iluminar_pousos(s,j,cx,nivel,limite_arte)
         if primeiro is not None and abertura_bosque.em_cena(j) and "valvula" not in j.flags:
@@ -737,8 +746,7 @@ class Paisagem:
             projeteis(s,e,cx,j.lume,j.raio,j.visivel)
         if j.boss: sinais_encontro(s,j.boss,cx,prevista=travessia_fagulha.prever_marca(j))
         lume(s,j.lume,cx,t,j.fagulha_ativa)
-        if limite_arte:
-            abertura_bosque.desenhar_impacto(s,j,cx)
+        abertura_bosque.desenhar_impacto(s,j,cx)
         licao_vespera.desenhar(s,j,cx)
         self.ecos(s,j,cx)
         abertura_bosque.primeiro_plano(s,j,cx,cy)

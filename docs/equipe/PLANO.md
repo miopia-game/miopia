@@ -1,3 +1,7 @@
+## SPR-02 · Leitura de movimento e ataque
+
+Na próxima sessão com um jogador novo, observe se ele distingue no próprio combo a preparação, o golpe que acertou e a recuperação. Peça a Victor e Thierry que avaliem a resposta aos comandos na máquina da equipe. [Captura da partida](../midia/lume-combate-60fps.mp4)
+
 ## S41 · Lume e o elenco
 
 Na próxima sessão da equipe, mostre a chegada à Véspera com a câmera normal. Observe se a pessoa identifica quem controla, onde os pés tocam o galho e em que instante o golpe alcança o morcego. A leitura artística continua para a avaliação de Victor e Thierry. [Captura da partida](../midia/lume-no-bosque.mp4)
