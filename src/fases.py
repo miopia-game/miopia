@@ -6,6 +6,7 @@ import pygame
 from . import aula_sino, vento_taquaral
 
 CHAO = 442
+GALHO_DO_MORCEGO = (985, 240, 220)
 # O arquivo salvo guarda o identificador do marco; sua posição vem da planta atual.
 MEIO = 1848
 VIGIA_X = 1980
@@ -74,7 +75,7 @@ FASES = (
     Fase(
         "Bosque das Samambaias",
         ((0, 1380), (1480, LARGURA)),
-        ((310, 376, 130), (481, 312, 174), (680, 248, 127), (985, 240, 220),
+        ((310, 376, 130), (481, 312, 174), (680, 248, 127), GALHO_DO_MORCEGO,
          (1270, 372, 110), (321, 228, 109)),
         ((1160, 350, 110, 68),),
         (O("nira", "npc", 224, CHAO, "Nira"), O("vespera", "npc", 755, 248, "Véspera"),

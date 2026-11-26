@@ -147,12 +147,18 @@ def test_dica_local_do_cipo_e_do_primeiro_corte(app):
     assert (tecla_local, rotulo, x) == ("E", "Subir", 990)
     j.recolocar((1001, 240))
     assert pista(j)[:2] == ("E", "Descer")
+    morcego = next(e for e in j.inimigos if isinstance(e, MorcegoDoGalho))
+    morcego.rect.midbottom = (1040, 240)
+    morcego.estado = "investida"
+    assert pista(j) is None
 
     j.recolocar((1034, 240))
     j.lume.face = 1
-    morcego = next(e for e in j.inimigos if isinstance(e, MorcegoDoGalho))
     morcego.rect.midbottom = (1099, 240)
     morcego.estado, morcego.t = "recuo", 2.
+    j.lume.face = -1
+    assert pista(j)[:2] == ("", "Vire para o morcego")
+    j.lume.face = 1
     assert pista(j)[:2] == ("J", "Cortar")
     tecla(app, pygame.K_j)
     for _ in range(12):
@@ -193,3 +199,68 @@ def test_aviso_do_morcego_distingue_rasante_e_mergulho(app):
         assert pista(j)[0] == comando
     morcego.estado = "recuo"
     assert pista(j)[:2] == ("J", "Cortar")
+
+
+def test_mapa_espera_um_pouso_seguro_antes_ou_depois_do_morcego(app):
+    from src.abertura_bosque import pista
+    from src.fases import CHAO
+    from tests.test_s22_tutorial import esperar_licao
+
+    j = iniciar(app)
+    j.recolocar((945, 192))
+    passo(app)
+    assert not j.lume.chao
+    assert j.ensino_id != "mapa" and (not pista(j) or pista(j)[0] != "M")
+    j.recolocar((1183, 240))
+    passo(app)
+    assert j.lume.chao and j.ensino_id != "mapa"
+    j.flags.add("inimigo_875")
+    app.menu()
+    tecla(app, pygame.K_RETURN)
+    j = app.jogo
+    j.recolocar((1183, 240))
+    assert not any(e.ativo for e in j.inimigos if isinstance(e, MorcegoDoGalho))
+    passo(app)
+    esperar_licao(app, "mapa")
+    assert pista(j)[:2] == ("M", "Abrir mapa")
+    j.recolocar((944, 196))
+    passo(app)
+    assert not pista(j) or pista(j)[0] != "M"
+    j.recolocar((923, CHAO))
+    passo(app)
+    assert pista(j)[:2] == ("M", "Abrir mapa")
+
+
+def test_resposta_do_corte_exige_contato_e_termina_apos_o_abate(app):
+    from src import abertura_bosque
+
+    j = iniciar(app)
+    j.recolocar((1034, 240))
+    e = next(e for e in j.inimigos if isinstance(e, MorcegoDoGalho))
+    e.rect.midbottom = (1091, 240)
+    e.estado, e.t = "recuo", 2.
+    j.lume.face = -1
+    tecla(app, pygame.K_j)
+    for _ in range(24):
+        passo(app)
+    assert e.vida == e.max_vida and e.impacto_corte is None
+
+    j.lume.face = 1
+    e.rect.midbottom = (1081, 240)
+    e.estado, e.t, e.vida = "recuo", 2., 1
+    tecla(app, pygame.K_j)
+    for _ in range(16):
+        passo(app)
+        if not e.ativo:
+            break
+    assert not e.ativo and e.impacto_corte.lado == 1
+    camada = pygame.Surface((960, 540), pygame.SRCALPHA)
+    abertura_bosque.desenhar_impacto(camada, j, j.camera)
+    assert camada.get_bounding_rect().w > 0
+    for _ in range(48):
+        passo(app)
+    camada.fill((0, 0, 0, 0))
+    abertura_bosque.desenhar_impacto(camada, j, j.camera)
+    assert not camada.get_bounding_rect()
+    e.repor()
+    assert e.impacto_corte is None

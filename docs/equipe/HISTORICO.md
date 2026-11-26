@@ -1,3 +1,5 @@
+**26/11/2026 · Prévia do primeiro combate e dos pousos.** A pintura de casca e líquen passou a compor o terreno. O corte do espinho marca o contato e o morcego recolhe as asas ao cair. Nas duas versões, o piloto acertou os quatro golpes nos mesmos instantes. A prévia passou em 465 testes e 176 subcasos. A leitura por uma pessoa que ainda não jogou segue para o playtest da equipe. [Vídeo](../midia/bosque-em-jogo.mp4) · [Arte e regras do trecho](../arte/ESTUDO_DO_BOSQUE.md)
+
 **26/11/2026 · Cenário, esquiva e controles da S40.** A abertura recebeu a pintura da figueira e dicas para o rasante e o mergulho do primeiro morcego. Shift parado inicia a esquiva no chão. Na atualização de um perfil que usava G para pular, o salto manteve a tecla e a fagulha passou para uma tecla livre. [Mudanças e testes do Bosque](https://github.com/miopia-game/miopia/pull/3)
 
 **25/11/2026 · Revisão jogável no GitHub.** Integrados o Bosque revisado, as reações à fagulha e os movimentos do elenco. O [guia da revisão](GUIA_DE_CONTINUIDADE.md) reúne arquivos, vídeos, bibliotecas e o trabalho que passa à equipe.

@@ -623,13 +623,13 @@ class Paisagem:
             r = tr.rect
             apoio_inicial = (r.x,r.y,r.w) == primeiro and tr.tipo == "plataforma"
             if tr is abertura_bosque.BROTO:
-                arte_ilustrada.terreno(s,r.move(-round(cx),0),"broto")
+                arte_ilustrada.terreno(s,tr,cx)
             elif limite_arte and (
                     tr.tipo == "chao" and r.x < FASES[0].pisos[0][1]
                     or tr.tipo == "plataforma" and r.x < limite_arte
             ):
                 if recorte.colliderect(r.move(-round(cx),0).inflate(20,60)):
-                    arte_ilustrada.terreno(s,r.move(-round(cx),0),tr.tipo,apoio_inicial)
+                    arte_ilustrada.terreno(s,tr,cx)
             elif apoio_inicial:
                 arte_bosque.galho(s,r.move(-round(cx),0),i,False,raiz=True)
             else:
@@ -727,6 +727,8 @@ class Paisagem:
             projeteis(s,e,cx,j.lume,j.raio,j.visivel)
         if j.boss: sinais_encontro(s,j.boss,cx,prevista=travessia_fagulha.prever_marca(j))
         lume(s,j.lume,cx,t)
+        if limite_arte:
+            abertura_bosque.desenhar_impacto(s,j,cx)
         licao_vespera.desenhar(s,j,cx)
         self.ecos(s,j,cx)
         abertura_bosque.primeiro_plano(s,j,cx,cy)

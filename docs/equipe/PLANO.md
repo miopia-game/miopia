@@ -1,4 +1,4 @@
-A próxima rodada da equipe é observar como uma pessoa que ainda não jogou lê o cenário e enfrenta o primeiro morcego. O roteiro indica o que observar e traz as duas gravações da abertura. [Roteiro de playtest](GUIA_DE_CONTINUIDADE.md#assumindo-a-próxima-rodada)
+A próxima rodada da equipe é observar uma pessoa que ainda não jogou. Peça que atravesse o Bosque e vença o primeiro morcego. Depois da tentativa, pergunte onde ela achou que podia pousar e qual golpe percebeu acertar. Registre o momento no vídeo para orientar o ajuste seguinte. [Roteiro de playtest](GUIA_DE_CONTINUIDADE.md#assumindo-a-próxima-rodada)
 
 # Próximos sprints a partir do S36
 

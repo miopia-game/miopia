@@ -153,8 +153,19 @@ def corpo(s,e,cx,t):
 
 
 def inimigo(s,e,cx,lume,t):
-    if e.ativo and -105 < e.rect.centerx-cx < 1065:
+    if not -105 < e.rect.centerx-cx < 1065:
+        return
+    if e.ativo:
         corpo(s,e,cx,t)
+        return
+    marca = getattr(e, "impacto_corte", None)
+    if marca and marca.abate and 0 <= t-marca.inicio < .27:
+        p = (t-marca.inicio)/.27
+        # Recolhe as asas e perde altura. A pose gira inteira, sem deformar o corpo.
+        pose = fauna.quadro("morcego", "preparacao", 69, 45, e.frente, round(8+24*p)).copy()
+        pose.set_alpha(round(225*(1-p)))
+        centro = (round(e.rect.centerx-cx+marca.lado*16*p), round(e.rect.centery+26*p*p))
+        s.blit(pose, pose.get_rect(center=centro))
 
 def aviso(s,e,cx):
     if e.estado in {"aviso", "aviso_caca"}:

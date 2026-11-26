@@ -35,6 +35,27 @@ def test_borda_do_primeiro_galho_aparece_fora_do_halo(app):
     assert app.tela.get_at(casca) != com_casca
 
 
+def test_liquen_e_alto_contraste_acompanham_a_superficie_do_galho(app):
+    from src import arte_ilustrada, ilustracao
+    from src.fases import GALHO_DO_MORCEGO
+
+    j = iniciar(app)
+    x, y, largura = GALHO_DO_MORCEGO
+    camera = x - 100
+    faixa = pygame.Surface((960, 540), pygame.SRCALPHA)
+    arte_ilustrada.iluminar_pousos(faixa, j, camera, 1, 1650)
+    cores = {tuple(faixa.get_at((100+dx, y))) for dx in range(largura)}
+    assert len(cores) > 8
+    for ponta in (100, 100+largura-9):
+        assert faixa.subsurface((ponta,y-2,9,8)).get_bounding_rect()
+
+    with ilustracao.estilo({"contraste": True}):
+        faixa.fill((0, 0, 0, 0))
+        arte_ilustrada.iluminar_pousos(faixa, j, camera, 1, 1650)
+    borda = [faixa.get_at((100+dx, y)) for dx in range(largura)]
+    assert all(cor == borda[0] for cor in borda) and borda[0].r > 200 and borda[0].a == 255
+
+
 def test_nevoa_preserva_detalhe_do_fundo_e_esconde_o_terreno(app):
     from src.paisagem import aplicar_nevoa
 

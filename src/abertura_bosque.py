@@ -7,7 +7,8 @@ import pygame
 from .avisos import pista_interacao
 from .fases import Terreno
 from .hud_reservas import desenhar as reservas
-from .ilustracao import OSSO, PALIDO, dica_local, imagem, placa, texto
+from .ilustracao import OSSO, PALIDO, alto_contraste, claroes_suaves, dica_local, imagem, placa, texto
+from .tutorial import pouso_para_mapa
 from .travessia_fagulha import (CHEGADA, CORTE_PRATICADO, CUSTO, FORA_DA_MARCA,
                                 MorcegoDoGalho, na_borda)
 
@@ -76,21 +77,30 @@ def broto_aceso(j):
                              for v in j.vestigios)
 
 
-def pista_combate(j):
+def morcego_proximo(j):
     lume = j.lume
-    if CORTE_PRATICADO in j.tutorial or lume.arma.tipo or lume.impacto > 0 or lume.em_corda:
-        return None
-    area = lume.arma.area_corte_rapido(lume)
     for e in j.inimigos:
-        if not isinstance(e, MorcegoDoGalho) or not e.ativo or not j.visivel(e.rect.center):
-            continue
-        if e.estado == "aviso":
-            if (lume.chao and abs(e.rect.centerx - lume.rect.centerx) <= 175
-                    and abs(e.rect.centery - lume.rect.centery) < 100):
-                tecla, verbo = ("S", "Abaixar") if e.tecnica == "rasante" else ("A / D", "Sair do mergulho")
-                return tecla, verbo, lume.rect.midtop
-        elif e.estado not in ("poleiro", "investida") and area.colliderect(e.rect):
-            return "J", "Cortar", lume.rect.midtop
+        if (isinstance(e, MorcegoDoGalho) and e.ativo and e.estado != "poleiro"
+                and abs(e.rect.centerx - lume.rect.centerx) <= 175
+                and abs(e.rect.centery - lume.rect.centery) < 100 and j.visivel(e.rect.center)):
+            return e
+    return None
+
+
+def pista_combate(j, morcego=None):
+    lume = j.lume
+    e = morcego or morcego_proximo(j)
+    if e is None or lume.arma.tipo or lume.impacto > 0 or lume.em_corda:
+        return None
+    if e.estado == "aviso" and lume.chao:
+        tecla, verbo = ("S", "Abaixar") if e.tecnica == "rasante" else ("A / D", "Sair do mergulho")
+        return tecla, verbo, lume.rect.midtop
+    if e.estado in ("aviso", "investida") or CORTE_PRATICADO in j.tutorial:
+        return None
+    if lume.arma.area_corte_rapido(lume).colliderect(e.rect):
+        return "J", "Cortar", lume.rect.midtop
+    if lume.chao and lume.arma.area_corte_rapido(lume, -lume.face).colliderect(e.rect):
+        return "", "Vire para o morcego", lume.rect.midtop
     return None
 
 
@@ -119,9 +129,9 @@ def pista(j):
         if lume.face < 0:
             return "", "Vire para a marca", ponto
         return None
-    combate = pista_combate(j)
-    if combate:
-        return combate
+    morcego = morcego_proximo(j)
+    if morcego:
+        return pista_combate(j, morcego)
 
     interacao = j.interacao
     if interacao and ("reserva" not in interacao or min(lume.vida, lume.energia) < 100):
@@ -141,11 +151,45 @@ def pista(j):
         return "K", "Revelar o broto", ponto
     if 313 <= x < 475 and not lume.chao and lume.asa_disponivel and "praticado_salto_duplo" not in j.tutorial:
         return "Espaço", "Saltar de novo", ponto
-    if 920 <= x < 1040 and j.ensino_id == "mapa" and j.ensino_ate > j.tempo and "praticado_mapa" not in j.tutorial:
+    if (getattr(j, "ensino_id", "") == "mapa" and j.ensino_ate > j.tempo
+            and "praticado_mapa" not in j.tutorial and pouso_para_mapa(j)):
         return "M", "Abrir mapa", ponto
     if j.aviso_t > 0 and j.aviso.startswith("Mochila de ervas recolhida."):
         return "", "Leve a mochila a Mimo", ponto
     return None
+
+
+def desenhar_impacto(s, j, cx):
+    """Lascas da luz de Lume partem do contato real entre o corte e o morcego."""
+    for alvo in j.inimigos:
+        if not isinstance(alvo, MorcegoDoGalho) or alvo.impacto_corte is None:
+            continue
+        marca = alvo.impacto_corte
+        idade = j.tempo - marca.inicio
+        duracao = .48 if marca.abate else .30
+        if not 0 <= idade < duracao or not j.visivel(marca.ponto, 18):
+            continue
+        x, y = marca.ponto
+        x -= cx
+        lado = marca.lado
+        suave = claroes_suaves()
+        contraste = alto_contraste()
+        tinta = (248, 224, 163) if contraste else (218, 166, 103)
+        # O núcleo fica no contato. Só o pó do espinho acompanha a direção do golpe.
+        if idade < .10:
+            raio = max(2, round((1 - idade/.10) * (7 if suave else 13)))
+            nucleo = [(x-lado*raio, y+2), (x-2, y-2), (x+lado*raio*.5, y-raio),
+                      (x+lado*3, y-2), (x+lado*raio, y+1), (x+1, y+3), (x-2, y+raio*.55)]
+            pygame.draw.polygon(s, tinta if suave else OSSO, nucleo)
+        velocidades = ((68, -65), (99, -26), (48, 22), (-34, -45), (76, -90), (-43, 8))
+        quantidade = 3 if suave else 6 if marca.abate else 4
+        for vx, vy in velocidades[:quantidade]:
+            px = round(x + lado*vx*idade)
+            py = round(y + vy*idade + 96*idade*idade)
+            comprimento = max(1, round((1-idade/duracao)*6))
+            pontos = [(px-lado*comprimento, py+2), (px, py-1), (px+lado*2, py), (px, py+2)]
+            pygame.draw.polygon(s, (58, 40, 37), pontos)
+            pygame.draw.line(s, tinta, pontos[0], pontos[1], 2 if contraste else 1)
 
 
 def hud(s, j):

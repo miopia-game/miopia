@@ -7,7 +7,7 @@ import pygame
 from .visao import DURACAO, Vestigio
 from .combate import Arma, Inimigo
 from .taticas import Habitante
-from .travessia_fagulha import CORTE_PRATICADO, ORIGEM_MORCEGO, MorcegoDoGalho, avisar_pouso, lancar, reagir
+from .travessia_fagulha import CORTE_PRATICADO, ORIGEM_MORCEGO, ImpactoDoCorte, MorcegoDoGalho, avisar_pouso, lancar, reagir
 from .fases import VIGIA_X, TRANCA_X
 from .fases import (ARENA, CHAO, FIM_ARENA, FALAS, FASES, MEIO, RAIZ, SAIDA,
                     RAMAIS, Objeto, Terreno, terrenos)
@@ -1247,9 +1247,11 @@ class Jornada:
             resultado = e.acertar(lume.arma, golpe, clarao, lume)
             if e.vida < vida_antes and golpe and lume.arma.serie == e.ultimo_corte:
                 self.acertou_combo()
-                if (self.modo == "historia" and isinstance(e, MorcegoDoGalho) and not clarao
-                        and lume.arma.tipo in ("corte1", "corte2", "corte3", "avanco", "retorno", "queda")):
-                    self.tutorial.add(CORTE_PRATICADO)
+                if self.modo == "historia" and isinstance(e, MorcegoDoGalho) and not clarao:
+                    e.impacto_corte = ImpactoDoCorte(self.tempo, golpe.clip(e.rect).center,
+                                                    lume.arma.face, not e.ativo)
+                    if lume.arma.tipo in ("corte1", "corte2", "corte3", "avanco", "retorno", "queda"):
+                        self.tutorial.add(CORTE_PRATICADO)
             if resultado:
                 self.eventos.append(resultado)
                 if (lume.arma.tipo == "queda" and golpe and lume.arma.serie == e.ultimo_corte

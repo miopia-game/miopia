@@ -181,12 +181,21 @@ def desenhar(s,j,cx):
     sprite(s,"hud_fagulha",x,y+10,20,20)
 
 
+@dataclass(frozen=True)
+class ImpactoDoCorte:
+    inicio: float
+    ponto: tuple[float, float]
+    lado: int
+    abate: bool
+
+
 class MorcegoDoGalho(Habitante):
     def __init__(self, dificuldade):
         super().__init__("morcego", 1056, 293, dificuldade)
 
     def repor(self):
         super().repor()
+        self.impacto_corte = None
         self.estado = "poleiro"
         self.t = 0.
 

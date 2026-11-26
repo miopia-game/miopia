@@ -2,6 +2,8 @@
 from .narrativa import ITENS
 from . import vento_taquaral
 from . import galeria_taquaral
+from .fases import CHAO, GALHO_DO_MORCEGO
+from .travessia_fagulha import ORIGEM_MORCEGO
 
 RECUPERAVEIS = {'primeiros_passos', 'salto'}
 
@@ -31,6 +33,18 @@ CURTAS={
 
 def praticado(j):
     return 'praticado_'+getattr(j,'ensino_id','') in j.tutorial
+
+
+def pouso_para_mapa(j):
+    if not j.lume.chao or j.lume.em_corda:
+        return False
+    x, y = j.lume.rect.midbottom
+    if 920 <= x < 1040 and abs(y - CHAO) < 2:
+        return True
+    # A ponta de saída do galho é uma pausa depois do encontro.
+    inicio, altura, largura = GALHO_DO_MORCEGO
+    ponta = inicio + largura
+    return ponta-40 <= x < ponta and abs(y-altura) < 2 and f"inimigo_{ORIGEM_MORCEGO}" in j.flags
 
 
 def confirmar(j, ident):
@@ -101,7 +115,7 @@ def atualizar(j,cmd):
     dica('salto_duplo',bosque and 269<=x<610,'Outra batida de asas','Solte Espaço depois do salto e aperte novamente no ar. A segunda batida de asas permite alcançar galhos mais altos.')
     dica('bolsa',bosque and 395<x<665,'Use a bolsa','Q escolhe um item. F usa o item equipado. O Bálsamo de Mimo restaura até 35 de vida e 35 de brilho. Se as duas barras estiverem cheias, você guarda a carga.')
     dica('combate',bosque and 635<x<920,'Cortes e respostas','J faz cortes rápidos. L faz um golpe pesado. Alterne J, L, J; use S + J no ar para atacar para baixo e rebater. Shift + direção + J avança. Observe o aviso antes de se aproximar.')
-    dica('mapa',bosque and 920<=x<1040,'Abra o mapa','M ou Tab abre o mapa e os pedidos. Pressione Esquerda para consultar os controles. M fecha e devolve Lume à trilha.')
+    dica('mapa',bosque and pouso_para_mapa(j),'Abra o mapa','M ou Tab abre o mapa e os pedidos. Pressione Esquerda para consultar os controles. M fecha e devolve Lume à trilha.')
     dica('deslize',bosque and 1040<=x<1260,'Por baixo das raízes','S agacha. Shift + direção desliza pelos vãos baixos. Solte S antes de tentar saltar. Terra firme não permite descer; grades e galhos elevados permitem.')
     dica('planagem',bosque and (1260<=x<1380 or 2700<x<3200),'Sustente as asas','Salte da borda e segure Espaço enquanto cai para planar continuamente. Soltar Espaço acelera a descida; S também encerra o planeio.')
     dica('luz_combate',bosque and 1390<x<1530,'Luz contra a emboscada','K ilumina uma área ampla e atrapalha por instantes a visão dos inimigos no escuro. Ctrl + J / L executa golpes de luz, mais fortes e com custo de brilho. Ataques normais são gratuitos.')

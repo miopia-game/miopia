@@ -137,8 +137,8 @@ class Arma:
             return pygame.FRect(lume.rect.centerx - 28, lume.rect.bottom - 7, 56, perfil.alcance)
         return self.area_corte(lume, perfil, self.face)
 
-    def area_corte_rapido(self, lume):
-        return self.area_corte(lume, ARMAS[self.equipamento]["corte1"], lume.face)
+    def area_corte_rapido(self, lume, face=None):
+        return self.area_corte(lume, ARMAS[self.equipamento]["corte1"], lume.face if face is None else face)
 
     @staticmethod
     def area_corte(lume, perfil, face):

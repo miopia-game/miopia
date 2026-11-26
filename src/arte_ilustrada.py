@@ -4,7 +4,7 @@ from math import sin
 
 import pygame
 
-from .fases import CHAO
+from .fases import CHAO, FASES
 from .ilustracao import alto_contraste, imagem, original, sprite
 
 BORDA = (238, 184, 112)
@@ -56,30 +56,54 @@ def cipo(s, x, pe, tempo):
     pygame.draw.arc(s,(105,112,61),(x-5,pe-15,13,14),.4,3.8,2)
 
 
-def _borda(s, r, cor=BORDA):
-    esquerda, direita = r.x+1, r.right-2
-    pygame.draw.line(s, SOMBRA, (esquerda, r.y-1), (direita, r.y-1), 3)
-    pygame.draw.line(s, cor, (esquerda, r.y), (direita, r.y), 2+int(alto_contraste()))
+def _modelo_apoio(t):
+    r = t.rect
+    if (r.x, r.y, r.w) == FASES[0].plataformas[0]:
+        return "raiz", r.w, False
+    if t.tipo == "apoio":
+        return "broto", r.w, False
+    return "galho", r.w, (r.x // 110) % 2 == 0
 
 
-def terreno(s, r, tipo, primeiro=False):
-    if tipo == "chao":
-        _solo(s,r)
-    elif primeiro:
-        s.blit(imagem("pintado_raiz.png", r.w+24, 88), (r.x-18,r.y-20))
-        _borda(s,r)
+@lru_cache(maxsize=32)
+def _pintura(tipo, largura, espelho):
+    if tipo == "raiz":
+        w, h = round(largura*1.23), 86
+        dx, dy = largura-w, -18
+    elif tipo == "broto":
+        w, h = largura+3, max(22, round(largura*.32))
+        dx, dy = -2, -round(h*.43)
     else:
-        broto = tipo == "broto"
-        nome = "pintado_broto.png" if broto else "pintado_galho.png"
-        altura = max(21, min(38, round(r.w*.22)))
-        s.blit(imagem(nome, r.w+8, altura), (r.x-4,r.y-(7 if broto else 2)))
-        _borda(s,r,(239, 211, 123) if broto else BORDA)
+        w, h = largura+4, max(29, min(62, round(largura*.30)))
+        dx, dy = -2, -round(h*.055)
+    return imagem("pintado_" + tipo + ".png", w, h, espelho), dx, dy
+
+
+@lru_cache(maxsize=32)
+def _musgo(tipo, largura, espelho):
+    arte, dx, dy = _pintura(tipo, largura, espelho)
+    topo = max(0, -dy-3)
+    faixa = arte.subsurface((0, topo, arte.get_width(), 12)).copy()
+    # Recupera a luz nas folhas da borda e deixa a casca voltar à sombra.
+    for y in range(6, 12):
+        faixa.fill((255, 255, 255, round(255*(11-y)/6)), (0,y,faixa.get_width(),1),
+                   special_flags=pygame.BLEND_RGBA_MULT)
+    return faixa, dx, topo+dy
+
+
+def terreno(s, t, camera):
+    r = t.rect.move(-round(camera), 0)
+    if t.tipo == "chao":
+        _solo(s, r)
+        return
+    arte, dx, dy = _pintura(*_modelo_apoio(t))
+    s.blit(arte, (r.x+dx, r.y+dy))
 
 
 @lru_cache(maxsize=2)
 def _azulejo(espelho):
-    faixa = imagem("pintado_solo.png", 248, 66, espelho)
-    return faixa.subsurface((12,0,224,66)).copy()
+    faixa = imagem("pintado_solo.png", 248, 98, espelho)
+    return faixa.subsurface((12,3,224,95)).copy()
 
 
 def _solo(s, r):
@@ -90,8 +114,9 @@ def _solo(s, r):
     for n in range((area.left-r.left)//224,(area.right-1-r.left)//224+1):
         x = r.x+n*224
         largura = min(224,r.right-x)
-        s.blit(_azulejo(n%2==0),(x,r.y),(0,0,largura,66))
-    _borda(s,pygame.Rect(area.x,r.y,area.w,area.h))
+        s.blit(_azulejo(n%2==0),(x,r.y),(0,0,largura,95))
+    if alto_contraste():
+        pygame.draw.line(s, BORDA, (area.left, r.y), (area.right-1, r.y), 3)
 
 
 def iluminar_pousos(s, j, cx, nivel, fim):
@@ -102,13 +127,14 @@ def iluminar_pousos(s, j, cx, nivel, fim):
         r = t.rect.move(-round(cx),0)
         if not s.get_clip().colliderect(r):
             continue
-        perto = min(1., abs(t.rect.centerx-j.lume.rect.centerx)/480)
-        fator = max(.44, 1.-perto*.56) + nivel*.05
-        tom = tuple(round(c*min(1.,fator)) for c in BORDA)
-        x, y = r.x, r.y
-        pontos = [(x+3,y+1),(x+max(7,r.w//8),y),(r.right-8,y),(r.right-3,y+1)]
-        pygame.draw.lines(s,SOMBRA,False,pontos,3)
-        pygame.draw.aalines(s,tom,False,pontos)
+        faixa, dx, dy = _musgo(*_modelo_apoio(t))
+        distancia = min(1., abs(t.rect.centerx-j.lume.rect.centerx)/480)
+        faixa.set_alpha(round(193 - 112*distancia + 8*nivel))
+        s.blit(faixa, (r.x+dx, r.y+dy))
+        if alto_contraste():
+            esquerda, direita = (r.left, r.y), (r.right-1, r.y)
+            pygame.draw.line(s, SOMBRA, esquerda, direita, 5)
+            pygame.draw.line(s, (244, 225, 166), esquerda, direita, 3)
 
 
 def objeto(s,o,j,x,tempo):
