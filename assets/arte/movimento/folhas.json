@@ -1,0 +1,122 @@
+{
+  "lume-andar": [
+    144,
+    135,
+    35
+  ],
+  "lume-voo": [
+    144,
+    118,
+    35
+  ],
+  "lume-planar": [
+    144,
+    113,
+    35
+  ],
+  "morcego": [
+    144,
+    97,
+    35
+  ],
+  "asa-fendida": [
+    144,
+    131,
+    35
+  ],
+  "vespa": [
+    144,
+    120,
+    35
+  ],
+  "vespa-impulso": [
+    144,
+    87,
+    35
+  ],
+  "coruja": [
+    144,
+    141,
+    35
+  ],
+  "coruja-impulso": [
+    144,
+    132,
+    35
+  ],
+  "aranha": [
+    144,
+    94,
+    35
+  ],
+  "aranha-impulso": [
+    144,
+    91,
+    35
+  ],
+  "carabideo": [
+    144,
+    82,
+    35
+  ],
+  "carabideo-impulso": [
+    144,
+    89,
+    35
+  ],
+  "sombra": [
+    144,
+    116,
+    35
+  ],
+  "sombra-impulso": [
+    144,
+    94,
+    35
+  ],
+  "caruncho": [
+    144,
+    97,
+    35
+  ],
+  "caruncho-impulso": [
+    144,
+    81,
+    35
+  ],
+  "casco-oco": [
+    144,
+    102,
+    35
+  ],
+  "casco-oco-impulso": [
+    144,
+    109,
+    35
+  ],
+  "tecela": [
+    144,
+    118,
+    35
+  ],
+  "cobra": [
+    144,
+    77,
+    35
+  ],
+  "cobra-impulso": [
+    144,
+    66,
+    35
+  ],
+  "cobra-dos-bercos": [
+    144,
+    106,
+    35
+  ],
+  "cobra-dos-bercos-impulso": [
+    144,
+    103,
+    35
+  ]
+}

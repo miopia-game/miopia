@@ -1,0 +1,128 @@
+{
+  "versao": 1,
+  "creditos": "README.md",
+  "arquivos": [
+    {
+      "caminho": "README.md",
+      "sha256": "3c4f769fb12c1606c99452760a19946662b0920bed41432cfc912965bc92c42a",
+      "origem": "Créditos e documentação do pacote acadêmico desta versão.",
+      "prova": "",
+      "decisoes": {
+        "jogo": "pendente",
+        "loja": "pendente",
+        "github": "pendente"
+      },
+      "avisos": []
+    },
+    {
+      "caminho": "capturas/antes.png",
+      "sha256": "640a2fafd221fb30ca77e2531c624669bcfc2a9ec2f57aaf755c920a2e51a3c4",
+      "origem": "Captura idêntica à 03_partida.png da entrega A3 original.",
+      "prova": "",
+      "decisoes": {
+        "jogo": "pendente",
+        "loja": "pendente",
+        "github": "pendente"
+      },
+      "avisos": []
+    },
+    {
+      "caminho": "src/ambiental.py",
+      "sha256": "595445061b303e7c1c4bf1282062b808e140c7f412e64e351ba1ec9385d3bf4b",
+      "origem": "Arquivo de texto e código idêntico ao da entrega acadêmica anterior.",
+      "prova": "",
+      "decisoes": {
+        "jogo": "pendente",
+        "loja": "pendente",
+        "github": "pendente"
+      },
+      "avisos": []
+    },
+    {
+      "caminho": "assets/arte/lume_0.png",
+      "sha256": "88306ffa0eb0705d5f8c0a744966515a3be4915a642e150dca5e44934fee5857",
+      "origem": "Recorte de Lume da folha indicada em docs/direcao-de-arte.md; revisão dos insumos visuais pendente.",
+      "prova": "",
+      "decisoes": {
+        "jogo": "pendente",
+        "loja": "pendente",
+        "github": "pendente"
+      },
+      "avisos": []
+    },
+    {
+      "caminho": "assets/arte/beiral_1.png",
+      "sha256": "81bbc667e87335fe8aa312cd3adddfe8a6ea46cc9da75cf45bdb825454cb6e56",
+      "origem": "Recorte do beiral da margem descrito em docs/arte-da-rodada.md.",
+      "prova": "",
+      "decisoes": {
+        "jogo": "pendente",
+        "loja": "pendente",
+        "github": "pendente"
+      },
+      "avisos": []
+    },
+    {
+      "caminho": "assets/chefes/asa-fendida.png",
+      "sha256": "3fde79b48a263d4d06c7a116a76c90561df9bc3ec3f58adecff00a5487a0073a",
+      "origem": "Folha reproduzida pelo gerador tools/desenhar_guardioes.py; titularidade do gerador a confirmar.",
+      "prova": "",
+      "decisoes": {
+        "jogo": "pendente",
+        "loja": "pendente",
+        "github": "pendente"
+      },
+      "avisos": []
+    },
+    {
+      "caminho": "assets/sons/fio_disparo.wav",
+      "sha256": "4b8e66f0ad53097a14962d6e20d1217ebc917ade245576252174ba6eb7bd8b75",
+      "origem": "Efeito reproduzido pelo gerador tools/gerar_audio.py; apurar autorização do código usado.",
+      "prova": "",
+      "decisoes": {
+        "jogo": "pendente",
+        "loja": "pendente",
+        "github": "pendente"
+      },
+      "avisos": []
+    },
+    {
+      "caminho": "assets/fontes/Nunito-Regular.ttf",
+      "sha256": "056899e6fad68f3ba400ea1ae9d1a156e52c6839fca08bf141372e2821f2adb5",
+      "origem": "Fonte de interface Nunito com aviso incluído no pacote.",
+      "prova": "",
+      "decisoes": {
+        "jogo": "pendente",
+        "loja": "pendente",
+        "github": "pendente"
+      },
+      "avisos": [
+        "assets/fontes/OFL.txt"
+      ]
+    },
+    {
+      "caminho": "assets/fontes/OFL.txt",
+      "sha256": "580df76c95a1ec5ab878ceb25bb3d85c6a076804e9c970c8c6972aea775fdf65",
+      "origem": "Aviso distribuído com Nunito na instalação acadêmica.",
+      "prova": "",
+      "decisoes": {
+        "jogo": "pendente",
+        "loja": "pendente",
+        "github": "pendente"
+      },
+      "avisos": []
+    },
+    {
+      "caminho": "runtime/lib64/python3.14/site-packages/pygame/freesansbold.ttf",
+      "sha256": "bf9251269f11e4b35582a99376096deee3d0c4973a459cbd97b0bebc01f440ad",
+      "origem": "Recurso embutido na wheel do pygame-ce; revisão individual da origem e dos termos pendente.",
+      "prova": "",
+      "decisoes": {
+        "jogo": "pendente",
+        "loja": "pendente",
+        "github": "pendente"
+      },
+      "avisos": []
+    }
+  ]
+}

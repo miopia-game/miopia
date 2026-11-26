@@ -22,6 +22,7 @@ ACOES = {
     "usar": ("Usar item", pg.K_f, ()),
     "arma": ("Trocar arma", pg.K_v, ()),
     "caderno": ("Abrir registro", pg.K_c, ()),
+    "fagulha": ("Lançar fagulha", pg.K_g, ()),
 }
 PADRAO = {acao: info[1] for acao, info in ACOES.items()}
 FIXAS = {pg.K_ESCAPE, pg.K_RETURN, pg.K_KP_ENTER, pg.K_UP, pg.K_p, pg.K_r, pg.K_F10, pg.K_F11}
@@ -55,10 +56,10 @@ def carregar(dados):
 
 
 ROTULOS_PAD = dict(zip(ACOES, ("Esq.", "Dir.", "Baixo", "A", "B", "X", "Y", "RB",
-                              "RT", "LB", "View", "L3", "LT", "R3", "Cima")))
+                              "RT", "LB", "View", "L3", "LT", "R3", "Cima", "LB + RB")))
 MARCAS = {"A / D": ("esquerda", "direita"), "A D": ("esquerda", "direita"),
           "M / Tab": ("mapa",), "M ou Tab": ("mapa",), "Shift": ("deslize",),
-          "Ctrl": ("carga",), "Espaço": ("salto",),
+          "Ctrl": ("carga",), "Espaço": ("salto",), "G": ("fagulha",),
           **{chave: (acao,) for chave, acao in zip("SJL KEMQFVC".replace(" ", ""),
                 ("baixo","golpe","forte","luz","interagir","mapa","bolsa","usar","arma","caderno"))}}
 EXPRESSAO = re.compile(r"(?<!\w)(" + "|".join(re.escape(s) for s in MARCAS) + r")(?!\w)")

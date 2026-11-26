@@ -85,7 +85,7 @@ def ponto_salto(origem, destino, alvo_y, p):
             oy + (alvo_y - oy) * p - 155 * sin(pi * p))
 
 
-def atualizar(e, dt, corpo, direcao, eventos):
+def atualizar(e, dt, corpo, direcao, eventos, fagulha=None):
     from .chefes import aproximar
     _empurrar(e, dt, corpo, direcao, eventos)
     e.alto_t = e.alto_t + dt if corpo.bottom < e.chao - 48 else max(0., e.alto_t - dt * 2)
@@ -144,11 +144,20 @@ def atualizar(e, dt, corpo, direcao, eventos):
             e._mudar('investida', 2.)
     elif e.estado == 'investida':
         e.y = e.chao - 35.
+        anterior = e.x
         e.x = aproximar(e.x, e.destino, dt * (590 if e.fase == 2 else 510))
-        _tabua(e, eventos)
-        e._colisao(corpo, pygame.FRect(e.x - 42, e.chao - 53, 84, 52), eventos)
-        if e.tempo <= 0 or abs(e.x - e.destino) < .01:
-            _terminar(e, eventos)
+        _tabua(e,eventos)
+        e._colisao(corpo,pygame.FRect(e.x-42,e.chao-53,84,52),eventos)
+        marca = e.alvo_fagulha(fagulha)
+        if marca and min(anterior,e.x) <= marca[0] <= max(anterior,e.x):
+            e.ultima_fagulha = fagulha
+            e.reacao_fagulha = "seiva"
+            e.combo_restante = 0
+            e._abrir(2.8,eventos)
+            eventos.append("casco_presaseiva")
+            return
+        if e.tempo <= 0 or abs(e.x-e.destino)<.01:
+            _terminar(e,eventos)
     elif e.estado == 'varrida_casco':
         area = pygame.FRect(0, e.chao - 72, 113, 71)
         area.left = e.x if e.frente > 0 else e.x - 113

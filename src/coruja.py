@@ -54,8 +54,17 @@ def preparar(e, corpo, eventos, continuacao=False):
     eventos.append('aviso')
 
 
-def atualizar(e, dt, corpo, ruido, eventos):
+def atualizar(e, dt, corpo, ruido, eventos, fagulha=None):
     from .chefes import Fio, aproximar
+    if (e.alvo_fagulha(fagulha) and not e.sino_soou
+            and not (e.tecnica == "sino" and e.estado in ("aviso","investida"))):
+        e.ultima_fagulha = fagulha
+        e.reacao_fagulha = "sino"
+        e.sino_soou = True
+        e.onda = 1.
+        if e.estado == "busca":
+            e.tempo = min(e.tempo,.15)
+        eventos.extend(("sino","sino_fagulha"))
     if ruido > .05:
         e.x_ouvido = corpo.centerx
         e.ouvido_corpo = corpo.copy()

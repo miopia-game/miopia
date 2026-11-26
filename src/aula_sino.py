@@ -52,19 +52,22 @@ def orientar(j):
     chegando = x <= 2410 or (x < 2576 and y < 355)
     if chegando and PASSARELA not in j.flags:
         return _alvo(j, "grade_escuta", "Grade da escuta", "Desça pela grade",
-                     *ENTRADA, "Suba pelos galhos após o marco. Sobre a trama marcada, use S + Espaço.")
+                     *ENTRADA, "A trama marcada leva ao sino soterrado.",
+                     acesso="suba aos galhos após o marco. Na grade, use S + Espaço.")
     if ECO not in j.flags or not dentro(j):
         return None
     if PASSARELA in j.flags and y < 485:
         return None
     if x < 2664 and y < 600:
         return _alvo(j, "fundo_escuta", "Grade do fundo", "Siga o eco para baixo",
-                     *PATAMAR, "Desça do sino à próxima grade. S + Espaço leva ao piso baixo entre as raízes.")
+                     *PATAMAR, "O eco aponta para o piso baixo entre as raízes.",
+                     acesso="siga até a próxima grade abaixo do sino e use S + Espaço.")
     if y < 460:
         return _alvo(j, PASSARELA, "Trava da passarela", "Baixe a passarela",
                      *SAIDA, "Use E para ligar a saída ao sino. A passagem mantém-se aberta.")
     return _alvo(j, "saida_escuta", "Saída da câmara", "Suba pelos degraus à direita",
-                 *SAIDA, "Salte pelos degraus marcados até a grade alta. A trava da passarela fica no topo.")
+                 *SAIDA, "A trava da passarela fica no topo.",
+                 acesso="salte pelos degraus marcados à direita até a grade alta.")
 
 
 def pisar(j):

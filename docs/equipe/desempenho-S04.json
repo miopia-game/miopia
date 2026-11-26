@@ -1,0 +1,41 @@
+{
+  "metodo": "CPU, SDL dummy, 20 quadros de aquecimento; sem flip ou espera do monitor.",
+  "cenas": {
+    "bosque": {
+      "simulacao": {
+        "mediana_ms": 0.689,
+        "p95_ms": 1.162,
+        "max_ms": 2.62
+      },
+      "desenho": {
+        "mediana_ms": 8.286,
+        "p95_ms": 12.564,
+        "max_ms": 13.808
+      }
+    },
+    "clarao": {
+      "simulacao": {
+        "mediana_ms": 0.59,
+        "p95_ms": 0.921,
+        "max_ms": 1.496
+      },
+      "desenho": {
+        "mediana_ms": 8.024,
+        "p95_ms": 11.035,
+        "max_ms": 12.783
+      }
+    },
+    "subsolo": {
+      "simulacao": {
+        "mediana_ms": 1.085,
+        "p95_ms": 3.249,
+        "max_ms": 6.904
+      },
+      "desenho": {
+        "mediana_ms": 10.254,
+        "p95_ms": 16.414,
+        "max_ms": 17.844
+      }
+    }
+  }
+}

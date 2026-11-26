@@ -29,6 +29,9 @@ def fontes(j, *, vestigios=True):
     from .resgates import fontes as fontes_vivas
     from .luzes_mundo import fontes as globos
     luzes=[(*j.lume.rect.center,j.raio)]
+    if j.fagulha_ativa:
+        f = j.fagulha_ativa
+        luzes.append((*f.posicao(j.tempo),f.raio(j.tempo)))
     if vestigios:
         luzes.extend((v.x,v.y,v.raio(j.tempo)) for v in j.vestigios)
     luzes.extend(fontes_vivas(j))

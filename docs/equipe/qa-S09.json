@@ -1,0 +1,54 @@
+{
+  "rodada": "S09",
+  "data": "2026-11-13",
+  "fonte": {
+    "testes": 238,
+    "subcasos": 166,
+    "segundos": 39.64,
+    "ultima_verificacao_save": "4 testes passaram após ampliar entrada normal de save antigo",
+    "observacao_contagem": "237 testes/166 subcasos na suíte completa; teste de exportação adicional aprovado isoladamente. Suíte final da extração no ENTREGA.json."
+  },
+  "automacao_nova": {
+    "testes": 12,
+    "segundos": 9.59,
+    "quadros_estabilidade": 3000,
+    "aquecimento": 180,
+    "quadros_fuzz_por_semente": 1100,
+    "sementes": [
+      9101,
+      9102,
+      9103
+    ],
+    "ciclos_morte_reinicio_troca": 5,
+    "dt_testados": [
+      0.008333333333333333,
+      0.016666666666666666,
+      0.05,
+      0.15
+    ],
+    "limite_memoria_python_retida_bytes": 3000000
+  },
+  "ensaios_app": 26,
+  "capturas_960x540": [
+    "s09_menu",
+    "s09_tutorial",
+    "s09_mapa",
+    "s09_descida",
+    "s09_galeria",
+    "s09_aviso_esquerdo"
+  ],
+  "parecer_humano": "pendente",
+  "pacote": "Resultado da extração/runtime e hashes em ENTREGA.json na raiz/equipe.",
+  "ressalvas": [
+    "Não comprova ausência de bugs, sensação, arte, audição ou FPS real.",
+    "Nenhuma nova falha de motor identificada nos bots desta rodada.",
+    "Drivers SDL dummy e perfis temporários; não usa perfil do jogador."
+  ],
+  "regressao_empacotamento": {
+    "testes": 1,
+    "segundos": 0.02,
+    "problema": "ZIP recusava README extraído com mtime de 1970",
+    "correcao": "strict_timestamps=False, data limitada ao mínimo de 1980 somente no ZIP",
+    "runtime": "Exclusão de todo .pyc eliminava módulos sem fonte, incluindo CP437. Gerador/exportador agora preservam esses módulos; runtime refeito com CPython 3.14.10."
+  }
+}

@@ -13,7 +13,8 @@ from src import telas, ambiental, mapa_visor, tutorial
 from src.audio import Audio
 from src.controles import ACOES, EVENTOS_PAD, PADRAO, Controles, Gamepad
 from src.ensaios import ENSAIOS, INDICE_ARANHA, SEMENTE_ARANHA, preparar_ensaio
-from src.ilustracao import estilo, fonte, original, tinta, linhas
+from src.arte_lume import imagem_lume
+from src.ilustracao import estilo, fonte, tinta, linhas
 from src.memoria import Memoria
 from src.paisagem import Paisagem, hud
 from src.replay_aranha import GravacaoAranha, HistoricoCheio, gravar_tentativa, iterar_reproducao, ler_tentativa
@@ -34,7 +35,7 @@ class App:
         self.cheia=False
         self.tela=self.janela()
         pygame.display.set_caption("Miopia · A última luz da mata")
-        pygame.display.set_icon(original("lume_4.png"))
+        pygame.display.set_icon(imagem_lume("parado",0,64,64))
         self.mem=Memoria(temporaria)
         self.controles = Controles(self.mem.prefs["teclas"])
         self.gamepad = Gamepad()
@@ -365,11 +366,11 @@ class App:
         if self.selecao == 0:
             escalas = (100, 115, 125)
             p["texto"] = escalas[(escalas.index(p["texto"])+delta) % len(escalas)]
-        elif self.selecao == 3:
+        elif self.selecao == 4:
             self.mudar("ajustes")
             return
         else:
-            chave = ("contraste", "claroes_suaves")[self.selecao-1]
+            chave = ("contraste", "claroes_suaves", "numeros_hud")[self.selecao-1]
             p[chave] = not p[chave]
         self.mem.guardar("preferencias",p)
         self.som("clique")
@@ -652,7 +653,7 @@ class App:
         elif est=="acessibilidade" and k in (pygame.K_LEFT,pygame.K_RIGHT): self.ajustar_acessibilidade(1 if k==pygame.K_RIGHT else -1)
         elif k in ACEITAR: self.ativar()
         elif k in (pygame.K_UP,pygame.K_DOWN,pygame.K_w,pygame.K_s):
-            quant={"menu":len(self.menu_nomes()),"pausa":5,"ajustes":8,"controles":len(ACOES)+2,"acessibilidade":4,
+            quant={"menu":len(self.menu_nomes()),"pausa":5,"ajustes":8,"controles":len(ACOES)+2,"acessibilidade":5,
                    "confirmar":2,"morte":2,"ensaios":len(ENSAIOS)+1,
                    "fim":len(self.fim_nomes()) if est=="fim" else 0,"registro":3}.get(est,0)
             if quant:
@@ -704,10 +705,14 @@ class App:
             mover=int(segura("direita",pygame.K_RIGHT))-int(segura("esquerda",pygame.K_LEFT))
             pedir_deslize=pygame.K_LSHIFT in self.bordas or (
                 segura("deslize") and bool(self.bordas.intersection((pygame.K_a,pygame.K_d))))
+            from .travessia_fagulha import disponivel
+            combo_fagulha = (self.controles.ultimo_pad and pygame.K_LCTRL in controle
+                             and pygame.K_k in self.bordas and disponivel(self.jogo))
             cmd=Comando(mover,segura("baixo",pygame.K_DOWN),pygame.K_SPACE in self.bordas,
                         segura("salto"),pedir_deslize,
-                        pygame.K_j in self.bordas,pygame.K_k in self.bordas,pygame.K_e in self.bordas,
-                        pygame.K_l in self.bordas,segura("carga"))
+                        pygame.K_j in self.bordas,pygame.K_k in self.bordas and not combo_fagulha,pygame.K_e in self.bordas,
+                        pygame.K_l in self.bordas,segura("carga") and not combo_fagulha,
+                        fagulha=pygame.K_g in self.bordas or combo_fagulha)
             self.bordas.clear()
             j=self.jogo
             etapa,raizes,dificuldade=j.etapa,j.restauradas,j.dificuldade
@@ -796,7 +801,9 @@ class App:
             if self.estado=="morte":
                 telas.morte(self,s)
                 return
-            hud(s,j)
+            from src.abertura_bosque import em_cena
+            if self.estado!="pausa" or not em_cena(j):
+                hud(s,j)
             if self.estado=="replay": telas.replay(self,s)
             if j.dialogo: telas.dialogo(self,s)
             if self.estado=="pausa": telas.pausa(self,s)

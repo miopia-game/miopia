@@ -255,9 +255,9 @@ PEDIDOS = (
         "Os nomes nas cascas", "Nira", "Véspera",
         (("registro", "Leia o mapa enrolado no galho do berçário."),),
         "Leve a data do mapa a Véspera, junto dos ninhos altos.",
-        "Apaguei a trilha do meu mapa quando a borda secou. Véspera tirou os pequenos antes do raio. A data ficou no galho do berçário. Leia para ela.",
-        "Deixei um pavio junto às cascas. Primeiro preciso saber quando saímos. Leia a data no mapa deste galho.",
-        "Duas luas antes do raio. Eu tinha razão em levar os pequenos. Leve meus pavios de pólen para enxergar o caminho.",
+        "Quando a borda secou, risquei a trilha do mapa. Guardei a data. Véspera tirou os pequenos antes do raio. Leia o mapa no galho do berçário e leve a data a ela.",
+        "Fale baixo. Ainda escuto as cascas rangerem daqui. Leia a data no mapa deste galho. Preciso saber em que noite tirei os pequenos.",
+        "Duas luas antes do raio. Foi mesmo naquela noite. Guarde o mapa. O cipó à direita é por onde tirei os pequenos. Leve meus pavios de pólen e mantenha a luz baixa.",
         "Agora canto só quando alguém responde. Os que eu tirei daqui foram com Mimo.",
         (("pavio", 2),),
     ),
@@ -328,7 +328,7 @@ def ajuda_do_refugio(j, nome, texto):
         _presentes(j, (("balsamo", 1),))
         j.flags.add("encomenda_aceita")
         if "encomenda_recolhida" not in j.flags:
-            return "Tome este bálsamo. Tila ficou sob a grade do Bosque; Bento sumiu nos galhos sob o Córrego. Aru levou as sementes para a oficina. O mapa pode acompanhar os sinais deles. Minha mochila caiu na varanda acima de Nira: traga o pacote e preparo tanino para as carapaças."
+            return "Vem cá. Asa tremendo não segura frasco. Tome este bálsamo. Procure Tila sob a grade, Bento nos galhos do Córrego e Aru na oficina. Minha mochila de ervas ficou no galho acima de Nira. Traga-a e eu preparo tanino contra as carapaças."
     if nome=="Mimo" and j.etapa==0:
         j.flags.add("encomenda_aceita")
         if "encomenda_entregue" in j.flags:
@@ -338,8 +338,8 @@ def ajuda_do_refugio(j, nome, texto):
             j.bolsa.receber("tanino",3)
             j.eventos.append("coleta")
             j.memorizar("A mochila dos casulos · entregue","Mimo recebeu o pacote. Recompensa: 3 × Tanino de casca. F cobre a lâmina por 18 s; seus cortes atravessam a guarda dos besouros.")
-            return "Minha mochila! Vou preparar o tanino. Leve três porções: Q escolhe e F cobre a lâmina. Por dezoito segundos, os cortes rompem a guarda e ferem mais os besouros."
-        return "Falta minha mochila na varanda acima de Nira. Solte e aperte Espaço outra vez no ar. Use E no pacote e volte aqui. Preparo três porções de tanino em troca."
+            return "Até a costura aguentou. Três porções de tanino para você. Q escolhe e F cobre a lâmina. Por dezoito segundos, seus cortes atravessam a guarda dos besouros."
+        return "Falta minha mochila na varanda acima de Nira. Solte e aperte Espaço outra vez no ar. Use E junto à mochila e volte aqui. Preparo três porções de tanino em troca."
     if nome == "Brasa":
         if j.etapa == 3 and "pedido_entregue" in j.historico.get((j.volta, 1), set()) and "oferta_brasa" not in j.flags:
             j.flags.add("oferta_brasa")

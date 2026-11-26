@@ -1,0 +1,149 @@
+{
+  "metodo": "CPU, SDL dummy, 20 quadros de aquecimento; sem flip ou espera do monitor.",
+  "cenas": {
+    "bosque": {
+      "simulacao": {
+        "mediana_ms": 0.468,
+        "p95_ms": 0.555,
+        "max_ms": 0.669
+      },
+      "desenho": {
+        "mediana_ms": 2.239,
+        "p95_ms": 2.75,
+        "max_ms": 3.318
+      }
+    },
+    "clarao": {
+      "simulacao": {
+        "mediana_ms": 0.512,
+        "p95_ms": 0.671,
+        "max_ms": 0.951
+      },
+      "desenho": {
+        "mediana_ms": 2.583,
+        "p95_ms": 3.282,
+        "max_ms": 4.322
+      }
+    },
+    "subsolo": {
+      "simulacao": {
+        "mediana_ms": 0.396,
+        "p95_ms": 0.642,
+        "max_ms": 2.686
+      },
+      "desenho": {
+        "mediana_ms": 2.87,
+        "p95_ms": 3.963,
+        "max_ms": 6.244
+      }
+    },
+    "casco": {
+      "simulacao": {
+        "mediana_ms": 0.129,
+        "p95_ms": 0.208,
+        "max_ms": 0.659
+      },
+      "desenho": {
+        "mediana_ms": 2.525,
+        "p95_ms": 3.229,
+        "max_ms": 3.741
+      }
+    },
+    "coruja": {
+      "simulacao": {
+        "mediana_ms": 0.123,
+        "p95_ms": 0.236,
+        "max_ms": 0.966
+      },
+      "desenho": {
+        "mediana_ms": 2.67,
+        "p95_ms": 3.203,
+        "max_ms": 5.521
+      }
+    },
+    "galeria": {
+      "simulacao": {
+        "mediana_ms": 0.479,
+        "p95_ms": 0.658,
+        "max_ms": 1.52
+      },
+      "desenho": {
+        "mediana_ms": 2.895,
+        "p95_ms": 3.576,
+        "max_ms": 5.943
+      }
+    },
+    "poco": {
+      "simulacao": {
+        "mediana_ms": 0.497,
+        "p95_ms": 0.757,
+        "max_ms": 0.833
+      },
+      "desenho": {
+        "mediana_ms": 2.828,
+        "p95_ms": 3.653,
+        "max_ms": 4.045
+      }
+    },
+    "caruncho": {
+      "simulacao": {
+        "mediana_ms": 0.501,
+        "p95_ms": 0.906,
+        "max_ms": 1.613
+      },
+      "desenho": {
+        "mediana_ms": 2.862,
+        "p95_ms": 3.813,
+        "max_ms": 5.709
+      }
+    },
+    "jardim": {
+      "simulacao": {
+        "mediana_ms": 0.549,
+        "p95_ms": 0.819,
+        "max_ms": 2.137
+      },
+      "desenho": {
+        "mediana_ms": 2.473,
+        "p95_ms": 3.981,
+        "max_ms": 6.505
+      }
+    },
+    "retorno": {
+      "simulacao": {
+        "mediana_ms": 0.452,
+        "p95_ms": 1.061,
+        "max_ms": 1.525
+      },
+      "desenho": {
+        "mediana_ms": 2.42,
+        "p95_ms": 5.523,
+        "max_ms": 9.406
+      }
+    },
+    "clareira": {
+      "simulacao": {
+        "mediana_ms": 0.489,
+        "p95_ms": 0.844,
+        "max_ms": 2.356
+      },
+      "desenho": {
+        "mediana_ms": 2.851,
+        "p95_ms": 3.738,
+        "max_ms": 4.368
+      }
+    },
+    "globo": {
+      "simulacao": {
+        "mediana_ms": 0.468,
+        "p95_ms": 0.764,
+        "max_ms": 1.08
+      },
+      "desenho": {
+        "mediana_ms": 2.55,
+        "p95_ms": 3.495,
+        "max_ms": 4.053
+      }
+    }
+  }
+}

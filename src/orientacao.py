@@ -23,11 +23,11 @@ class Objetivo:
     opcional: bool = False
     detalhe: str = ""
     motivo: str = ""
+    acesso: str = ""
 
 
 OBJETIVO_PRINCIPAL = "Leve orvalho às quatro raízes para reabrir o caminho dos sobreviventes."
 MOTIVOS = {
-    "valvula": "A corda dá acesso à peça que abre o caminho dos ninhos.",
     "peca": "A peça destrava o caminho usado para retirar os casulos.",
     "cunha": "Soltar a cunha reabre a passagem do berçário até a guardiã.",
     "dreno": "Baixar a água permite recuperar a peça da ponte sob a raiz.",
@@ -45,10 +45,8 @@ MOTIVOS = {
 
 # Nome breve para o mapa, ação para o HUD, instrução completa para diálogo.
 PISTAS = {
-    "valvula": ("Carretel do Bosque", "Gire o carretel nos galhos",
-        "No Bosque, suba os dois primeiros galhos. Use E no carretel para baixar a corda à direita."),
-    "peca": ("Peça da porteira", "Suba a corda e recolha a peça",
-        "A corda está à direita do carretel. Use E em sua base, suba e pegue a peça no galho alto com E."),
+    "peca": ("Peça da porteira", "Suba pelo cipó e recolha a peça",
+        "Passe pelo galho de Véspera. Use E no cipó pendurado, suba e recolha a peça da porteira com E."),
     "cunha": ("Cunha do berçário", "Solte a cunha entre os troncos",
         "Depois do marco do ramal, alterne saltos entre os dois troncos. A cunha fica no galho à direita, no alto."),
     "dreno": ("Roda do dreno", "Gire a roda do primeiro galho",
@@ -73,6 +71,19 @@ PISTAS = {
         "Depois do marco, suba aos apoios. S + Espaço desce pela grade. Use E no sino e observe para onde o toque corre."),
 }
 
+ACESSOS = {
+    "peca": "use E na base do cipó depois do galho de Véspera.",
+    "cunha": "alterne saltos entre os troncos depois do marco.",
+    "dreno": "salte para o primeiro galho acima de Casca.",
+    "lingueta": "deslize sob a raiz baixa do canal drenado.",
+    "ralo": "suba aos apoios após o marco e desça pela grade com S + Espaço.",
+    "brasa": "cruze o vão pelos apoios de luz.",
+    "vagem": "suba pelos bambus e plane a partir do apoio alto.",
+    "roldana": "suba pelos dois primeiros apoios da Gruta.",
+    "contrapeso": "use E na base da corda para alcançar o estrado alto.",
+    "eco_antigo": "alcance o sino pela grade marcada da câmara.",
+}
+
 
 def direcao(j, x, y):
     """Direção de leitura, não uma afirmação de que existe linha reta livre."""
@@ -85,18 +96,21 @@ def direcao(j, x, y):
     return " e ".join(partes) if partes else "perto de você"
 
 
-def _alvo(j, ident, nome, acao, x, y, detalhe="", *, opcional=False):
+def _alvo(j, ident, nome, acao, x, y, detalhe="", *, opcional=False, acesso=""):
     regiao = "corte" if j.em_vertical else "superficie"
     local = "Corte da Figueira" if j.em_vertical else j.fase.name
     return Objetivo(ident, nome, f"{acao} · {direcao(j, x, y)}", x, y,
                     regiao, local, opcional, detalhe or acao + ".",
-                    "Desvio opcional: encontre recursos para a travessia." if opcional else OBJETIVO_PRINCIPAL)
+                    "Desvio opcional: encontre recursos para a travessia." if opcional else OBJETIVO_PRINCIPAL,
+                    acesso)
 
 
 def _mecanismo(j, ident):
     objeto = next(o for o in j.fase.objetos if o.id == ident)
     nome, acao, detalhe = PISTAS[ident]
-    return replace(_alvo(j, ident, nome, acao, objeto.x, objeto.y, detalhe), motivo=MOTIVOS[ident])
+    acesso = ACESSOS.get(ident, "")
+    return replace(_alvo(j, ident, nome, acao, objeto.x, objeto.y, detalhe, acesso=acesso),
+                   motivo=MOTIVOS[ident])
 
 
 def _superficie(j):
@@ -168,7 +182,8 @@ def _corte(j):
     if setor in ("estaleiro", "viveiro") and "viveiro_aberto" not in j.cartografia:
         if setor == "estaleiro":
             return _alvo(j, "grade_viveiro", "Descida ao viveiro", "Desvio · desça pela grade da oficina",
-                         2240, 790, "Vá à grade à direita da oficina. S + Espaço desce aos berços. Os apoios seguem até a roda no fundo.", opcional=True)
+                         2240, 790, "Os apoios seguem até a roda no fundo.",
+                         opcional=True, acesso="na grade à direita da oficina, use S + Espaço.")
         return ponto("comporta_viveiro", "Roda do viveiro", "Desvio · abra a ligação à cisterna",
                      "Desça pelos berços até o chão. A roda fica no canto esquerdo do viveiro e abre o retorno à cisterna.")
     if setor in ("cisterna", "viveiro", "estaleiro"):
@@ -182,7 +197,8 @@ def _corte(j):
                      "Use E no estrado com cipó, à direita da cisterna. Na copa, a janela leva de volta ao Bosque.")
     if setor == "poco":
         return _alvo(j, "grade_cisterna", "Grade do poço", "Desvio · desça a grade até a cisterna",
-                     570, 1492, "S + Espaço sobre a grade permite descer. Siga pelos apoios até a cisterna e ilumine o ralo com K.", opcional=True)
+                     570, 1492, "Siga pelos apoios até a cisterna e ilumine o ralo com K.",
+                     opcional=True, acesso="na grade do Poço da Seiva, use S + Espaço.")
     return ponto("volta_bosque", "Saída ao Bosque", "Retorne à trilha principal do Bosque",
                  "Use E na abertura à esquerda da galeria. Subir à copa ou descer às câmaras é opcional e guarda recompensas.")
 
@@ -195,7 +211,8 @@ def _subsolo(j):
     if voltando and trabalho.corda.id in j.flags and j.lume.rect.bottom >= 1000:
         corda = trabalho.corda
         return _alvo(j, corda.id, "Corda de Bento", corda.nome, corda.x, corda.y,
-                     "Use E na base da corda sob a grade da direita. Ela sobe até a margem.", opcional=True)
+                     "A corda leva de volta à margem.",
+                     opcional=True, acesso="use E na base da corda sob a grade leste.")
     if not voltando:
         return _alvo(j, "reliquia_asa", "Membrana de libélula",
                      "Desvio · encontre a membrana entre as raízes", 2940, 1102,
@@ -204,7 +221,7 @@ def _subsolo(j):
     return _alvo(j, "grade_saida_subsolo", "Grade de retorno ao Córrego",
                  "Suba os galhos da direita até a grade de saída", 3030, CHAO,
                  "Do chão, use o salto duplo para chegar ao galho baixo à direita. Alterne os galhos até a grade no teto, sobre o poço direito. Salte por baixo dela para retornar à superfície.",
-                 opcional=True)
+                 opcional=True, acesso="suba pelos galhos da direita e salte por baixo da grade.")
 
 
 def objetivo_atual(j):

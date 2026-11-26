@@ -1,0 +1,101 @@
+{
+  "metodo": "CPU, SDL dummy, 20 quadros de aquecimento; sem flip ou espera do monitor.",
+  "cenas": {
+    "bosque": {
+      "simulacao": {
+        "mediana_ms": 1.045,
+        "p95_ms": 1.669,
+        "max_ms": 1.972
+      },
+      "desenho": {
+        "mediana_ms": 7.383,
+        "p95_ms": 11.437,
+        "max_ms": 13.301
+      }
+    },
+    "clarao": {
+      "simulacao": {
+        "mediana_ms": 1.044,
+        "p95_ms": 1.542,
+        "max_ms": 2.038
+      },
+      "desenho": {
+        "mediana_ms": 8.745,
+        "p95_ms": 12.144,
+        "max_ms": 13.097
+      }
+    },
+    "subsolo": {
+      "simulacao": {
+        "mediana_ms": 1.017,
+        "p95_ms": 2.364,
+        "max_ms": 6.176
+      },
+      "desenho": {
+        "mediana_ms": 9.745,
+        "p95_ms": 12.736,
+        "max_ms": 13.408
+      }
+    },
+    "casco": {
+      "simulacao": {
+        "mediana_ms": 0.356,
+        "p95_ms": 0.548,
+        "max_ms": 0.993
+      },
+      "desenho": {
+        "mediana_ms": 7.724,
+        "p95_ms": 10.66,
+        "max_ms": 11.585
+      }
+    },
+    "coruja": {
+      "simulacao": {
+        "mediana_ms": 0.393,
+        "p95_ms": 1.032,
+        "max_ms": 3.241
+      },
+      "desenho": {
+        "mediana_ms": 9.52,
+        "p95_ms": 12.82,
+        "max_ms": 13.624
+      }
+    },
+    "galeria": {
+      "simulacao": {
+        "mediana_ms": 1.173,
+        "p95_ms": 2.203,
+        "max_ms": 5.634
+      },
+      "desenho": {
+        "mediana_ms": 11.016,
+        "p95_ms": 13.618,
+        "max_ms": 16.018
+      }
+    },
+    "poco": {
+      "simulacao": {
+        "mediana_ms": 1.076,
+        "p95_ms": 1.774,
+        "max_ms": 2.261
+      },
+      "desenho": {
+        "mediana_ms": 8.747,
+        "p95_ms": 12.312,
+        "max_ms": 14.776
+      }
+    },
+    "caruncho": {
+      "simulacao": {
+        "mediana_ms": 1.149,
+        "p95_ms": 2.57,
+        "max_ms": 5.26
+      },
+      "desenho": {
+        "mediana_ms": 8.765,
+        "p95_ms": 12.225,
+        "max_ms": 14.158
+      }
+    }
+  }
+}

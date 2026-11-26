@@ -1,55 +1,56 @@
-# Miopia · A última luz da mata
+# Miopia — A última luz da mata
+
+Lume é um vaga-lume míope numa floresta em seca. De perto, ele enxerga o galho em que pisa. Para descobrir o que o espera do outro lado, pode lançar a própria luz. A mesma fagulha que revela um pouso também atrai predadores. Esse é o ponto de partida deste metroidvania 2D feito em Python e Pygame CE.
+
+![Lume e Véspera no Bosque. Uma fagulha ilumina o poleiro do morcego no próximo galho.](docs/midia/bosque-poleiro.png)
+
+[Assistir à abertura jogável até o primeiro morcego](docs/midia/bosque-em-jogo.mp4) · [Ver os 13 encontros em movimento](docs/midia/playtest-dos-13-encontros.mp4) · [Abrir o guia para continuar o projeto](docs/equipe/GUIA_DE_CONTINUIDADE.md)
 
 ## Jogar
 
-Instale Python 3.10 a 3.14. No Linux ou macOS, rode `sh ./rodar.sh`. No Windows, abra `rodar.bat`. O atalho prepara as dependências na primeira abertura.
+Instale Python 3.10 a 3.14 e baixe ou clone este repositório. Na pasta do jogo, abra **Jogar Miopia.command** no macOS, **rodar.bat** no Windows ou execute **./rodar.sh** no Linux. A primeira abertura pode usar a internet para instalar o Pygame CE. Se preferir usar o terminal, estes comandos funcionam no macOS e no Linux.
 
-## O jogo
+```sh
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python -m src.main
+```
 
-Um raio parte a figueira e apaga o berçário. Lume, o menor dos vaga-lumes, escapa porque seu brilho é fraco demais para o Breu perceber. Com as asas feridas, precisa seguir as raízes a pé. A volta atravessa quatro trechos de Mata Atlântica. Em cada um, a luz revela só o que está perto e o orvalho devolve o fôlego necessário para avançar.
+No Windows, use `py -3.12 -m venv .venv` com o Python 3.12 e substitua `.venv/bin/python` por `.venv\Scripts\python.exe`. Escolha **História** para começar no Bosque ou **Campo de testes** para entrar diretamente num encontro. O jogo salva o progresso localmente em SQLite.
 
-Cada um dos quatro mapas do **modo História** passou de 2.920 para 4.720 px. Há marcos no meio da fase e antes da arena, câmaras inferiores, rotas opcionais, pedidos de moradores e dois desfechos. Em cada bioma, recolha três gotas, opere os mecanismos, passe pela guardiã e devolva a luz à raiz. O antigo modo Infinito foi removido no S09; a aventura segue como História, com ensaios isolados para avaliação.
+## Primeiros comandos
 
-| Trecho | Descoberta | Guardião |
-|---|---|---|
-| Bosque das Samambaias | Uma corda alta e a peça da porteira no antigo berçário. | Asa Fendida se prende na raiz marcada após uma investida. |
-| Córrego Fundo | Drenar o canal revela a passagem baixa. Uma segunda válvula estende a ponte. | Uma cortina de água interrompe os fios da Tecelã do Vão. |
-| Taquaral | Reacender um nó revela apoios de bambu entre dois fragmentos de mata. | Um barril de seiva e a brasa fictícia expõem a armadura do Casco Oco. |
-| Gruta da Figueira | A roldana e o contrapeso restabelecem a travessia. | O sino desvia a Coruja cega. Um clarão no instante certo a acalma. |
-
-Ver a travessia em movimento.
-
-## Controles
-
-| Comando | Ação |
+| Ação | Teclado padrão |
 |---|---|
-| A / D ou setas esquerda e direita | Mover |
-| Espaço | Saltar. Solte e aperte outra vez no ar para o salto duplo. Segure durante a queda para planar continuamente. Encostado ao tronco de impulso, o novo toque lança Lume para o lado oposto. |
-| S ou seta para baixo | Agachar. Segure para baixo e aperte Espaço sobre grade, galho elevado ou apoio para passar ao nível inferior. Terra e pontes firmes sustentam Lume. |
-| Shift + direção | Deslizar |
-| E | Usar mecanismos, subir cordas, descansar e conversar |
-| J / L / S + J no ar | Cortes rápidos / pesados / ataque descendente com rebote. J/L/J, K/J e K/L combinam movimentos. Shift+direção+J avança. |
-| Ctrl + J / L | Ataque de luz com dano dobrado: 8/14 de brilho; avanço com Ctrl custa 12. Se faltar, usa vida. |
-| K | Clarão de 520 px por 5,5 s, fixo no mundo: 22 de brilho, ou vida se faltar. No escuro, prejudica brevemente novos ataques dos mobs. |
-| Q / F | Alternar / usar item. Globo fixa luz permanente. Bálsamo recupera até 35 de vida e brilho; pavio prolonga clarão e casulo absorve um golpe. |
-| Tab / M / C | Mapa por descoberta / mapa / caderno opcional das raízes restauradas. No mapa, direita abre pedidos; cima/baixo e Enter escolhem o rastreio. |
-| No mapa: + / −, WASD, C, mouse | Zoom / mover / centralizar / arrastar. Botão direito marca/remove; V troca tipo. Só regiões descobertas aceitam marcas. |
-| P ou Esc | Pausar ou continuar. R na pausa pede confirmação para retornar ao marco. |
-| M / F11 | Silenciar ou reativar som / alternar tela cheia |
-| Setas e Enter, ou mouse | Escolher nos menus. Enter completa a fala e avança. Esc pula o prólogo. |
+| Andar | A / D ou setas |
+| Pular, bater as asas no ar e planar na queda | Espaço, segundo toque e manter pressionado |
+| Abaixar ou atravessar um apoio que permite descida | S ou S + Espaço |
+| Deslizar no chão enquanto anda | A / D + Shift |
+| Corte rápido e golpe pesado | J e L |
+| Clarear os arredores | K |
+| Lançar uma fagulha na direção do olhar | G |
+| Conversar, ler ou usar um mecanismo | E |
+| Abrir o mapa e o diário | M ou Tab |
 
-A luz pessoal varia de 90 a 128 px e o gasto passivo no modo História caiu 64%. O clarão abre uma clareira de até 296 px, permanece aceso onde foi lançado e se fecha gradualmente ao longo de 6,5 s. O brilho da mata pode ser ajustado em quatro níveis. Volte ao abrigo para recuperar energia. A tela **Você morreu** mostra quando Lume cai ou perde a luz e espera sua confirmação para voltar ao último marco. Portas e itens já conquistados ficam registrados. As conversas, o diário e as perguntas ambientais pausam a simulação. Uma resposta errada apenas revela a explicação.
+Ajustes permite remapear os comandos, ampliar o texto e suavizar clarões. No galho de Véspera, observe o lampejo da vigia e vire Lume para o pouso. O clarão revela o que está perto. A fagulha deixa luz no lugar onde cai.
 
-O morcego segue o brilho. A aranha pode disparar seda, a vespa mira ferrões, a sombra explora a penumbra e o carabídeo protege a frente do corpo. No Taquaral, derrotar a sentinela solta a trama que bloqueia o caminho. Os cinco inimigos anunciam o ataque por som e postura. Os quatro guardiões têm soluções ambientais próprias.
+## Continuar o desenvolvimento
 
-## Dados locais e dificuldade
+A campanha atravessa o Bosque das Samambaias, o Córrego Fundo, o Taquaral e a Gruta da Figueira. O guia reúne as mudanças desde a S40, as fontes da arte, as bibliotecas, os playtests e o próximo trecho sugerido para a equipe.
 
-Ajustes de ambiência, efeitos, brilho, mudo e dificuldade ficam em SQLite, junto do marco de História, dos registros do diário e do histórico de partidas encerradas. Na reabertura, **Continuar história** recupera a campanha no último marco. O Campo de testes preserva essa campanha. Recordes antigos do Infinito permanecem guardados, sem aparecer na lista atual. A dificuldade escolhida vale para a próxima jornada. Os níveis ajustam fagulhas, dano e consumo de luz.
+- [Guia de continuidade e roteiro de playtest](docs/equipe/GUIA_DE_CONTINUIDADE.md)
+- [Bibliotecas, editores e instalação](docs/equipe/BIBLIOTECAS.md)
+- [Folhas de produção dos inimigos](docs/arte/fontes) e [comparação feita na partida](docs/midia/antes-e-agora-na-partida.png)
+- [Histórico das versões Git da equipe](docs/equipe/VERSOES.md)
+- [Histórico de desenvolvimento](docs/equipe/HISTORICO.md) e [plano da equipe](docs/equipe/PLANO.md)
 
-No Linux, os dados vão para `$XDG_DATA_HOME/miopia` ou `~/.local/share/miopia`. No Windows, o código usa `%LOCALAPPDATA%/Miopia`. A pasta do jogo pode ser somente leitura.
+Para executar os testes no macOS ou Linux, instale as dependências de desenvolvimento e use o executor do projeto. Ele cria um perfil descartável e usa vídeo e áudio virtuais.
+
+```sh
+.venv/bin/python -m pip install -r requirements-dev.txt
+./qa.sh
+```
 
 ## Créditos
 
-Projeto A3 da Universidade São Judas Tadeu. Otávio Araújo Aredes Guedes, Caio Vidotte Vrech Sousa, Tiago Ribeiro Gomes, Thierry Henry Rocha da Silva, Victor Bersane Jasaitis e Iago Robert da Silva Andrade.
-
-Ilustrações produzidas com auxílio de OpenAI ImageGen. Os avisos das fontes acompanham os [arquivos de fonte](assets/fontes).
+Projeto A3 da Universidade São Judas Tadeu. Equipe de desenvolvimento: Otávio Araújo Aredes Guedes, Caio Vidotte Vrech Sousa, Tiago Ribeiro Gomes, Thierry Henry Rocha da Silva, Victor Bersane Jasaitis e Iago Robert da Silva Andrade, conforme a tela de créditos do jogo. A equipe registra a origem das ilustrações geradas para esta revisão, os materiais herdados e as licenças das fontes nos arquivos de procedência. [Arte desta revisão](docs/arte/ORIGEM.md) · [Materiais da base acadêmica](docs/s00-origens.md) · [Licenças das fontes](assets/fontes)

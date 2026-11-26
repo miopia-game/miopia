@@ -16,7 +16,7 @@ ENTRADAS = (
 )
 EFEITOS_RAIZ = (
     "O orvalho voltou e Véspera firmou a ponte dos casulos.",
-    "A água voltou aos dois braços. A ponte acima do ralo está aberta.",
+    "A água voltou aos dois braços. Na volta, use a ponte acima do ralo.",
     "A borda do Taquaral voltou a receber água. Eco pode cruzar.",
     "A Coruja ouviu as quatro correntes e reconheceu o chamado.",
 )

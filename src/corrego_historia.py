@@ -3,7 +3,7 @@ import math
 
 import pygame
 
-from .fases import CHAO, Objeto
+from .fases import CHAO, RAIZ, Objeto
 
 
 BERCOS = Objeto("marca_bercos_corrego", "pista", 1476, CHAO, "Examinar a marca dos berços")
@@ -72,7 +72,28 @@ def desenhar(s, j, cx):
             pygame.draw.line(s, (166, 143, 91), (x,CHAO-29), mao, 3)
 
 
+def _veios_da_raiz(s, j, cx):
+    if not -95 <= RAIZ-cx <= s.get_width()+95:
+        return
+    restaurada = "raiz" in j.flags
+    for sentido in (-1, 1):
+        pontos = [pygame.Vector2(RAIZ-cx+sentido*x, CHAO+y) for x, y in
+                  ((3,-13), (18,-5), (35,5), (64,13), (91,16))]
+        pygame.draw.lines(s, (39, 51, 45), False, pontos, 7)
+        cor = (82, 150, 133) if restaurada else (74, 72, 55)
+        pygame.draw.lines(s, cor, False, pontos, 3)
+        if restaurada:
+            for n in range(3):
+                posicao = (j.tempo*1.7+n/3+sentido*.1) % 1 * (len(pontos)-1)
+                trecho = int(posicao)
+                fracao = posicao-trecho
+                inicio, fim = pontos[trecho:trecho+2]
+                pygame.draw.aaline(s, (157, 210, 189), inicio.lerp(fim,fracao),
+                                   inicio.lerp(fim,min(1., fracao+.34)))
+
+
 def desenhar_agua(s, j, cx):
+    _veios_da_raiz(s, j, cx)
     if cx+960 < 1386 or cx > 1558:
         return
     # A água se divide junto à margem e corre sob os berços.

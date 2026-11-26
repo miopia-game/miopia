@@ -1,0 +1,27 @@
+{
+  "cartao": "Q10.0",
+  "data": "2026-11-13",
+  "origem": "Pacote fornecido por Thierry e integração explicitamente autorizada na conversa.",
+  "arquivo": "PACOTE_MIOPIA_WORK_COMPLETO.zip",
+  "sha256_zip": "cc3484637a3db37228aa0d45f5a3d3605383ef702a727e48b590ce6bb456d365",
+  "manifesto_recebido_arquivos_verificados": 122,
+  "arquivos_pro_instalados": {
+    ".agents/skills/pygame-autonomous-studio-pro/SKILL.md": "1fa71b378209b01cbe5acac631e7165692400aae5873cda62bfe31f56720290c",
+    ".agents/skills/pygame-autonomous-studio-pro/agents/openai.yaml": "3eb7c2bb430e9a289808fd478afd84d1f23811b8e7f8294a060993c4154779f5",
+    ".agents/skills/pygame-autonomous-studio-pro/references/architecture_standards.md": "4de84ac6372e45e946cf7449c8c0e572808530752eef547de6401b42b9ac879c",
+    ".agents/skills/pygame-autonomous-studio-pro/references/miopia_context.md": "622ec41468bfac17cf6db6185ce976b3f0e3897c406026ba0c142af8605b807e",
+    ".agents/skills/pygame-autonomous-studio-pro/references/narrative_gameplay.md": "97ceeec98481e0c3789eed42f36e8d4dd23e3d6e375044a0a3ac07d71bbb9786",
+    ".agents/skills/pygame-autonomous-studio-pro/references/pygame_invariants.md": "738430d3f2cae0d8122a17ddb8320e5f50004334a183f061cb9860c230e2b02f",
+    ".agents/skills/pygame-autonomous-studio-pro/references/qa_protocol.md": "429e1a317c74cd951f0f93a2802b0a6b847aae2a22a47efc3c2981f56b45a34a",
+    ".agents/skills/pygame-autonomous-studio-pro/references/sprint_board_template.md": "128dfa5bcb9826426068993894b206a45cedccc4d9979d17181b63b3774f0453",
+    ".agents/skills/pygame-autonomous-studio-pro/scripts/invariant_auditor.py": "d0c5b97dd3a6eaa066d9637398cf5adafedd639ac444b1dd29caf47948788ebc",
+    ".agents/skills/pygame-autonomous-studio-pro/scripts/miopia_probe.py": "1809b09ecaae32ad35d315432b3831a6c58829dbcc5cf38dc5ea145697dca4ae",
+    ".agents/skills/pygame-autonomous-studio-pro/scripts/run_qa.py": "c32cffb9b0bbcd740f3765a29aabd1bd679cf69510b42334ea796338d83baee6",
+    ".agents/skills/pygame-autonomous-studio-pro/scripts/visual_probe.py": "db8ac67d8333e84c583c22d4ed61578bd91b974d3bac43ab45b32242bdd619a5",
+    ".agents/skills/pygame-autonomous-studio-pro/tests/test_tools.py": "1d788a969ae148b798d3823c846ae4b02798e99a8a516b50c78f73df0ba194aa"
+  },
+  "auto_qa": "Cópia recebida idêntica à local; não substituída.",
+  "licenca": "Nenhum arquivo de licença específica acompanha os helpers. Uso local de desenvolvimento autorizado pelo fornecedor; não atribuir licença comercial ou de republicação por inferência.",
+  "midia_runtime": "Nenhuma mídia, dependência ou código do jogo incorporado/modificado; pendências herdadas de publicação continuam em s00-origens.md.",
+  "validacao_historica": "Os relatórios do ZIP pertencem à sessão que os gerou; ver STUDIO_VALIDACAO.json para a integração atual."
+}

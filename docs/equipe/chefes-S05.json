@@ -1,0 +1,1099 @@
+{
+  "rotulo": "S05",
+  "metodo": "35 s ou queda, 60 Hz, normal, mesmos comandos; não é teste humano nem piloto vencedor",
+  "fontes": {
+    "src/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/ambiental.py": "595445061b303e7c1c4bf1282062b808e140c7f412e64e351ba1ec9385d3bf4b",
+    "src/arte_arena.py": "4799f265c7f787552f30ff1ac3fff9037de0bfff5482618c51b198e4c35b31f9",
+    "src/arte_combate.py": "c3b9d424db8a2e53291e541cece1d5bc2bbf1af9f34c30cbe301ea1c7c8ace05",
+    "src/arte_corte.py": "4c0775383a3f39d5c840ec6496ba46c10f00aaf1ef90945a02b578c7ee3143fc",
+    "src/audio.py": "eb6d293878af712fd889582490edeee6d66c39da6d669b5ef5696913fb4dfe99",
+    "src/cartografia.py": "eac4da1d2dd0a3be55c0577ffb38d3c33d3bbafae2ec4fd43b5e8c9141d49a7c",
+    "src/casco.py": "0a5c24b44e2a3899578158d631f2333608eaf81c4dde06c57514a0d4c43bc57e",
+    "src/chefes.py": "cbf6d9205c1bc937c67220cd6ded2c78c594b0cadecd3849362d4127fa0f8c79",
+    "src/combate.py": "bc4204402c5a6097bbc14cc1bb8e25ded38624090a8df932177b77b9fe4f0330",
+    "src/corte_vertical.py": "d6f3c8dfa7f63a839d040735b3ecc475c7fd99ccf0def2504a00bd31dc9f7893",
+    "src/coruja.py": "012578349a62ea8ab830cab47db7939b1cfb2b3e699f5f52d382e4d5380059e7",
+    "src/descoberta.py": "1325095be9875ed45fbde1ad1a8f7650a3578a8232fce1a51634d37ac8a7fc78",
+    "src/ensaios.py": "d1776c81e8ae06c5572c782d6fd0fc0c9f33907224218cafb3bde0562ea0688c",
+    "src/fases.py": "ed319cd6a900d96b44f82167dd5212f89a65d1d0d0660b3fa01298dc4cdc5940",
+    "src/ferramentas.py": "e46a46277da045ff1f21ea93f11dbababc4622a84319183582a05d0540039639",
+    "src/ilustracao.py": "64c532033464569d8fe1c5c5a0557906857e2fce4bb6aca82a0c9d0233a72f77",
+    "src/main.py": "cb4a1a8a3ba01533dc60e412223a504f5cbc504c2bc4b9fce3f107a1a2cb3d31",
+    "src/memoria.py": "301b3a899a42aaae97a6f1afddd4f3748c284781fe14a4247c790a32427e8dd2",
+    "src/missoes.py": "1766b0fab65adb4849d08cd82021f3c2d3d0c20a41ab54de9976cd46e63b5596",
+    "src/narrativa.py": "af3df60e6721555441768f2324277942979e39ea5c737e33a2e253f8bad34b10",
+    "src/oficina_armas.py": "a11a696c3d25c15fb2e212915d86b535ec4ef7c225fb435d2effb5a9ab6c1dee",
+    "src/orientacao.py": "56d10e81672910687ee6f9a980266f9f52960bef8c60a7f478be384d79ec4619",
+    "src/paisagem.py": "040680a401727d665f97880c2d22f27aec9fd2fd877fee87b8865252b6e41dac",
+    "src/replay_aranha.py": "667fc62fe7e114c95401efd9d3acb1af024fa168676afb402c77b0b7587d307b",
+    "src/roteiro.py": "d50b75ad200d90daade582fea67e039a3c4288f6080becea2c194c2fbd7206f3",
+    "src/sala_aranha.py": "28f256e553ce4c4221e66d92ad7a6a86d6a10bf306555fedb9e0d9c72135b8a5",
+    "src/subsolo.py": "1b32192fb65236faf6d305c9c319f9ed67accfbbbe9482ce7a0ab2e88ce15dfa",
+    "src/taticas.py": "58c898b805a825ce458aef01405331e47d9b132c0ff3860355261528c6ddd228",
+    "src/telas.py": "07a930630b379386d51af10d303a0e8cfeaf866e01472e27926558a8f756c313",
+    "src/travessia.py": "f8ddeb0fd950e464a4114d340cb0e4b356c21dc082ca3ffd704f90d1de32a934",
+    "src/visao.py": "3147a20c6253c489beafa5b16345376b85e2108df6021ef589b3678027c9363a"
+  },
+  "ensaios": [
+    {
+      "chefe": 2,
+      "tempo": 35.0,
+      "estado": "jogando",
+      "vida_chefe": 60.0,
+      "energia_lume": 36.7,
+      "eventos": {
+        "pulo": 23,
+        "arena": 1,
+        "golpe": 109,
+        "valvula": 10,
+        "aviso": 16,
+        "pouso": 24,
+        "acerto": 17,
+        "impacto": 9,
+        "dano": 3
+      },
+      "quadros_por_estado": {
+        "busca": 247,
+        "aviso": 596,
+        "salto_casco": 368,
+        "freio_casco": 690,
+        "varrida_casco": 22,
+        "investida": 177
+      },
+      "decisoes": [
+        {
+          "t": 0.0,
+          "estado": "busca",
+          "tecnica": "",
+          "fase": 1,
+          "x": 4265.2,
+          "destino": 3742
+        },
+        {
+          "t": 0.75,
+          "estado": "aviso",
+          "tecnica": "salto",
+          "fase": 1,
+          "x": 4265.2,
+          "destino": 3916.2
+        },
+        {
+          "t": 1.383,
+          "estado": "salto_casco",
+          "tecnica": "salto",
+          "fase": 1,
+          "x": 4259.6,
+          "destino": 3916.2
+        },
+        {
+          "t": 2.15,
+          "estado": "freio_casco",
+          "tecnica": "salto",
+          "fase": 1,
+          "x": 3916.2,
+          "destino": 3916.2
+        },
+        {
+          "t": 2.917,
+          "estado": "busca",
+          "tecnica": "salto",
+          "fase": 1,
+          "x": 3916.2,
+          "destino": 3916.2
+        },
+        {
+          "t": 3.133,
+          "estado": "aviso",
+          "tecnica": "varrida",
+          "fase": 1,
+          "x": 3916.2,
+          "destino": 4029.2
+        },
+        {
+          "t": 3.683,
+          "estado": "varrida_casco",
+          "tecnica": "varrida",
+          "fase": 1,
+          "x": 3916.2,
+          "destino": 4029.2
+        },
+        {
+          "t": 3.867,
+          "estado": "freio_casco",
+          "tecnica": "varrida",
+          "fase": 1,
+          "x": 3916.2,
+          "destino": 4029.2
+        },
+        {
+          "t": 4.633,
+          "estado": "busca",
+          "tecnica": "varrida",
+          "fase": 1,
+          "x": 3916.2,
+          "destino": 4029.2
+        },
+        {
+          "t": 4.867,
+          "estado": "aviso",
+          "tecnica": "salto",
+          "fase": 1,
+          "x": 3916.2,
+          "destino": 3742
+        },
+        {
+          "t": 5.5,
+          "estado": "salto_casco",
+          "tecnica": "salto",
+          "fase": 1,
+          "x": 3913.4,
+          "destino": 3742
+        },
+        {
+          "t": 6.267,
+          "estado": "freio_casco",
+          "tecnica": "salto",
+          "fase": 1,
+          "x": 3742.0,
+          "destino": 3742
+        },
+        {
+          "t": 7.033,
+          "estado": "busca",
+          "tecnica": "salto",
+          "fase": 1,
+          "x": 3742.0,
+          "destino": 3742
+        },
+        {
+          "t": 7.25,
+          "estado": "aviso",
+          "tecnica": "carga",
+          "fase": 1,
+          "x": 3742.0,
+          "destino": 4153.9
+        },
+        {
+          "t": 7.883,
+          "estado": "investida",
+          "tecnica": "carga",
+          "fase": 1,
+          "x": 3746.2,
+          "destino": 4153.9
+        },
+        {
+          "t": 8.683,
+          "estado": "freio_casco",
+          "tecnica": "carga",
+          "fase": 1,
+          "x": 4153.9,
+          "destino": 4153.9
+        },
+        {
+          "t": 9.45,
+          "estado": "busca",
+          "tecnica": "carga",
+          "fase": 1,
+          "x": 4153.9,
+          "destino": 4153.9
+        },
+        {
+          "t": 9.683,
+          "estado": "aviso",
+          "tecnica": "salto",
+          "fase": 1,
+          "x": 4153.9,
+          "destino": 3819.2
+        },
+        {
+          "t": 10.317,
+          "estado": "salto_casco",
+          "tecnica": "salto",
+          "fase": 1,
+          "x": 4148.5,
+          "destino": 3819.2
+        },
+        {
+          "t": 11.083,
+          "estado": "freio_casco",
+          "tecnica": "salto",
+          "fase": 1,
+          "x": 3819.2,
+          "destino": 3819.2
+        },
+        {
+          "t": 11.85,
+          "estado": "busca",
+          "tecnica": "salto",
+          "fase": 1,
+          "x": 3819.2,
+          "destino": 3819.2
+        },
+        {
+          "t": 12.067,
+          "estado": "aviso",
+          "tecnica": "carga",
+          "fase": 1,
+          "x": 3819.2,
+          "destino": 3742
+        },
+        {
+          "t": 12.7,
+          "estado": "investida",
+          "tecnica": "carga",
+          "fase": 1,
+          "x": 3815.0,
+          "destino": 3742
+        },
+        {
+          "t": 12.85,
+          "estado": "freio_casco",
+          "tecnica": "carga",
+          "fase": 1,
+          "x": 3742.0,
+          "destino": 3742
+        },
+        {
+          "t": 13.617,
+          "estado": "busca",
+          "tecnica": "carga",
+          "fase": 1,
+          "x": 3742.0,
+          "destino": 3742
+        },
+        {
+          "t": 13.85,
+          "estado": "aviso",
+          "tecnica": "salto",
+          "fase": 1,
+          "x": 3742.0,
+          "destino": 4133.9
+        },
+        {
+          "t": 14.483,
+          "estado": "salto_casco",
+          "tecnica": "salto",
+          "fase": 1,
+          "x": 3748.3,
+          "destino": 4133.9
+        },
+        {
+          "t": 15.25,
+          "estado": "freio_casco",
+          "tecnica": "salto",
+          "fase": 1,
+          "x": 4133.9,
+          "destino": 4133.9
+        },
+        {
+          "t": 16.017,
+          "estado": "busca",
+          "tecnica": "salto",
+          "fase": 1,
+          "x": 4133.9,
+          "destino": 4133.9
+        },
+        {
+          "t": 16.233,
+          "estado": "aviso",
+          "tecnica": "carga",
+          "fase": 1,
+          "x": 4133.9,
+          "destino": 3742
+        },
+        {
+          "t": 16.867,
+          "estado": "investida",
+          "tecnica": "carga",
+          "fase": 1,
+          "x": 4129.6,
+          "destino": 3742
+        },
+        {
+          "t": 17.633,
+          "estado": "freio_casco",
+          "tecnica": "carga",
+          "fase": 1,
+          "x": 3742.0,
+          "destino": 3742
+        },
+        {
+          "t": 18.4,
+          "estado": "busca",
+          "tecnica": "carga",
+          "fase": 1,
+          "x": 3742.0,
+          "destino": 3742
+        },
+        {
+          "t": 18.633,
+          "estado": "aviso",
+          "tecnica": "salto",
+          "fase": 1,
+          "x": 3742.0,
+          "destino": 3827.5
+        },
+        {
+          "t": 19.267,
+          "estado": "salto_casco",
+          "tecnica": "salto",
+          "fase": 1,
+          "x": 3743.4,
+          "destino": 3827.5
+        },
+        {
+          "t": 20.033,
+          "estado": "freio_casco",
+          "tecnica": "salto",
+          "fase": 1,
+          "x": 3827.5,
+          "destino": 3827.5
+        },
+        {
+          "t": 20.8,
+          "estado": "busca",
+          "tecnica": "salto",
+          "fase": 1,
+          "x": 3827.5,
+          "destino": 3827.5
+        },
+        {
+          "t": 21.017,
+          "estado": "aviso",
+          "tecnica": "varrida",
+          "fase": 1,
+          "x": 3827.5,
+          "destino": 3940.5
+        },
+        {
+          "t": 21.567,
+          "estado": "varrida_casco",
+          "tecnica": "varrida",
+          "fase": 1,
+          "x": 3827.5,
+          "destino": 3940.5
+        },
+        {
+          "t": 21.75,
+          "estado": "freio_casco",
+          "tecnica": "varrida",
+          "fase": 1,
+          "x": 3827.5,
+          "destino": 3940.5
+        },
+        {
+          "t": 22.517,
+          "estado": "busca",
+          "tecnica": "varrida",
+          "fase": 1,
+          "x": 3827.5,
+          "destino": 3940.5
+        },
+        {
+          "t": 22.75,
+          "estado": "aviso",
+          "tecnica": "salto",
+          "fase": 1,
+          "x": 3827.5,
+          "destino": 3742
+        },
+        {
+          "t": 23.383,
+          "estado": "salto_casco",
+          "tecnica": "salto",
+          "fase": 1,
+          "x": 3826.1,
+          "destino": 3742
+        },
+        {
+          "t": 24.15,
+          "estado": "freio_casco",
+          "tecnica": "salto",
+          "fase": 1,
+          "x": 3742.0,
+          "destino": 3742
+        },
+        {
+          "t": 24.917,
+          "estado": "busca",
+          "tecnica": "salto",
+          "fase": 1,
+          "x": 3742.0,
+          "destino": 3742
+        },
+        {
+          "t": 25.133,
+          "estado": "aviso",
+          "tecnica": "carga",
+          "fase": 1,
+          "x": 3742.0,
+          "destino": 4087.0
+        },
+        {
+          "t": 25.767,
+          "estado": "investida",
+          "tecnica": "carga",
+          "fase": 1,
+          "x": 3746.2,
+          "destino": 4087.0
+        },
+        {
+          "t": 26.45,
+          "estado": "freio_casco",
+          "tecnica": "carga",
+          "fase": 1,
+          "x": 4087.0,
+          "destino": 4087.0
+        },
+        {
+          "t": 27.217,
+          "estado": "busca",
+          "tecnica": "carga",
+          "fase": 1,
+          "x": 4087.0,
+          "destino": 4087.0
+        },
+        {
+          "t": 27.433,
+          "estado": "aviso",
+          "tecnica": "salto",
+          "fase": 1,
+          "x": 4087.0,
+          "destino": 3804.0
+        },
+        {
+          "t": 28.067,
+          "estado": "salto_casco",
+          "tecnica": "salto",
+          "fase": 1,
+          "x": 4087.0,
+          "destino": 3804.0
+        },
+        {
+          "t": 28.833,
+          "estado": "freio_casco",
+          "tecnica": "salto",
+          "fase": 1,
+          "x": 3804.0,
+          "destino": 3804.0
+        },
+        {
+          "t": 29.6,
+          "estado": "busca",
+          "tecnica": "salto",
+          "fase": 1,
+          "x": 3804.0,
+          "destino": 3804.0
+        },
+        {
+          "t": 29.833,
+          "estado": "aviso",
+          "tecnica": "carga",
+          "fase": 1,
+          "x": 3804.0,
+          "destino": 3742
+        },
+        {
+          "t": 30.45,
+          "estado": "investida",
+          "tecnica": "carga",
+          "fase": 1,
+          "x": 3804.0,
+          "destino": 3742
+        },
+        {
+          "t": 30.583,
+          "estado": "freio_casco",
+          "tecnica": "carga",
+          "fase": 1,
+          "x": 3742.0,
+          "destino": 3742
+        },
+        {
+          "t": 31.35,
+          "estado": "busca",
+          "tecnica": "carga",
+          "fase": 1,
+          "x": 3742.0,
+          "destino": 3742
+        },
+        {
+          "t": 31.567,
+          "estado": "aviso",
+          "tecnica": "salto",
+          "fase": 1,
+          "x": 3742.0,
+          "destino": 4052.0
+        },
+        {
+          "t": 32.2,
+          "estado": "salto_casco",
+          "tecnica": "salto",
+          "fase": 1,
+          "x": 3742.0,
+          "destino": 4052.0
+        },
+        {
+          "t": 32.967,
+          "estado": "freio_casco",
+          "tecnica": "salto",
+          "fase": 1,
+          "x": 4052.0,
+          "destino": 4052.0
+        },
+        {
+          "t": 33.733,
+          "estado": "busca",
+          "tecnica": "salto",
+          "fase": 1,
+          "x": 4052.0,
+          "destino": 4052.0
+        },
+        {
+          "t": 33.967,
+          "estado": "aviso",
+          "tecnica": "carga",
+          "fase": 1,
+          "x": 4052.0,
+          "destino": 3742
+        },
+        {
+          "t": 34.583,
+          "estado": "investida",
+          "tecnica": "carga",
+          "fase": 1,
+          "x": 4052.0,
+          "destino": 3742
+        }
+      ],
+      "comandos_sha256": "2af64d9a70d808598345236a0df0e3d2d617b87bd6485070e04223831af715a6"
+    },
+    {
+      "chefe": 3,
+      "tempo": 35.0,
+      "estado": "jogando",
+      "vida_chefe": 66.0,
+      "energia_lume": 36.7,
+      "eventos": {
+        "pulo": 23,
+        "arena": 1,
+        "golpe": 109,
+        "aviso": 16,
+        "pouso": 24,
+        "dano": 3,
+        "acerto": 13,
+        "valvula": 1,
+        "sino": 3,
+        "impacto": 2
+      },
+      "quadros_por_estado": {
+        "busca": 280,
+        "aviso": 646,
+        "investida": 269,
+        "recolhe_coruja": 447,
+        "aberto": 336,
+        "contorna": 122
+      },
+      "decisoes": [
+        {
+          "t": 0.0,
+          "estado": "busca",
+          "tecnica": "",
+          "fase": 1,
+          "x": 4336.1,
+          "destino": 3742
+        },
+        {
+          "t": 0.75,
+          "estado": "aviso",
+          "tecnica": "rasante",
+          "fase": 1,
+          "x": 4266.0,
+          "destino": 3916.2
+        },
+        {
+          "t": 1.417,
+          "estado": "investida",
+          "tecnica": "rasante",
+          "fase": 1,
+          "x": 4261.7,
+          "destino": 3916.2
+        },
+        {
+          "t": 2.1,
+          "estado": "recolhe_coruja",
+          "tecnica": "rasante",
+          "fase": 1,
+          "x": 3916.2,
+          "destino": 3916.2
+        },
+        {
+          "t": 2.75,
+          "estado": "busca",
+          "tecnica": "rasante",
+          "fase": 1,
+          "x": 3915.3,
+          "destino": 3916.2
+        },
+        {
+          "t": 2.967,
+          "estado": "aviso",
+          "tecnica": "garra",
+          "fase": 1,
+          "x": 3890.3,
+          "destino": 4116.1
+        },
+        {
+          "t": 3.633,
+          "estado": "investida",
+          "tecnica": "garra",
+          "fase": 1,
+          "x": 3890.3,
+          "destino": 4116.1
+        },
+        {
+          "t": 4.083,
+          "estado": "recolhe_coruja",
+          "tecnica": "garra",
+          "fase": 1,
+          "x": 4116.1,
+          "destino": 4116.1
+        },
+        {
+          "t": 4.733,
+          "estado": "busca",
+          "tecnica": "garra",
+          "fase": 1,
+          "x": 4117.0,
+          "destino": 4116.1
+        },
+        {
+          "t": 4.95,
+          "estado": "aviso",
+          "tecnica": "penas",
+          "fase": 1,
+          "x": 4142.0,
+          "destino": 3742
+        },
+        {
+          "t": 5.617,
+          "estado": "recolhe_coruja",
+          "tecnica": "penas",
+          "fase": 1,
+          "x": 4142.0,
+          "destino": 3742
+        },
+        {
+          "t": 6.017,
+          "estado": "busca",
+          "tecnica": "penas",
+          "fase": 1,
+          "x": 4142.0,
+          "destino": 3742
+        },
+        {
+          "t": 6.25,
+          "estado": "aviso",
+          "tecnica": "rasante",
+          "fase": 1,
+          "x": 4116.1,
+          "destino": 3762.8
+        },
+        {
+          "t": 6.917,
+          "estado": "investida",
+          "tecnica": "rasante",
+          "fase": 1,
+          "x": 4111.8,
+          "destino": 3762.8
+        },
+        {
+          "t": 7.6,
+          "estado": "recolhe_coruja",
+          "tecnica": "rasante",
+          "fase": 1,
+          "x": 3762.8,
+          "destino": 3762.8
+        },
+        {
+          "t": 8.25,
+          "estado": "busca",
+          "tecnica": "rasante",
+          "fase": 1,
+          "x": 3762.8,
+          "destino": 3762.8
+        },
+        {
+          "t": 8.483,
+          "estado": "aviso",
+          "tecnica": "penas",
+          "fase": 1,
+          "x": 3788.7,
+          "destino": 4115.6
+        },
+        {
+          "t": 9.15,
+          "estado": "recolhe_coruja",
+          "tecnica": "penas",
+          "fase": 1,
+          "x": 3788.7,
+          "destino": 4115.6
+        },
+        {
+          "t": 9.55,
+          "estado": "busca",
+          "tecnica": "penas",
+          "fase": 1,
+          "x": 3789.6,
+          "destino": 4115.6
+        },
+        {
+          "t": 9.767,
+          "estado": "aviso",
+          "tecnica": "rasante",
+          "fase": 1,
+          "x": 3814.6,
+          "destino": 3796.6
+        },
+        {
+          "t": 10.433,
+          "estado": "investida",
+          "tecnica": "rasante",
+          "fase": 1,
+          "x": 3814.6,
+          "destino": 3796.6
+        },
+        {
+          "t": 10.483,
+          "estado": "recolhe_coruja",
+          "tecnica": "rasante",
+          "fase": 1,
+          "x": 3796.6,
+          "destino": 3796.6
+        },
+        {
+          "t": 11.133,
+          "estado": "busca",
+          "tecnica": "rasante",
+          "fase": 1,
+          "x": 3797.5,
+          "destino": 3796.6
+        },
+        {
+          "t": 11.35,
+          "estado": "aviso",
+          "tecnica": "penas",
+          "fase": 1,
+          "x": 3822.4,
+          "destino": 3742
+        },
+        {
+          "t": 12.017,
+          "estado": "recolhe_coruja",
+          "tecnica": "penas",
+          "fase": 1,
+          "x": 3822.4,
+          "destino": 3742
+        },
+        {
+          "t": 12.417,
+          "estado": "busca",
+          "tecnica": "penas",
+          "fase": 1,
+          "x": 3822.4,
+          "destino": 3742
+        },
+        {
+          "t": 12.65,
+          "estado": "aviso",
+          "tecnica": "rasante",
+          "fase": 1,
+          "x": 3848.3,
+          "destino": 3838.2
+        },
+        {
+          "t": 13.317,
+          "estado": "investida",
+          "tecnica": "rasante",
+          "fase": 1,
+          "x": 3844.0,
+          "destino": 3838.2
+        },
+        {
+          "t": 13.333,
+          "estado": "recolhe_coruja",
+          "tecnica": "rasante",
+          "fase": 1,
+          "x": 3838.2,
+          "destino": 3838.2
+        },
+        {
+          "t": 13.983,
+          "estado": "busca",
+          "tecnica": "rasante",
+          "fase": 1,
+          "x": 3838.2,
+          "destino": 3838.2
+        },
+        {
+          "t": 14.217,
+          "estado": "aviso",
+          "tecnica": "penas",
+          "fase": 1,
+          "x": 3864.1,
+          "destino": 4119.3
+        },
+        {
+          "t": 14.883,
+          "estado": "recolhe_coruja",
+          "tecnica": "penas",
+          "fase": 1,
+          "x": 3864.1,
+          "destino": 4119.3
+        },
+        {
+          "t": 15.283,
+          "estado": "busca",
+          "tecnica": "penas",
+          "fase": 1,
+          "x": 3863.1,
+          "destino": 4119.3
+        },
+        {
+          "t": 15.5,
+          "estado": "aviso",
+          "tecnica": "garra",
+          "fase": 1,
+          "x": 3854.0,
+          "destino": 3742
+        },
+        {
+          "t": 16.167,
+          "estado": "investida",
+          "tecnica": "garra",
+          "fase": 1,
+          "x": 3854.0,
+          "destino": 3742
+        },
+        {
+          "t": 16.4,
+          "estado": "recolhe_coruja",
+          "tecnica": "garra",
+          "fase": 1,
+          "x": 3742.0,
+          "destino": 3742
+        },
+        {
+          "t": 17.05,
+          "estado": "busca",
+          "tecnica": "garra",
+          "fase": 1,
+          "x": 3743.0,
+          "destino": 3742
+        },
+        {
+          "t": 17.267,
+          "estado": "aviso",
+          "tecnica": "rasante",
+          "fase": 1,
+          "x": 3767.9,
+          "destino": 3742
+        },
+        {
+          "t": 17.933,
+          "estado": "investida",
+          "tecnica": "rasante",
+          "fase": 1,
+          "x": 3767.9,
+          "destino": 3742
+        },
+        {
+          "t": 18.0,
+          "estado": "recolhe_coruja",
+          "tecnica": "rasante",
+          "fase": 1,
+          "x": 3742.0,
+          "destino": 3742
+        },
+        {
+          "t": 18.65,
+          "estado": "busca",
+          "tecnica": "rasante",
+          "fase": 1,
+          "x": 3743.0,
+          "destino": 3742
+        },
+        {
+          "t": 18.867,
+          "estado": "aviso",
+          "tecnica": "garra",
+          "fase": 1,
+          "x": 3767.9,
+          "destino": 3979.2
+        },
+        {
+          "t": 19.533,
+          "estado": "investida",
+          "tecnica": "garra",
+          "fase": 1,
+          "x": 3767.9,
+          "destino": 3979.2
+        },
+        {
+          "t": 19.95,
+          "estado": "recolhe_coruja",
+          "tecnica": "garra",
+          "fase": 1,
+          "x": 3979.2,
+          "destino": 3979.2
+        },
+        {
+          "t": 20.6,
+          "estado": "busca",
+          "tecnica": "garra",
+          "fase": 1,
+          "x": 3979.2,
+          "destino": 3979.2
+        },
+        {
+          "t": 20.833,
+          "estado": "aviso",
+          "tecnica": "rasante",
+          "fase": 1,
+          "x": 4005.1,
+          "destino": 3940.5
+        },
+        {
+          "t": 21.5,
+          "estado": "investida",
+          "tecnica": "rasante",
+          "fase": 1,
+          "x": 4000.8,
+          "destino": 3940.5
+        },
+        {
+          "t": 21.633,
+          "estado": "recolhe_coruja",
+          "tecnica": "rasante",
+          "fase": 1,
+          "x": 3940.5,
+          "destino": 3940.5
+        },
+        {
+          "t": 22.283,
+          "estado": "busca",
+          "tecnica": "rasante",
+          "fase": 1,
+          "x": 3939.5,
+          "destino": 3940.5
+        },
+        {
+          "t": 22.5,
+          "estado": "aviso",
+          "tecnica": "sino",
+          "fase": 1,
+          "x": 3914.6,
+          "destino": 4378
+        },
+        {
+          "t": 23.333,
+          "estado": "investida",
+          "tecnica": "sino",
+          "fase": 1,
+          "x": 3918.8,
+          "destino": 4378
+        },
+        {
+          "t": 24.25,
+          "estado": "aberto",
+          "tecnica": "sino",
+          "fase": 1,
+          "x": 4378.0,
+          "destino": 4378
+        },
+        {
+          "t": 27.05,
+          "estado": "busca",
+          "tecnica": "sino",
+          "fase": 1,
+          "x": 4378.0,
+          "destino": 4378
+        },
+        {
+          "t": 27.283,
+          "estado": "contorna",
+          "tecnica": "sino",
+          "fase": 1,
+          "x": 4351.2,
+          "destino": 4378
+        },
+        {
+          "t": 28.3,
+          "estado": "busca",
+          "tecnica": "sino",
+          "fase": 1,
+          "x": 3967.0,
+          "destino": 4378
+        },
+        {
+          "t": 28.417,
+          "estado": "aviso",
+          "tecnica": "sino",
+          "fase": 1,
+          "x": 3953.6,
+          "destino": 4378
+        },
+        {
+          "t": 29.25,
+          "estado": "investida",
+          "tecnica": "sino",
+          "fase": 1,
+          "x": 3957.9,
+          "destino": 4378
+        },
+        {
+          "t": 30.083,
+          "estado": "aberto",
+          "tecnica": "sino",
+          "fase": 1,
+          "x": 4378.0,
+          "destino": 4378
+        },
+        {
+          "t": 32.883,
+          "estado": "busca",
+          "tecnica": "sino",
+          "fase": 1,
+          "x": 4378.0,
+          "destino": 4378
+        },
+        {
+          "t": 33.433,
+          "estado": "contorna",
+          "tecnica": "sino",
+          "fase": 1,
+          "x": 4314.8,
+          "destino": 4378
+        },
+        {
+          "t": 34.45,
+          "estado": "busca",
+          "tecnica": "sino",
+          "fase": 1,
+          "x": 3930.6,
+          "destino": 4378
+        },
+        {
+          "t": 34.567,
+          "estado": "aviso",
+          "tecnica": "sino",
+          "fase": 1,
+          "x": 3917.2,
+          "destino": 4378
+        }
+      ],
+      "comandos_sha256": "2af64d9a70d808598345236a0df0e3d2d617b87bd6485070e04223831af715a6"
+    }
+  ]
+}

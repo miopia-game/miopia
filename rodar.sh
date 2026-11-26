@@ -2,7 +2,7 @@
 # Inicialização da pasta de desenvolvimento. O pacote offline contém o próprio Python.
 set -eu
 base=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)
-for candidato in python3 python3.14 python3.13 python3.12 python3.11 python3.10; do
+for candidato in "$base/.venv/bin/python" python3 python3.14 python3.13 python3.12 python3.11 python3.10; do
     if "$candidato" -c 'import sys; sys.exit(not ((3,10) <= sys.version_info[:2] <= (3,14)))' 2>/dev/null; then
         exec "$candidato" "$base/tools/preparar.py" "$@"
     fi

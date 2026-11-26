@@ -24,11 +24,11 @@ class Terreno:
 
     @property
     def atravessavel(self):
-        return self.tipo in ("plataforma", "ponte", "apoio", "arena", "grade")
+        return self.tipo in ("plataforma", "ponte", "apoio", "apoio_fagulha", "arena", "grade")
 
     @property
     def descida(self):
-        return self.tipo in ("plataforma", "apoio", "grade")
+        return self.tipo in ("plataforma", "apoio", "apoio_fagulha", "grade")
 
 
 @dataclass(frozen=True)
@@ -77,20 +77,16 @@ FASES = (
         ((310, 376, 130), (481, 312, 174), (680, 248, 127), (985, 240, 220),
          (1270, 372, 110), (321, 228, 109)),
         ((1160, 350, 110, 68),),
-        (O("nira", "npc", 224, CHAO, "Nira"), O("vespera", "npc", 778, 248, "Véspera"),
-         O("encomenda_mimo", "encomenda", 374,228,"Recolher o pacote de Mimo"),
-         O("registro", "registro", 708, 248, "Mapa do berçário"),
-         O("valvula", "valvula", 568, 312, "Descer a corda"),
-         O("corda", "corda", 990, CHAO, "Subir pela corda", "valvula"),
+        (O("nira", "npc", 224, CHAO, "Nira"), O("vespera", "npc", 755, 248, "Véspera"),
+         O("encomenda_mimo", "encomenda", 374,228,"Recolher a mochila de Mimo"),
+         O("registro", "registro", 708, 248, "Ler o mapa do berçário"),
+         O("corda", "corda", 990, CHAO, "Subir pelo cipó"),
          O("peca", "peca", 1128, 240, "Retirar a peça de raiz")),
-        {"valvula": M("", "", "O carretel gira. Uma corda cai da forquilha adiante.", ("valvula", "corda")),
-         "peca": M("valvula", "A forquilha prende a peça. A válvula solta a amarra.",
-                   "A peça se encaixa. A corda conduz à forquilha dos ninhos.", ("coleta", "porta"))},
-        "peca", (("valvula", "Salte pelos galhos até a válvula"),
-                 ("peca", "Suba pela corda e retire a peça de raiz")),
+        {"peca": M("", "", "A peça se encaixa. Siga para a forquilha dos ninhos.", ("coleta", "porta"))},
+        "peca", (("peca", "Suba pelo cipó e retire a peça de raiz"),),
         (("morcego", 875, 344), ("morcego", 1548, 356), ("aranha",1660,CHAO)),
         ((278, 417), (407, 350), (850, 415), (1145, 208), (1322, 346), (1680, 414)),
-        ("Mapa do berçário", "Nira riscou a data na seda. A trilha do berçário já tinha sumido duas luas antes do raio."),
+        ("Mapa do berçário", "Nira riscou a data na seda. A trilha do berçário sumiu duas luas antes do raio. O diário (M) guarda a rota para o berçário. Conte a data a Véspera."),
         "Uma peça de raiz mantém a arena aberta.",
     ),
     Fase(
@@ -232,7 +228,7 @@ RAMAIS = (
 def ampliar(fase, ramal):
     objeto = ramal.objetivo
     pendencia = {
-        "peca": "A peça da porteira fica no galho alto do Bosque. Baixe a corda no carretel e recolha a peça.",
+        "peca": "A peça da porteira fica no galho alto do Bosque. Use o cipó à direita para chegar a ela.",
         "ponte": "A amarra ainda prende o ralo. A roda da ponte fica à esquerda, na superfície do Córrego, depois de Fio e antes do vão.",
         "brasa": "A brasa fica no galho da outra margem do primeiro vão. Acenda o nó de Eco para alcançar os apoios.",
         "contrapeso": "Solte o contrapeso no estrado alto da Gruta. A roldana dos primeiros galhos baixa a corda até ele.",
@@ -249,14 +245,14 @@ def ampliar(fase, ramal):
 FASES = tuple(ampliar(fase, ramal) for fase,ramal in zip(FASES,RAMAIS))
 # A gota da varanda nova vai ao fim da lista: os IDs de coleta de saves
 # anteriores continuam apontando para as mesmas gotas no Bosque.
-FASES = (replace(FASES[0], orvalhos=FASES[0].orvalhos + ((374, 201),)), *FASES[1:])
+FASES = (replace(FASES[0], orvalhos=FASES[0].orvalhos + ((414, 200),)), *FASES[1:])
 
 # Vozes mudam com o mecanismo local e com a restauração da mata.
 FALAS = {
     "Nira": ("Apaguei dois caminhos do meu mapa antes da tempestade. Véspera ainda canta lá em cima.",
-             "A corda desceu. O galho alto guarda a peça da porteira.",
+             "O cipó leva ao galho onde Véspera guardou a peça da porteira.",
              "Agora posso redesenhar a trilha até o berçário. Vou deixar os ninhos vazios no mapa."),
-    "Véspera": ("Canto três vezes. O eco responde do galho à minha esquerda. Havia ninhos ali.",
+    "Véspera": ("Três chamados. Espero até o galho responder. Eu conhecia cada ninho pelo eco. Agora conheço os que ficaram em silêncio.",
                 "Quando o morcego dobrar as asas, procure os riscos na parede. Ele não consegue frear.",
                 "Reconheci a primeira gota pelo barulho na casca. Usei as amarras dos casulos na ponte. "
                 "Fico aqui para firmar os nós. Se alguém voltar atrasado, a travessia já estará pronta."),

@@ -243,6 +243,8 @@ def entrar(j,marco,pela_boca=False):
     j.comporta_inicio = None
     j.marco_vertical=marco
     j.vestigios.clear()
+    j.fagulha = None
+    j.vespera_sinal = None
     j.boss=None
     j.dialogo=None
     alterada = j.aplicar_dificuldade_no_marco(repovoar=False)

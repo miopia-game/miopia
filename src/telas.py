@@ -1,26 +1,36 @@
 """Menus e páginas desenhados em 960 × 540. As áreas clicáveis são as linhas visíveis."""
 import math
+from functools import lru_cache
 import pygame
 from .ensaios import ENSAIOS, INDICE_ARANHA
-from . import ambiental
+from . import abertura_bosque, ambiental, arte_ilustrada
 from .controles import ACOES, ROTULOS_PAD, nome_tecla
 from .narrativa import RAIZES
 from .ilustracao import (AMBAR, OSSO, PALIDO, TEAL, ROMANOS, brilho, dica_teclado, imagem, linhas,
                          losango, painel, paragrafo, placa, tamanho_texto, texto)
-from .paisagem import NPC_TAM, slug
+from .paisagem import NPC_TAM, arte_npc
 from .roteiro import CONTROLES, FINAL, PROLOGO, epilogo, linha_da_viagem, texto_travessia
 
 SEMENTE_ANTERIOR=pygame.Rect(466,321,38,32)
 SEMENTE_SEGUINTE=pygame.Rect(643,321,38,32)
 VER_TENTATIVA=pygame.Rect(466,370,317,36)
 
+@lru_cache(maxsize=1)
+def _fundo_menu():
+    fundo = abertura_bosque.fundo_sombrio(960,540).copy()
+    sombra = pygame.Surface((502,540),pygame.SRCALPHA)
+    for x in range(sombra.get_width()):
+        pygame.draw.line(sombra,(7,12,17,round(238*(1-x/502)**1.3)),(x,0),(x,539))
+    fundo.blit(sombra,(0,0))
+    return fundo
+
+
 def fundo(s,a):
-    s.blit(imagem("capa.jpg",960,540),(0,0))
-    for n in range(14):
-        x=365+n*47+math.sin(a.relogio*.28+n)*10
-        y=(147+n*33-a.relogio*(2+n%3))%480
-        pygame.draw.circle(s,(169+n%4*14,152,102),(int(x),int(y)),1)
-    brilho(s,(774,278),45)
+    s.blit(_fundo_menu(),(0,0))
+    for n in range(9):
+        x=450+n*54+math.sin(a.relogio*.45+n)*14
+        y=(160+n*41-a.relogio*(4+n%3))%480
+        pygame.draw.circle(s,(171,155,107),(int(x),int(y)),1)
 
 
 def opcoes(a,s,nomes,x,y,w,passo=34,tam=18,limite=None):
@@ -94,7 +104,11 @@ def ajuda(a,s,rodape='Esc ou Enter   ·   voltar'):
             acao=dica_teclado(acao)
         texto(s,key,86,130+i*22,16,AMBAR,"forte")
         texto(s,acao,302,130+i*22,14,OSSO)
-    texto(s,rodape,84,461,15,PALIDO)
+    texto(s,dica_teclado("S + K"),86,439,14,AMBAR,"forte")
+    texto(s,"Faz o clarão frear a queda. Consome brilho.",302,439,13,OSSO)
+    texto(s,dica_teclado("G"),86,459,14,AMBAR,"forte")
+    texto(s,"Lança uma fagulha à frente. Ilumina pousos, revela marcas e atrai alguns inimigos.",302,459,13,OSSO)
+    texto(s,rodape,84,482,15,PALIDO)
 
 
 def opcoes_ajustes(a,s):
@@ -105,11 +119,11 @@ def opcoes_ajustes(a,s):
             "Brilho da mata  ·  "+("Mínimo","Noturno","Médio","Alto")[p["brilho"]],
             "Som  ·  "+("silenciado" if p["mudo"] else "ligado"),"Controles","Acessibilidade","Voltar"]
     opcoes(a,s,labels,77,127,390,32,18)
-    from .paisagem import mascara_luz
+    from .paisagem import mascara_luz, nevoa_distante
     # Demonstra foco e fundo escuro, sem a antiga amostra de breu absoluto.
     amostra = imagem("fundo_0.jpg",340,188).copy()
-    borrado=pygame.transform.smoothscale(pygame.transform.smoothscale(amostra,(17,10)),(340,188))
-    borrado.fill(((65,78,93),(78,92,108),(97,111,125),(120,135,150))[p["brilho"]],special_flags=pygame.BLEND_RGB_MULT)
+    borrado=pygame.Surface(amostra.get_size())
+    nevoa_distante(amostra,borrado,pygame.Surface((102,56)),p["brilho"])
     mascara = pygame.Surface(amostra.get_size())
     mascara.fill((0,0,0))
     mascara.blit(mascara_luz(66,p["brilho"]),(104,30),special_flags=pygame.BLEND_RGB_MAX)
@@ -149,6 +163,7 @@ def acessibilidade(a,s):
     opcoes(a,s,[f"Tamanho do texto  ·  {p['texto']}%",
                  "Alto contraste  ·  "+("Ligado" if p["contraste"] else "Desligado"),
                  "Clarões suaves  ·  "+("Ligados" if p["claroes_suaves"] else "Desligados"),
+                 "Valores no HUD  ·  "+("Ligados" if p["numeros_hud"] else "Desligados"),
                  "Voltar"],77,134,415,41,19)
     texto(s,"Esquerda / direita ajusta · Esc volta",84,444,15,PALIDO)
 
@@ -165,19 +180,8 @@ def creditos(a,s):
 
 
 def pausa(a,s):
-    s.blit(placa(960,540,120),(0,0))
-    painel(s,(294,91,372,361))
-    texto(s,"Pausa",480,106,44,OSSO,"titulo","centerx")
-    nomes=a.pausa_nomes.copy()
-    if a.ensaio is not None:
-        nomes[3:]=["Repetir o ensaio","Voltar ao campo de testes"]
-    opcoes(a,s,nomes,315,176,330,39)
-    dica=(f"Semente {a.jogo.semente}   ·   R para repetir" if a.ensaio==INDICE_ARANHA
-          else "R para repetir o ensaio" if a.ensaio is not None
-          else f"Dificuldade ativa · {a.jogo.dificuldade.capitalize()}")
-    texto(s,dica,480,414,15,PALIDO,"normal","centerx")
-    if a.ensaio is None and a.jogo.dificuldade_pendente:
-        texto(s,f"{a.jogo.dificuldade_pendente.capitalize()} no próximo marco",480,434,13,AMBAR,"forte","centerx")
+    from .abertura_bosque import pausa as pausa_bosque
+    pausa_bosque(a,s)
 
 
 def morte(a,s):
@@ -241,10 +245,16 @@ def dialogo(a,s):
     recuo=5*(tamanho_texto(17)-17)
     painel(s,(73,344-recuo,814,139+recuo))
     x=97
-    if nome in NPC_TAM:
-        img=imagem("npc_"+slug(nome)+".png",76,70)
+    if nome in arte_ilustrada.PERSONAGENS:
+        arte_ilustrada.personagem(s,nome,126,459-recuo,82,78)
+        x = 179
+    elif nome in NPC_TAM:
+        img=imagem(arte_npc(nome)+".png",76,70)
         s.blit(img,(88,379-recuo)); x=179
-    texto(s,nome,x,355-recuo,20,AMBAR,"titulo")
+    rotulo, cor = arte_ilustrada.FUNCOES.get(nome, ("", AMBAR))
+    nome_r = texto(s,nome,x,355-recuo,20,cor,"titulo")
+    if rotulo:
+        texto(s,rotulo,nome_r.right+14,360-recuo,12,PALIDO)
     paragrafo(s,a.fala_visivel,x,384-recuo,825-x,17,OSSO)
     texto(s,f'{avancar} avançar · {a.pagina_fala+1}/{len(a.fala_paginas)}',866,456,12,PALIDO,"normal","right")
 
@@ -329,15 +339,23 @@ def pagina_mapa(a,s,corte=False):
     j=contexto(a.jogo,corte);v=a.mapa_visor;v.preparar(j)
     ensaio=ENSAIOS[a.ensaio] if getattr(a,'ensaio',None) is not None else None
     titulo='Campo de testes · '+ensaio.nome if ensaio else a.jogo.objetivo
-    for n,l in enumerate(linhas(titulo,780,17,'forte')[:2]):
-        texto(s,l,480,132+n*(tamanho_texto(17)+4),17,OSSO,'forte','centerx')
     alvo=alvo_local(j)
+    acesso=alvo.acesso if alvo and not ensaio and not getattr(j,'_mapa_sem_lume',False) else ''
+    if acesso:
+        texto(s,texto_curto(titulo,780,17,'forte'),480,130,17,OSSO,'forte','centerx')
+        rota=dica_teclado('Acesso · '+acesso)
+        texto(s,texto_curto(rota,780,13,'forte'),480,157,13,AMBAR,'forte','centerx')
+    else:
+        for n,l in enumerate(linhas(titulo,780,17,'forte')[:2]):
+            texto(s,l,480,132+n*(tamanho_texto(17)+4),17,OSSO,'forte','centerx')
     detalhe=ensaio.pista if ensaio else alvo.detalhe if alvo else 'Explore as trilhas e marque os lugares a que deseja voltar.'
     if getattr(a.jogo,'ensino_ate',0)>a.jogo.tempo:detalhe=getattr(a.jogo,'ensino_detalhe',detalhe)
     detalhe=dica_teclado(detalhe)
     if getattr(j,'_mapa_sem_lume',False):detalhe='Consulta do Corte · Lume está na superfície. Centralize para ver o último marco.'
     if a.mapa_aviso_ate>a.relogio:detalhe=a.mapa_aviso
-    for n,l in enumerate(linhas(detalhe,780,12)[:2]):texto(s,l,480,180+n*(tamanho_texto(12)+4),12,PALIDO,'normal','centerx')
+    base_detalhe=177 if acesso and tamanho_texto(12)>12 else 180
+    for n,l in enumerate(linhas(detalhe,780,12)[:2]):
+        texto(s,l,480,base_detalhe+n*(tamanho_texto(12)+4),12,PALIDO,'normal','centerx')
     regiao='Corte da Figueira' if j.em_vertical else j.fase.name
     legenda = (" · Traços âmbar: piso pisado   Contorno verde: terreno visto   Setas: conexões"
                if gruta(j) else ' · Âmbar: Lume   Verde: objetivo   Sinais: descida')

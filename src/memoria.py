@@ -34,7 +34,7 @@ class Memoria:
         self.prefs=dict(PADRAO)
         dados=self.ler("preferencias")
         self.prefs["teclas"] = carregar(dados.get("teclas")) if isinstance(dados, dict) else {}
-        self.prefs.update(texto=100, contraste=False, claroes_suaves=False)
+        self.prefs.update(texto=100, contraste=False, claroes_suaves=False, numeros_hud=False)
         if isinstance(dados,dict):
             for k in ("musica","efeitos"):
                 if isinstance(dados.get(k),(float,int)):
@@ -46,7 +46,7 @@ class Memoria:
             self.prefs["mudo"]=dados.get("mudo") is True
             if dados.get("texto") in (100, 115, 125):
                 self.prefs["texto"] = int(dados["texto"])
-            for ajuste in ("contraste", "claroes_suaves"):
+            for ajuste in ("contraste", "claroes_suaves", "numeros_hud"):
                 self.prefs[ajuste] = dados.get(ajuste) is True
 
     def criar(self):

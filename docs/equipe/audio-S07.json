@@ -1,0 +1,157 @@
+{
+  "rodada": "S07",
+  "data": "2026-11-12",
+  "gerador": "tools/gerar_audio_s07.py",
+  "origem": "Síntese local original por osciladores, envelopes e ruído determinístico. Sem samples/downloads.",
+  "audicao_humana": "pendente",
+  "arquivos": {
+    "assets/sons/aviso_aranha_0.wav": {
+      "sha256": "7e2fdf14da0338181fe280db0df4a186174981cb74dba11246cfb64810089641",
+      "bytes": 13716
+    },
+    "assets/sons/aviso_aranha_1.wav": {
+      "sha256": "fcc256c2c5975267bcf886dbb16b014cffeca0cfca1349e78893e2b70788f53c",
+      "bytes": 15346
+    },
+    "assets/sons/aviso_aranha_2.wav": {
+      "sha256": "7077db3f4504388f1a26a6ceedfda5906f4c48367f6845ef2253865a89b352e4",
+      "bytes": 16978
+    },
+    "assets/sons/aviso_aranha_3.wav": {
+      "sha256": "f972fffc606084802b6cf50c86269713815ff1eda3d665797fe2b6d30086de25",
+      "bytes": 18610
+    },
+    "assets/sons/aviso_aranha_4.wav": {
+      "sha256": "43314fd54d1d656d6f8f174ec51f17b81d7491ce109c58dcd9de189b589f2293",
+      "bytes": 20242
+    },
+    "assets/sons/aviso_carabideo_0.wav": {
+      "sha256": "806ce11f8f8c6195d2eac66c76397cb7be5a46c4770a6a603d83fde256c8199f",
+      "bytes": 13716
+    },
+    "assets/sons/aviso_carabideo_1.wav": {
+      "sha256": "79b41217b677ca5c5b003932073beeb39650eea551aa301e451b1d7d00f3e4f0",
+      "bytes": 15346
+    },
+    "assets/sons/aviso_carabideo_2.wav": {
+      "sha256": "510c861c4ee828c27af1cde54911531987e100e072beec5115203339116dd98f",
+      "bytes": 16978
+    },
+    "assets/sons/aviso_carabideo_3.wav": {
+      "sha256": "88032e5d373b008baf603754ad8f4e333fa99a5875f0d6d9465891c2517ca53f",
+      "bytes": 18610
+    },
+    "assets/sons/aviso_carabideo_4.wav": {
+      "sha256": "7d496b1d7514afa44fc9e48821b60d901e99e3d56da2bdc4609e74c6da740654",
+      "bytes": 20242
+    },
+    "assets/sons/aviso_cobra_0.wav": {
+      "sha256": "742f9dce46e3f0974fb85f9afeb597b4604ecc24091a11dc79a0bede15605290",
+      "bytes": 13716
+    },
+    "assets/sons/aviso_cobra_1.wav": {
+      "sha256": "8d146517dd707686150ea7b402665c1ebd62b1311c47dd5ffb25ee0c099f8878",
+      "bytes": 15346
+    },
+    "assets/sons/aviso_cobra_2.wav": {
+      "sha256": "4eb538324f55ab7baec420f8dd75c4db57f204034cd1e8d6a96832be4c7d6ecd",
+      "bytes": 16978
+    },
+    "assets/sons/aviso_cobra_3.wav": {
+      "sha256": "60484c57bd93e88e2afbd7c2aeabaaac5b0668b3ba2966e65c86457edd719196",
+      "bytes": 18610
+    },
+    "assets/sons/aviso_cobra_4.wav": {
+      "sha256": "5d073256f011f332618b1113e606fdb5e1d9d12246c56c7dd0e12e28a4ade7a2",
+      "bytes": 20242
+    },
+    "assets/sons/aviso_morcego_0.wav": {
+      "sha256": "9d1a568ed25a079dd37dc643db678194c2c28b8b2c9d7e0a263336f390201dcc",
+      "bytes": 13716
+    },
+    "assets/sons/aviso_morcego_1.wav": {
+      "sha256": "49f61716b8ec2a8ed941f2d5aa70ec870413725627ada9c8ff8cd7cd41bc8c33",
+      "bytes": 15346
+    },
+    "assets/sons/aviso_morcego_2.wav": {
+      "sha256": "a9abdd334a9288e9008cc754473d262bcabb770277a16316cf75752706b6836d",
+      "bytes": 16978
+    },
+    "assets/sons/aviso_morcego_3.wav": {
+      "sha256": "a9072836980cadf35d56b21b632d93107b8ed13065b10927fa4e93030c63dab9",
+      "bytes": 18610
+    },
+    "assets/sons/aviso_morcego_4.wav": {
+      "sha256": "6b0b322a04abb8b4c9bc2eea8d1b7e30b47d2a71ddb7bf01faf3fb748e77442a",
+      "bytes": 20242
+    },
+    "assets/sons/aviso_sombra_0.wav": {
+      "sha256": "d554203c74c4d6f371317b4eee37c22a041dfb33c72d15e934318cad8066c0c0",
+      "bytes": 13716
+    },
+    "assets/sons/aviso_sombra_1.wav": {
+      "sha256": "40a9eaf7a34d9e11969ee3cabb178b119261081a30f6c2e52fcd544a5bb8f73d",
+      "bytes": 15346
+    },
+    "assets/sons/aviso_sombra_2.wav": {
+      "sha256": "4bd464b5bece4d32cc1baa2a7e0db52d213153b2d8d59e994f8aeef7b09cc65e",
+      "bytes": 16978
+    },
+    "assets/sons/aviso_sombra_3.wav": {
+      "sha256": "f28e8e23145903d2eb7e9dcbe38f425ec646869c3a2ddf367ad9eef6d415f5e8",
+      "bytes": 18610
+    },
+    "assets/sons/aviso_sombra_4.wav": {
+      "sha256": "81bfbbe6944bf67aafaeee15934ff5b3860133dee43c873a22d5d76508253af0",
+      "bytes": 20242
+    },
+    "assets/sons/aviso_vespa_0.wav": {
+      "sha256": "a06e9a2706fb604f7fae4027b6b9ba00296c46aec8ede72b80b64c6488d4fbfe",
+      "bytes": 13716
+    },
+    "assets/sons/aviso_vespa_1.wav": {
+      "sha256": "bb7fc4c4749789352ced60fcbe16fea742edcb2a521d1ca3580f7a3bd34f5cd4",
+      "bytes": 15346
+    },
+    "assets/sons/aviso_vespa_2.wav": {
+      "sha256": "8c0a767def9a1fc59c54a04546f01de16fe1070fd9c1a6e29bbeaad21d808ed9",
+      "bytes": 16978
+    },
+    "assets/sons/aviso_vespa_3.wav": {
+      "sha256": "5567f9b8b0b45c093c36663e88f1e64df4b90fed837038927354a199e55480e6",
+      "bytes": 18610
+    },
+    "assets/sons/aviso_vespa_4.wav": {
+      "sha256": "86a901d48411c302d6248770e3eecb3b18247ef5c5857c9946525160166b13cb",
+      "bytes": 20242
+    },
+    "assets/sons/chamado_final.wav": {
+      "sha256": "4bd464b5bece4d32cc1baa2a7e0db52d213153b2d8d59e994f8aeef7b09cc65e",
+      "bytes": 16978
+    },
+    "assets/sons/coruja_eco.wav": {
+      "sha256": "81bfbbe6944bf67aafaeee15934ff5b3860133dee43c873a22d5d76508253af0",
+      "bytes": 20242
+    },
+    "assets/sons/harmonia.wav": {
+      "sha256": "6b0b322a04abb8b4c9bc2eea8d1b7e30b47d2a71ddb7bf01faf3fb748e77442a",
+      "bytes": 20242
+    },
+    "assets/sons/resgate.wav": {
+      "sha256": "49f61716b8ec2a8ed941f2d5aa70ec870413725627ada9c8ff8cd7cd41bc8c33",
+      "bytes": 15346
+    },
+    "assets/sons/trilha_chefe_final.wav": {
+      "sha256": "c91f5cab1e75d6f9b1f1e6bbc1652a491f0c8942230d3c1e7ae8ead76e1c6608",
+      "bytes": 588044
+    },
+    "assets/sons/trilha_jardim.wav": {
+      "sha256": "e83560ed107691e2789ac9831a85922aab66722f35a238b34615cbaa30740083",
+      "bytes": 1085582
+    },
+    "assets/sons/trilha_retorno.wav": {
+      "sha256": "1eecc99a923e1adc8086e53fca703c7962364fed7bce8115c47721f9f46637c5",
+      "bytes": 1008044
+    }
+  }
+}

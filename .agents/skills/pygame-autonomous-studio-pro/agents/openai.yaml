@@ -1,0 +1,6 @@
+interface:
+  display_name: "Pygame Autonomous Studio Pro"
+  short_description: "Desenvolvimento, narrativa e QA verificável do Miopia"
+  default_prompt: "Use $pygame-autonomous-studio-pro para diagnosticar o Miopia e executar os cartões prontos do sprint autorizado com testes e evidências."
+policy:
+  allow_implicit_invocation: true

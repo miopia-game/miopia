@@ -1,0 +1,644 @@
+{
+  "rotulo": "S04",
+  "metodo": "35 s ou queda, 60 Hz, normal, mesmos comandos; não é teste humano nem piloto vencedor",
+  "fontes": {
+    "src/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/ambiental.py": "595445061b303e7c1c4bf1282062b808e140c7f412e64e351ba1ec9385d3bf4b",
+    "src/arte_arena.py": "da4d5a967320aefe7c19b5df3f2531e1ea02faa298b6db251a6ed8089760fec9",
+    "src/arte_combate.py": "e91722c415fb60744cffe87f54fe423fb8b76ce3918eaff172e171cbda5441d0",
+    "src/arte_corte.py": "4c0775383a3f39d5c840ec6496ba46c10f00aaf1ef90945a02b578c7ee3143fc",
+    "src/audio.py": "3428941a27202dedc1406d8dd2f9dc6c0dd3b3ebd6ac3d1413c4e7b7b2146b9b",
+    "src/cartografia.py": "eac4da1d2dd0a3be55c0577ffb38d3c33d3bbafae2ec4fd43b5e8c9141d49a7c",
+    "src/chefes.py": "097f203fe85e0caf91948864caf12fbb6a3c37c5d18439fa161e610470ebd784",
+    "src/combate.py": "44846150896f3d9010a0874b019c2ebe867c29cfc808b59656f5e9043d88de9c",
+    "src/corte_vertical.py": "d6f3c8dfa7f63a839d040735b3ecc475c7fd99ccf0def2504a00bd31dc9f7893",
+    "src/descoberta.py": "1325095be9875ed45fbde1ad1a8f7650a3578a8232fce1a51634d37ac8a7fc78",
+    "src/ensaios.py": "4906e519970dc8de2309f93fc1e6b28d2083e640d338506dd681b85bfd5b415b",
+    "src/fases.py": "ed319cd6a900d96b44f82167dd5212f89a65d1d0d0660b3fa01298dc4cdc5940",
+    "src/ferramentas.py": "e46a46277da045ff1f21ea93f11dbababc4622a84319183582a05d0540039639",
+    "src/ilustracao.py": "64c532033464569d8fe1c5c5a0557906857e2fce4bb6aca82a0c9d0233a72f77",
+    "src/main.py": "b1637ddd77b47c82263a80daee9b64f2269c56af4ebdefbee4b6f648f379c9ba",
+    "src/memoria.py": "301b3a899a42aaae97a6f1afddd4f3748c284781fe14a4247c790a32427e8dd2",
+    "src/missoes.py": "1766b0fab65adb4849d08cd82021f3c2d3d0c20a41ab54de9976cd46e63b5596",
+    "src/narrativa.py": "af3df60e6721555441768f2324277942979e39ea5c737e33a2e253f8bad34b10",
+    "src/orientacao.py": "15b9be4a90fa2262ecf9973cbed588c41fe9cc6fa2c8e61ef68976046df8e3cb",
+    "src/paisagem.py": "f00e7b05d215a454aa25fedac60c8f0695f44d7853f38f1cd62580a5dedd71c0",
+    "src/replay_aranha.py": "94ecfd5e1a34ad1493a6050407deca21f56366f3665dc20a0862df2be20717eb",
+    "src/roteiro.py": "d50b75ad200d90daade582fea67e039a3c4288f6080becea2c194c2fbd7206f3",
+    "src/sala_aranha.py": "28f256e553ce4c4221e66d92ad7a6a86d6a10bf306555fedb9e0d9c72135b8a5",
+    "src/subsolo.py": "1b32192fb65236faf6d305c9c319f9ed67accfbbbe9482ce7a0ab2e88ce15dfa",
+    "src/taticas.py": "58c898b805a825ce458aef01405331e47d9b132c0ff3860355261528c6ddd228",
+    "src/telas.py": "8cc0b1c39e90974897861ea8e5b3ed7adccdd8de99fb905ee43f063236f69f6c",
+    "src/travessia.py": "3d4368d9642e0c82e88dde3b23aeb3530bf676754dab03d5c9a75a9681711f40",
+    "src/visao.py": "3147a20c6253c489beafa5b16345376b85e2108df6021ef589b3678027c9363a"
+  },
+  "ensaios": [
+    {
+      "chefe": 2,
+      "tempo": 35.0,
+      "estado": "jogando",
+      "vida_chefe": 62.0,
+      "energia_lume": 36.7,
+      "eventos": {
+        "pulo": 23,
+        "arena": 1,
+        "golpe": 105,
+        "valvula": 10,
+        "pouso": 24,
+        "aviso": 10,
+        "acerto": 19,
+        "impacto": 1,
+        "dano": 3
+      },
+      "quadros_por_estado": {
+        "busca": 870,
+        "aviso": 538,
+        "investida": 692
+      },
+      "decisoes": [
+        {
+          "t": 0.0,
+          "estado": "busca",
+          "tecnica": "",
+          "fase": 1,
+          "x": 4265.2,
+          "destino": 3742
+        },
+        {
+          "t": 1.367,
+          "estado": "aviso",
+          "tecnica": "",
+          "fase": 1,
+          "x": 4265.2,
+          "destino": 4004.5
+        },
+        {
+          "t": 2.283,
+          "estado": "investida",
+          "tecnica": "",
+          "fase": 1,
+          "x": 4263.5,
+          "destino": 4004.5
+        },
+        {
+          "t": 3.583,
+          "estado": "busca",
+          "tecnica": "",
+          "fase": 1,
+          "x": 4004.5,
+          "destino": 4004.5
+        },
+        {
+          "t": 5.05,
+          "estado": "aviso",
+          "tecnica": "",
+          "fase": 1,
+          "x": 4004.5,
+          "destino": 3742
+        },
+        {
+          "t": 5.967,
+          "estado": "investida",
+          "tecnica": "",
+          "fase": 1,
+          "x": 4002.9,
+          "destino": 3742
+        },
+        {
+          "t": 7.283,
+          "estado": "busca",
+          "tecnica": "",
+          "fase": 1,
+          "x": 3742.0,
+          "destino": 3742
+        },
+        {
+          "t": 8.733,
+          "estado": "aviso",
+          "tecnica": "",
+          "fase": 1,
+          "x": 3742.0,
+          "destino": 4115.8
+        },
+        {
+          "t": 9.65,
+          "estado": "investida",
+          "tecnica": "",
+          "fase": 1,
+          "x": 3742.0,
+          "destino": 4115.8
+        },
+        {
+          "t": 11.317,
+          "estado": "busca",
+          "tecnica": "",
+          "fase": 1,
+          "x": 4076.0,
+          "destino": 4115.8
+        },
+        {
+          "t": 12.783,
+          "estado": "aviso",
+          "tecnica": "",
+          "fase": 1,
+          "x": 4076.0,
+          "destino": 3807.1
+        },
+        {
+          "t": 13.7,
+          "estado": "investida",
+          "tecnica": "",
+          "fase": 1,
+          "x": 4074.3,
+          "destino": 3807.1
+        },
+        {
+          "t": 15.033,
+          "estado": "busca",
+          "tecnica": "",
+          "fase": 1,
+          "x": 3807.1,
+          "destino": 3807.1
+        },
+        {
+          "t": 16.5,
+          "estado": "aviso",
+          "tecnica": "",
+          "fase": 1,
+          "x": 3807.1,
+          "destino": 3742
+        },
+        {
+          "t": 17.417,
+          "estado": "investida",
+          "tecnica": "",
+          "fase": 1,
+          "x": 3805.5,
+          "destino": 3742
+        },
+        {
+          "t": 17.75,
+          "estado": "busca",
+          "tecnica": "",
+          "fase": 1,
+          "x": 3742.0,
+          "destino": 3742
+        },
+        {
+          "t": 19.2,
+          "estado": "aviso",
+          "tecnica": "",
+          "fase": 1,
+          "x": 3742.0,
+          "destino": 4033.5
+        },
+        {
+          "t": 20.117,
+          "estado": "investida",
+          "tecnica": "",
+          "fase": 1,
+          "x": 3742.0,
+          "destino": 4033.5
+        },
+        {
+          "t": 21.583,
+          "estado": "busca",
+          "tecnica": "",
+          "fase": 1,
+          "x": 4033.5,
+          "destino": 4033.5
+        },
+        {
+          "t": 23.033,
+          "estado": "aviso",
+          "tecnica": "",
+          "fase": 1,
+          "x": 4033.5,
+          "destino": 3742
+        },
+        {
+          "t": 23.95,
+          "estado": "investida",
+          "tecnica": "",
+          "fase": 1,
+          "x": 4033.5,
+          "destino": 3742
+        },
+        {
+          "t": 25.417,
+          "estado": "busca",
+          "tecnica": "",
+          "fase": 1,
+          "x": 3742.0,
+          "destino": 3742
+        },
+        {
+          "t": 26.867,
+          "estado": "aviso",
+          "tecnica": "",
+          "fase": 1,
+          "x": 3742.0,
+          "destino": 4008.0
+        },
+        {
+          "t": 27.783,
+          "estado": "investida",
+          "tecnica": "",
+          "fase": 1,
+          "x": 3742.0,
+          "destino": 4008.0
+        },
+        {
+          "t": 29.117,
+          "estado": "busca",
+          "tecnica": "",
+          "fase": 1,
+          "x": 4008.0,
+          "destino": 4008.0
+        },
+        {
+          "t": 30.583,
+          "estado": "aviso",
+          "tecnica": "",
+          "fase": 1,
+          "x": 4008.0,
+          "destino": 3743.1
+        },
+        {
+          "t": 31.5,
+          "estado": "investida",
+          "tecnica": "",
+          "fase": 1,
+          "x": 4006.3,
+          "destino": 3743.1
+        },
+        {
+          "t": 32.817,
+          "estado": "busca",
+          "tecnica": "",
+          "fase": 1,
+          "x": 3743.1,
+          "destino": 3743.1
+        },
+        {
+          "t": 34.283,
+          "estado": "aviso",
+          "tecnica": "",
+          "fase": 1,
+          "x": 3743.1,
+          "destino": 3742
+        }
+      ],
+      "comandos_sha256": "2af64d9a70d808598345236a0df0e3d2d617b87bd6485070e04223831af715a6"
+    },
+    {
+      "chefe": 3,
+      "tempo": 35.0,
+      "estado": "jogando",
+      "vida_chefe": 72.0,
+      "energia_lume": 36.7,
+      "eventos": {
+        "pulo": 23,
+        "arena": 1,
+        "golpe": 106,
+        "pouso": 24,
+        "aviso": 12,
+        "dano": 3,
+        "acerto": 14,
+        "valvula": 1,
+        "sino": 3,
+        "impacto": 2
+      },
+      "quadros_por_estado": {
+        "busca": 606,
+        "aviso": 628,
+        "investida": 367,
+        "aberto": 451,
+        "contorna": 48
+      },
+      "decisoes": [
+        {
+          "t": 0.0,
+          "estado": "busca",
+          "tecnica": "",
+          "fase": 1,
+          "x": 4338.0,
+          "destino": 3742
+        },
+        {
+          "t": 1.367,
+          "estado": "aviso",
+          "tecnica": "",
+          "fase": 1,
+          "x": 4338.0,
+          "destino": 4068.5
+        },
+        {
+          "t": 2.233,
+          "estado": "investida",
+          "tecnica": "",
+          "fase": 1,
+          "x": 4338.0,
+          "destino": 4068.5
+        },
+        {
+          "t": 2.783,
+          "estado": "busca",
+          "tecnica": "",
+          "fase": 1,
+          "x": 4068.5,
+          "destino": 4068.5
+        },
+        {
+          "t": 3.567,
+          "estado": "aviso",
+          "tecnica": "",
+          "fase": 1,
+          "x": 4068.5,
+          "destino": 3875.9
+        },
+        {
+          "t": 4.45,
+          "estado": "investida",
+          "tecnica": "",
+          "fase": 1,
+          "x": 4064.4,
+          "destino": 3875.9
+        },
+        {
+          "t": 4.833,
+          "estado": "busca",
+          "tecnica": "",
+          "fase": 1,
+          "x": 3875.9,
+          "destino": 3875.9
+        },
+        {
+          "t": 5.633,
+          "estado": "aviso",
+          "tecnica": "",
+          "fase": 1,
+          "x": 3875.9,
+          "destino": 3742
+        },
+        {
+          "t": 6.5,
+          "estado": "investida",
+          "tecnica": "",
+          "fase": 1,
+          "x": 3875.9,
+          "destino": 3742
+        },
+        {
+          "t": 6.783,
+          "estado": "busca",
+          "tecnica": "",
+          "fase": 1,
+          "x": 3742.0,
+          "destino": 3742
+        },
+        {
+          "t": 7.567,
+          "estado": "aviso",
+          "tecnica": "",
+          "fase": 1,
+          "x": 3742.0,
+          "destino": 4090.1
+        },
+        {
+          "t": 8.45,
+          "estado": "investida",
+          "tecnica": "",
+          "fase": 1,
+          "x": 3746.2,
+          "destino": 4090.1
+        },
+        {
+          "t": 9.15,
+          "estado": "busca",
+          "tecnica": "",
+          "fase": 1,
+          "x": 4090.1,
+          "destino": 4090.1
+        },
+        {
+          "t": 9.933,
+          "estado": "aviso",
+          "tecnica": "",
+          "fase": 1,
+          "x": 4090.1,
+          "destino": 3755.4
+        },
+        {
+          "t": 10.817,
+          "estado": "investida",
+          "tecnica": "",
+          "fase": 1,
+          "x": 4085.9,
+          "destino": 3755.4
+        },
+        {
+          "t": 11.483,
+          "estado": "busca",
+          "tecnica": "",
+          "fase": 1,
+          "x": 3755.4,
+          "destino": 3755.4
+        },
+        {
+          "t": 12.283,
+          "estado": "aviso",
+          "tecnica": "",
+          "fase": 1,
+          "x": 3755.4,
+          "destino": 3747.6
+        },
+        {
+          "t": 13.15,
+          "estado": "investida",
+          "tecnica": "",
+          "fase": 1,
+          "x": 3755.4,
+          "destino": 3747.6
+        },
+        {
+          "t": 13.167,
+          "estado": "busca",
+          "tecnica": "",
+          "fase": 1,
+          "x": 3747.6,
+          "destino": 3747.6
+        },
+        {
+          "t": 13.967,
+          "estado": "aviso",
+          "tecnica": "",
+          "fase": 1,
+          "x": 3747.6,
+          "destino": 4145.2
+        },
+        {
+          "t": 14.833,
+          "estado": "investida",
+          "tecnica": "",
+          "fase": 1,
+          "x": 3747.6,
+          "destino": 4145.2
+        },
+        {
+          "t": 15.633,
+          "estado": "busca",
+          "tecnica": "",
+          "fase": 1,
+          "x": 4145.2,
+          "destino": 4145.2
+        },
+        {
+          "t": 16.433,
+          "estado": "aviso",
+          "tecnica": "",
+          "fase": 1,
+          "x": 4145.2,
+          "destino": 3742
+        },
+        {
+          "t": 17.3,
+          "estado": "investida",
+          "tecnica": "",
+          "fase": 1,
+          "x": 4145.2,
+          "destino": 3742
+        },
+        {
+          "t": 18.117,
+          "estado": "busca",
+          "tecnica": "",
+          "fase": 1,
+          "x": 3742.0,
+          "destino": 3742
+        },
+        {
+          "t": 18.917,
+          "estado": "aviso",
+          "tecnica": "",
+          "fase": 1,
+          "x": 3742.0,
+          "destino": 3897.5
+        },
+        {
+          "t": 19.783,
+          "estado": "investida",
+          "tecnica": "",
+          "fase": 1,
+          "x": 3742.0,
+          "destino": 3897.5
+        },
+        {
+          "t": 20.1,
+          "estado": "busca",
+          "tecnica": "",
+          "fase": 1,
+          "x": 3897.5,
+          "destino": 3897.5
+        },
+        {
+          "t": 20.9,
+          "estado": "aviso",
+          "tecnica": "",
+          "fase": 1,
+          "x": 3897.5,
+          "destino": 3924.0
+        },
+        {
+          "t": 21.767,
+          "estado": "investida",
+          "tecnica": "",
+          "fase": 1,
+          "x": 3897.5,
+          "destino": 3924.0
+        },
+        {
+          "t": 21.833,
+          "estado": "busca",
+          "tecnica": "",
+          "fase": 1,
+          "x": 3924.0,
+          "destino": 3924.0
+        },
+        {
+          "t": 22.617,
+          "estado": "aviso",
+          "tecnica": "",
+          "fase": 1,
+          "x": 3924.0,
+          "destino": 4378
+        },
+        {
+          "t": 23.5,
+          "estado": "investida",
+          "tecnica": "",
+          "fase": 1,
+          "x": 3928.2,
+          "destino": 4378
+        },
+        {
+          "t": 24.417,
+          "estado": "aberto",
+          "tecnica": "",
+          "fase": 1,
+          "x": 4378.0,
+          "destino": 4378
+        },
+        {
+          "t": 30.333,
+          "estado": "busca",
+          "tecnica": "",
+          "fase": 1,
+          "x": 4378.0,
+          "destino": 4378
+        },
+        {
+          "t": 30.95,
+          "estado": "contorna",
+          "tecnica": "",
+          "fase": 1,
+          "x": 4378.0,
+          "destino": 4378
+        },
+        {
+          "t": 31.75,
+          "estado": "busca",
+          "tecnica": "",
+          "fase": 1,
+          "x": 4083.5,
+          "destino": 4378
+        },
+        {
+          "t": 31.933,
+          "estado": "aviso",
+          "tecnica": "",
+          "fase": 1,
+          "x": 4083.5,
+          "destino": 4378
+        },
+        {
+          "t": 32.8,
+          "estado": "investida",
+          "tecnica": "",
+          "fase": 1,
+          "x": 4083.5,
+          "destino": 4378
+        },
+        {
+          "t": 33.4,
+          "estado": "aberto",
+          "tecnica": "",
+          "fase": 1,
+          "x": 4378.0,
+          "destino": 4378
+        }
+      ],
+      "comandos_sha256": "2af64d9a70d808598345236a0df0e3d2d617b87bd6485070e04223831af715a6"
+    }
+  ]
+}

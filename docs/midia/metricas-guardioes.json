@@ -1,0 +1,158 @@
+[
+  {
+    "chefe": "Asa Fendida",
+    "modo": "normal",
+    "driver": "cocoa",
+    "dificuldade": "normal",
+    "duracao": 10.23,
+    "dano": 0.0,
+    "curas": 0,
+    "vida_final": 100.0,
+    "usos": 0,
+    "reacoes": 0,
+    "brechas_fagulha": 0,
+    "total_brechas": 3,
+    "criticos": 3,
+    "sinais": {
+      "entrada": "G · lance a fagulha num patamar marcado",
+      "aviso": "Abaixe-se · voo alto"
+    }
+  },
+  {
+    "chefe": "Asa Fendida",
+    "modo": "fagulha",
+    "driver": "cocoa",
+    "dificuldade": "normal",
+    "duracao": 10.67,
+    "dano": 0.0,
+    "curas": 0,
+    "vida_final": 100.0,
+    "usos": 1,
+    "reacoes": 1,
+    "brechas_fagulha": 1,
+    "total_brechas": 3,
+    "criticos": 3,
+    "sinais": {
+      "entrada": "G · lance a fagulha num patamar marcado",
+      "aviso": "Voo na fagulha · saia da faixa marcada",
+      "brecha_fagulha": "Brecha da fagulha · suba e ataque o dorso"
+    }
+  },
+  {
+    "chefe": "Tecelã do Vão",
+    "modo": "normal",
+    "driver": "cocoa",
+    "dificuldade": "normal",
+    "duracao": 7.43,
+    "dano": 19.0,
+    "curas": 0,
+    "vida_final": 96.0,
+    "usos": 0,
+    "reacoes": 0,
+    "brechas_fagulha": 0,
+    "total_brechas": 3,
+    "criticos": 3,
+    "sinais": {
+      "entrada": "G na seda · faça o fio cruzar a marca",
+      "aviso": "Desvie da linha do fio · E na roda abre a água"
+    }
+  },
+  {
+    "chefe": "Tecelã do Vão",
+    "modo": "fagulha",
+    "driver": "cocoa",
+    "dificuldade": "normal",
+    "duracao": 9.88,
+    "dano": 19.0,
+    "curas": 0,
+    "vida_final": 96.0,
+    "usos": 1,
+    "reacoes": 1,
+    "brechas_fagulha": 1,
+    "total_brechas": 3,
+    "criticos": 3,
+    "sinais": {
+      "entrada": "G na seda · faça o fio cruzar a marca",
+      "aviso": "Desvie da linha do fio · E na roda abre a água",
+      "brecha_fagulha": "Seda queimada · ataque o ventre com J"
+    }
+  },
+  {
+    "chefe": "Casco Oco",
+    "modo": "normal",
+    "driver": "cocoa",
+    "dificuldade": "normal",
+    "duracao": 14.12,
+    "dano": 57.0,
+    "curas": 0,
+    "vida_final": 58.0,
+    "usos": 0,
+    "reacoes": 0,
+    "brechas_fagulha": 0,
+    "total_brechas": 3,
+    "criticos": 3,
+    "sinais": {
+      "entrada": "G na seiva · induza a carga a cruzar a marca",
+      "aviso": "Chifre baixo. Salte quando ele se aproximar."
+    }
+  },
+  {
+    "chefe": "Casco Oco",
+    "modo": "fagulha",
+    "driver": "cocoa",
+    "dificuldade": "normal",
+    "duracao": 12.95,
+    "dano": 76.0,
+    "curas": 1,
+    "vida_final": 74.0,
+    "usos": 1,
+    "reacoes": 1,
+    "brechas_fagulha": 1,
+    "total_brechas": 3,
+    "criticos": 3,
+    "sinais": {
+      "entrada": "G na seiva · induza a carga a cruzar a marca",
+      "aviso": "Chifre baixo. Salte quando ele se aproximar.",
+      "brecha_fagulha": "Patas presas · salte e ataque a casca com J"
+    }
+  },
+  {
+    "chefe": "A Coruja",
+    "modo": "normal",
+    "driver": "cocoa",
+    "dificuldade": "normal",
+    "duracao": 20.25,
+    "dano": 19.0,
+    "curas": 0,
+    "vida_final": 96.0,
+    "usos": 0,
+    "reacoes": 0,
+    "brechas_fagulha": 0,
+    "total_brechas": 3,
+    "criticos": 3,
+    "sinais": {
+      "entrada": "E move o sino · G pode tocá-lo depois",
+      "aviso": "O sino a leva à raiz riscada. Suba para lançar K perto da face."
+    }
+  },
+  {
+    "chefe": "A Coruja",
+    "modo": "fagulha",
+    "driver": "cocoa",
+    "dificuldade": "normal",
+    "duracao": 22.43,
+    "dano": 76.0,
+    "curas": 1,
+    "vida_final": 74.0,
+    "usos": 1,
+    "reacoes": 1,
+    "brechas_fagulha": 1,
+    "total_brechas": 3,
+    "criticos": 3,
+    "sinais": {
+      "entrada": "E move o sino · G pode tocá-lo depois",
+      "aviso": "Leia a altura do voo antes de saltar ou abaixar.",
+      "brecha_fagulha": "Sino soou à distância · suba e use K na face"
+    }
+  }
+]

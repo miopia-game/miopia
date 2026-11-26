@@ -1,0 +1,986 @@
+{
+  "morcego": [
+    {
+      "id": 0,
+      "nome": "Aproximação",
+      "passos": [
+        "mergulho"
+      ]
+    },
+    {
+      "id": 1,
+      "nome": "Controle de espaço",
+      "passos": [
+        "rasante"
+      ]
+    },
+    {
+      "id": 2,
+      "nome": "Dispersão",
+      "passos": [
+        "eco"
+      ]
+    },
+    {
+      "id": 3,
+      "nome": "Ataque rente",
+      "passos": [
+        "rasante_baixo"
+      ]
+    },
+    {
+      "id": 4,
+      "nome": "Ataque de cima",
+      "passos": [
+        "queda"
+      ]
+    },
+    {
+      "id": 5,
+      "nome": "Duas entradas",
+      "passos": [
+        "mergulho",
+        "mergulho"
+      ]
+    },
+    {
+      "id": 6,
+      "nome": "Duas pressões",
+      "passos": [
+        "rasante",
+        "rasante"
+      ]
+    },
+    {
+      "id": 7,
+      "nome": "Entrar e afastar",
+      "passos": [
+        "mergulho",
+        "recuar",
+        "rasante"
+      ]
+    },
+    {
+      "id": 8,
+      "nome": "Atrair e entrar",
+      "passos": [
+        "rasante",
+        "recuar",
+        "mergulho"
+      ]
+    },
+    {
+      "id": 9,
+      "nome": "Cobertura e avanço",
+      "passos": [
+        "eco",
+        "mergulho"
+      ]
+    },
+    {
+      "id": 10,
+      "nome": "Rente e distância",
+      "passos": [
+        "rasante_baixo",
+        "rasante"
+      ]
+    },
+    {
+      "id": 11,
+      "nome": "Recuo coberto",
+      "passos": [
+        "recuar",
+        "eco"
+      ]
+    },
+    {
+      "id": 12,
+      "nome": "Entrada pelo flanco",
+      "passos": [
+        "flanco",
+        "mergulho"
+      ]
+    },
+    {
+      "id": 13,
+      "nome": "Pressão pelo flanco",
+      "passos": [
+        "flanco",
+        "rasante"
+      ]
+    },
+    {
+      "id": 14,
+      "nome": "Cruzar e responder",
+      "passos": [
+        "mergulho",
+        "flanco",
+        "rasante"
+      ]
+    },
+    {
+      "id": 15,
+      "nome": "Atrair e cruzar",
+      "passos": [
+        "rasante",
+        "flanco",
+        "mergulho"
+      ]
+    },
+    {
+      "id": 16,
+      "nome": "Alto e dispersão",
+      "passos": [
+        "queda",
+        "eco"
+      ]
+    },
+    {
+      "id": 17,
+      "nome": "Três alturas",
+      "passos": [
+        "rasante_baixo",
+        "queda",
+        "rasante"
+      ]
+    },
+    {
+      "id": 18,
+      "nome": "Entrada e queda",
+      "passos": [
+        "mergulho",
+        "recuar",
+        "queda"
+      ]
+    },
+    {
+      "id": 19,
+      "nome": "Pinça",
+      "passos": [
+        "eco",
+        "flanco",
+        "rasante_baixo"
+      ]
+    }
+  ],
+  "aranha": [
+    {
+      "id": 0,
+      "nome": "Aproximação",
+      "passos": [
+        "salto"
+      ]
+    },
+    {
+      "id": 1,
+      "nome": "Controle de espaço",
+      "passos": [
+        "fio"
+      ]
+    },
+    {
+      "id": 2,
+      "nome": "Dispersão",
+      "passos": [
+        "leque_fio"
+      ]
+    },
+    {
+      "id": 3,
+      "nome": "Ataque rente",
+      "passos": [
+        "mordida"
+      ]
+    },
+    {
+      "id": 4,
+      "nome": "Ataque de cima",
+      "passos": [
+        "pique"
+      ]
+    },
+    {
+      "id": 5,
+      "nome": "Duas entradas",
+      "passos": [
+        "salto",
+        "salto"
+      ]
+    },
+    {
+      "id": 6,
+      "nome": "Duas pressões",
+      "passos": [
+        "fio",
+        "fio"
+      ]
+    },
+    {
+      "id": 7,
+      "nome": "Entrar e afastar",
+      "passos": [
+        "salto",
+        "recuar",
+        "fio"
+      ]
+    },
+    {
+      "id": 8,
+      "nome": "Atrair e entrar",
+      "passos": [
+        "fio",
+        "recuar",
+        "salto"
+      ]
+    },
+    {
+      "id": 9,
+      "nome": "Cobertura e avanço",
+      "passos": [
+        "leque_fio",
+        "salto"
+      ]
+    },
+    {
+      "id": 10,
+      "nome": "Rente e distância",
+      "passos": [
+        "mordida",
+        "fio"
+      ]
+    },
+    {
+      "id": 11,
+      "nome": "Recuo coberto",
+      "passos": [
+        "recuar",
+        "leque_fio"
+      ]
+    },
+    {
+      "id": 12,
+      "nome": "Entrada pelo flanco",
+      "passos": [
+        "flanco",
+        "salto"
+      ]
+    },
+    {
+      "id": 13,
+      "nome": "Pressão pelo flanco",
+      "passos": [
+        "flanco",
+        "fio"
+      ]
+    },
+    {
+      "id": 14,
+      "nome": "Cruzar e responder",
+      "passos": [
+        "salto",
+        "flanco",
+        "fio"
+      ]
+    },
+    {
+      "id": 15,
+      "nome": "Atrair e cruzar",
+      "passos": [
+        "fio",
+        "flanco",
+        "salto"
+      ]
+    },
+    {
+      "id": 16,
+      "nome": "Alto e dispersão",
+      "passos": [
+        "pique",
+        "leque_fio"
+      ]
+    },
+    {
+      "id": 17,
+      "nome": "Três alturas",
+      "passos": [
+        "mordida",
+        "pique",
+        "fio"
+      ]
+    },
+    {
+      "id": 18,
+      "nome": "Entrada e queda",
+      "passos": [
+        "salto",
+        "recuar",
+        "pique"
+      ]
+    },
+    {
+      "id": 19,
+      "nome": "Pinça",
+      "passos": [
+        "leque_fio",
+        "flanco",
+        "mordida"
+      ]
+    }
+  ],
+  "sombra": [
+    {
+      "id": 0,
+      "nome": "Aproximação",
+      "passos": [
+        "fenda"
+      ]
+    },
+    {
+      "id": 1,
+      "nome": "Controle de espaço",
+      "passos": [
+        "rasteira"
+      ]
+    },
+    {
+      "id": 2,
+      "nome": "Dispersão",
+      "passos": [
+        "orbe"
+      ]
+    },
+    {
+      "id": 3,
+      "nome": "Ataque rente",
+      "passos": [
+        "fenda_dupla"
+      ]
+    },
+    {
+      "id": 4,
+      "nome": "Ataque de cima",
+      "passos": [
+        "pique"
+      ]
+    },
+    {
+      "id": 5,
+      "nome": "Duas entradas",
+      "passos": [
+        "fenda",
+        "fenda"
+      ]
+    },
+    {
+      "id": 6,
+      "nome": "Duas pressões",
+      "passos": [
+        "rasteira",
+        "rasteira"
+      ]
+    },
+    {
+      "id": 7,
+      "nome": "Entrar e afastar",
+      "passos": [
+        "fenda",
+        "recuar",
+        "rasteira"
+      ]
+    },
+    {
+      "id": 8,
+      "nome": "Atrair e entrar",
+      "passos": [
+        "rasteira",
+        "recuar",
+        "fenda"
+      ]
+    },
+    {
+      "id": 9,
+      "nome": "Cobertura e avanço",
+      "passos": [
+        "orbe",
+        "fenda"
+      ]
+    },
+    {
+      "id": 10,
+      "nome": "Rente e distância",
+      "passos": [
+        "fenda_dupla",
+        "rasteira"
+      ]
+    },
+    {
+      "id": 11,
+      "nome": "Recuo coberto",
+      "passos": [
+        "recuar",
+        "orbe"
+      ]
+    },
+    {
+      "id": 12,
+      "nome": "Entrada pelo flanco",
+      "passos": [
+        "flanco",
+        "fenda"
+      ]
+    },
+    {
+      "id": 13,
+      "nome": "Pressão pelo flanco",
+      "passos": [
+        "flanco",
+        "rasteira"
+      ]
+    },
+    {
+      "id": 14,
+      "nome": "Cruzar e responder",
+      "passos": [
+        "fenda",
+        "flanco",
+        "rasteira"
+      ]
+    },
+    {
+      "id": 15,
+      "nome": "Atrair e cruzar",
+      "passos": [
+        "rasteira",
+        "flanco",
+        "fenda"
+      ]
+    },
+    {
+      "id": 16,
+      "nome": "Alto e dispersão",
+      "passos": [
+        "pique",
+        "orbe"
+      ]
+    },
+    {
+      "id": 17,
+      "nome": "Três alturas",
+      "passos": [
+        "fenda_dupla",
+        "pique",
+        "rasteira"
+      ]
+    },
+    {
+      "id": 18,
+      "nome": "Entrada e queda",
+      "passos": [
+        "fenda",
+        "recuar",
+        "pique"
+      ]
+    },
+    {
+      "id": 19,
+      "nome": "Pinça",
+      "passos": [
+        "orbe",
+        "flanco",
+        "fenda_dupla"
+      ]
+    }
+  ],
+  "vespa": [
+    {
+      "id": 0,
+      "nome": "Aproximação",
+      "passos": [
+        "mergulho"
+      ]
+    },
+    {
+      "id": 1,
+      "nome": "Controle de espaço",
+      "passos": [
+        "ferrao"
+      ]
+    },
+    {
+      "id": 2,
+      "nome": "Dispersão",
+      "passos": [
+        "leque_ferrao"
+      ]
+    },
+    {
+      "id": 3,
+      "nome": "Ataque rente",
+      "passos": [
+        "rasante"
+      ]
+    },
+    {
+      "id": 4,
+      "nome": "Ataque de cima",
+      "passos": [
+        "queda"
+      ]
+    },
+    {
+      "id": 5,
+      "nome": "Duas entradas",
+      "passos": [
+        "mergulho",
+        "mergulho"
+      ]
+    },
+    {
+      "id": 6,
+      "nome": "Duas pressões",
+      "passos": [
+        "ferrao",
+        "ferrao"
+      ]
+    },
+    {
+      "id": 7,
+      "nome": "Entrar e afastar",
+      "passos": [
+        "mergulho",
+        "recuar",
+        "ferrao"
+      ]
+    },
+    {
+      "id": 8,
+      "nome": "Atrair e entrar",
+      "passos": [
+        "ferrao",
+        "recuar",
+        "mergulho"
+      ]
+    },
+    {
+      "id": 9,
+      "nome": "Cobertura e avanço",
+      "passos": [
+        "leque_ferrao",
+        "mergulho"
+      ]
+    },
+    {
+      "id": 10,
+      "nome": "Rente e distância",
+      "passos": [
+        "rasante",
+        "ferrao"
+      ]
+    },
+    {
+      "id": 11,
+      "nome": "Recuo coberto",
+      "passos": [
+        "recuar",
+        "leque_ferrao"
+      ]
+    },
+    {
+      "id": 12,
+      "nome": "Entrada pelo flanco",
+      "passos": [
+        "flanco",
+        "mergulho"
+      ]
+    },
+    {
+      "id": 13,
+      "nome": "Pressão pelo flanco",
+      "passos": [
+        "flanco",
+        "ferrao"
+      ]
+    },
+    {
+      "id": 14,
+      "nome": "Cruzar e responder",
+      "passos": [
+        "mergulho",
+        "flanco",
+        "ferrao"
+      ]
+    },
+    {
+      "id": 15,
+      "nome": "Atrair e cruzar",
+      "passos": [
+        "ferrao",
+        "flanco",
+        "mergulho"
+      ]
+    },
+    {
+      "id": 16,
+      "nome": "Alto e dispersão",
+      "passos": [
+        "queda",
+        "leque_ferrao"
+      ]
+    },
+    {
+      "id": 17,
+      "nome": "Três alturas",
+      "passos": [
+        "rasante",
+        "queda",
+        "ferrao"
+      ]
+    },
+    {
+      "id": 18,
+      "nome": "Entrada e queda",
+      "passos": [
+        "mergulho",
+        "recuar",
+        "queda"
+      ]
+    },
+    {
+      "id": 19,
+      "nome": "Pinça",
+      "passos": [
+        "leque_ferrao",
+        "flanco",
+        "rasante"
+      ]
+    }
+  ],
+  "carabideo": [
+    {
+      "id": 0,
+      "nome": "Aproximação",
+      "passos": [
+        "carga"
+      ]
+    },
+    {
+      "id": 1,
+      "nome": "Controle de espaço",
+      "passos": [
+        "onda"
+      ]
+    },
+    {
+      "id": 2,
+      "nome": "Dispersão",
+      "passos": [
+        "onda_dupla"
+      ]
+    },
+    {
+      "id": 3,
+      "nome": "Ataque rente",
+      "passos": [
+        "varredura"
+      ]
+    },
+    {
+      "id": 4,
+      "nome": "Ataque de cima",
+      "passos": [
+        "salto"
+      ]
+    },
+    {
+      "id": 5,
+      "nome": "Duas entradas",
+      "passos": [
+        "carga",
+        "carga"
+      ]
+    },
+    {
+      "id": 6,
+      "nome": "Duas pressões",
+      "passos": [
+        "onda",
+        "onda"
+      ]
+    },
+    {
+      "id": 7,
+      "nome": "Entrar e afastar",
+      "passos": [
+        "carga",
+        "recuar",
+        "onda"
+      ]
+    },
+    {
+      "id": 8,
+      "nome": "Atrair e entrar",
+      "passos": [
+        "onda",
+        "recuar",
+        "carga"
+      ]
+    },
+    {
+      "id": 9,
+      "nome": "Cobertura e avanço",
+      "passos": [
+        "onda_dupla",
+        "carga"
+      ]
+    },
+    {
+      "id": 10,
+      "nome": "Rente e distância",
+      "passos": [
+        "varredura",
+        "onda"
+      ]
+    },
+    {
+      "id": 11,
+      "nome": "Recuo coberto",
+      "passos": [
+        "recuar",
+        "onda_dupla"
+      ]
+    },
+    {
+      "id": 12,
+      "nome": "Entrada pelo flanco",
+      "passos": [
+        "flanco",
+        "carga"
+      ]
+    },
+    {
+      "id": 13,
+      "nome": "Pressão pelo flanco",
+      "passos": [
+        "flanco",
+        "onda"
+      ]
+    },
+    {
+      "id": 14,
+      "nome": "Cruzar e responder",
+      "passos": [
+        "carga",
+        "flanco",
+        "onda"
+      ]
+    },
+    {
+      "id": 15,
+      "nome": "Atrair e cruzar",
+      "passos": [
+        "onda",
+        "flanco",
+        "carga"
+      ]
+    },
+    {
+      "id": 16,
+      "nome": "Alto e dispersão",
+      "passos": [
+        "salto",
+        "onda_dupla"
+      ]
+    },
+    {
+      "id": 17,
+      "nome": "Três alturas",
+      "passos": [
+        "varredura",
+        "salto",
+        "onda"
+      ]
+    },
+    {
+      "id": 18,
+      "nome": "Entrada e queda",
+      "passos": [
+        "carga",
+        "recuar",
+        "salto"
+      ]
+    },
+    {
+      "id": 19,
+      "nome": "Pinça",
+      "passos": [
+        "onda_dupla",
+        "flanco",
+        "varredura"
+      ]
+    }
+  ],
+  "cobra": [
+    {
+      "id": 0,
+      "nome": "Aproximação",
+      "passos": [
+        "rasteira"
+      ]
+    },
+    {
+      "id": 1,
+      "nome": "Controle de espaço",
+      "passos": [
+        "salto"
+      ]
+    },
+    {
+      "id": 2,
+      "nome": "Dispersão",
+      "passos": [
+        "veneno"
+      ]
+    },
+    {
+      "id": 3,
+      "nome": "Ataque rente",
+      "passos": [
+        "mordida"
+      ]
+    },
+    {
+      "id": 4,
+      "nome": "Ataque de cima",
+      "passos": [
+        "pique"
+      ]
+    },
+    {
+      "id": 5,
+      "nome": "Duas entradas",
+      "passos": [
+        "rasteira",
+        "rasteira"
+      ]
+    },
+    {
+      "id": 6,
+      "nome": "Duas pressões",
+      "passos": [
+        "salto",
+        "salto"
+      ]
+    },
+    {
+      "id": 7,
+      "nome": "Entrar e afastar",
+      "passos": [
+        "rasteira",
+        "recuar",
+        "salto"
+      ]
+    },
+    {
+      "id": 8,
+      "nome": "Atrair e entrar",
+      "passos": [
+        "salto",
+        "recuar",
+        "rasteira"
+      ]
+    },
+    {
+      "id": 9,
+      "nome": "Cobertura e avanço",
+      "passos": [
+        "veneno",
+        "rasteira"
+      ]
+    },
+    {
+      "id": 10,
+      "nome": "Rente e distância",
+      "passos": [
+        "mordida",
+        "salto"
+      ]
+    },
+    {
+      "id": 11,
+      "nome": "Recuo coberto",
+      "passos": [
+        "recuar",
+        "veneno"
+      ]
+    },
+    {
+      "id": 12,
+      "nome": "Entrada pelo flanco",
+      "passos": [
+        "flanco",
+        "rasteira"
+      ]
+    },
+    {
+      "id": 13,
+      "nome": "Pressão pelo flanco",
+      "passos": [
+        "flanco",
+        "salto"
+      ]
+    },
+    {
+      "id": 14,
+      "nome": "Cruzar e responder",
+      "passos": [
+        "rasteira",
+        "flanco",
+        "salto"
+      ]
+    },
+    {
+      "id": 15,
+      "nome": "Atrair e cruzar",
+      "passos": [
+        "salto",
+        "flanco",
+        "rasteira"
+      ]
+    },
+    {
+      "id": 16,
+      "nome": "Alto e dispersão",
+      "passos": [
+        "pique",
+        "veneno"
+      ]
+    },
+    {
+      "id": 17,
+      "nome": "Três alturas",
+      "passos": [
+        "mordida",
+        "pique",
+        "salto"
+      ]
+    },
+    {
+      "id": 18,
+      "nome": "Entrada e queda",
+      "passos": [
+        "rasteira",
+        "recuar",
+        "pique"
+      ]
+    },
+    {
+      "id": 19,
+      "nome": "Pinça",
+      "passos": [
+        "veneno",
+        "flanco",
+        "mordida"
+      ]
+    }
+  ]
+}

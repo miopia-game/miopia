@@ -1,0 +1,83 @@
+{
+  "base_tiago": {
+    "testes": 265,
+    "subcasos": 176,
+    "segundos": 42.11,
+    "sha256_original": "619602047fa03707f05cdfbfcde60651cc7f071ffea34645546a2ea2d353fcdd"
+  },
+  "fonte_s11": {
+    "testes": 282,
+    "subcasos": 176,
+    "segundos": 43.95,
+    "avisos_renderer": 80
+  },
+  "audio_focado": 37,
+  "luz_camera_focado": 10,
+  "ogg_mixer": 14,
+  "loop_real_sdl": [
+    "chefe_final",
+    "bosque"
+  ],
+  "capturas_r10_3": {
+    "grade": {
+      "x": 1636.36,
+      "y_pe": 442.0,
+      "camera_y": 121.0,
+      "tempo": 1.43,
+      "globos": 0,
+      "tochas": [],
+      "tema": "bosque"
+    },
+    "galeria": {
+      "x": 1630.01,
+      "y_pe": 842.0,
+      "camera_y": 520.9,
+      "tempo": 5.5,
+      "globos": 0,
+      "tochas": [],
+      "tema": "bosque"
+    },
+    "volta_grade": {
+      "x": 1641.93,
+      "y_pe": 442.0,
+      "camera_y": 124.43,
+      "tempo": 7.8,
+      "globos": 0,
+      "tochas": [],
+      "tema": "bosque"
+    },
+    "escuro_morte": {
+      "x": 1756.33,
+      "y_pe": 1282.0,
+      "camera_y": 860.0,
+      "tempo": 0.8,
+      "globos": 1,
+      "tochas": [
+        "bercario"
+      ],
+      "tema": "derrota"
+    },
+    "tocha_recarregada": {
+      "x": 1760.0,
+      "y_pe": 1282.0,
+      "camera_y": 860,
+      "tempo": 0.8,
+      "globos": 1,
+      "tochas": [
+        "bercario"
+      ],
+      "tema": "bosque"
+    }
+  },
+  "revisao_humana": "pendente",
+  "academico_extraido": {
+    "audio_focado": 20,
+    "smoke": true
+  },
+  "linux_extraido": {
+    "ogg": 14,
+    "smoke": true,
+    "assinatura_replay": "14f2a59062a72e67b34f8431d6a0a9d3aefec82f298304f2d298d867aa334a59"
+  },
+  "empacotadores_focado": 3
+}

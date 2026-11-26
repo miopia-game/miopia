@@ -1,0 +1,49 @@
+{
+  "sprint": "S10",
+  "data": "2026-11-13",
+  "cartao": "R10.1 técnico",
+  "testes": 256,
+  "subcasos": 166,
+  "segundos_pytest": 43.11,
+  "executor_exit_code": 0,
+  "helpers_testes": 9,
+  "ensaios_mapa": 26,
+  "red_green": {
+    "avisos": "7 falhas reproduzidas antes do ajuste; passaram depois.",
+    "mapa": "5 falhas por detalhe/cabeçalho da campanha no ensaio; passaram depois."
+  },
+  "exploracao": {
+    "frames_executed": 1100,
+    "seed": 9102,
+    "unique_observed_nodes": 20,
+    "transitions": 1100,
+    "failures": [],
+    "memory_scope": "tracemalloc includes the explorer graph and telemetry; not total RSS or proof of a game leak",
+    "coverage_claim": "observed states only; no full-map or human-playability claim"
+  },
+  "capturas": [
+    "s10_canto_esquerdo.png",
+    "s10_galeria.png",
+    "s10_grade.png",
+    "s10_limite_texto.png",
+    "s10_mapa_historia.png",
+    "s10_mapa_vigilia.png",
+    "s10_menu.png",
+    "s10_retorno.png",
+    "s10_tutorial_descida.png",
+    "s10_vigilia.png"
+  ],
+  "parecer_humano": "pendente",
+  "regras_save_simulacao": "inalterados; assinatura de replay S09 mantida",
+  "recursos_novos": "Nenhuma mídia/dependência; fontes e primitivas existentes.",
+  "limites": "SDL dummy e testes não aprovam didática, arte, dificuldade, áudio ou FPS real. Resultado da extração final em ENTREGA.json.",
+  "testes_s10": 16,
+  "testes_especificos_iniciais": 34,
+  "revisao": {
+    "bloqueantes_campanha_ensaios": 0,
+    "P2": "Custo excessivo ao cortar texto muito longo.",
+    "correcao": "Encurtar somente a quinta linha; teste real mediu 1.507.726 caracteres antes e exige menos de 2.000 após.",
+    "red_green": true,
+    "regressao_final": 256
+  }
+}

@@ -192,7 +192,7 @@ def desenhar_ponto(camada,o,j,cx):
         objeto(camada,o,j,cx)
         return
     if o.tipo=="passagem":
-        from .paisagem import passagem
+        from .arte_bosque import passagem
         passagem(camada,x,o.y,False)
         return
     if o.tipo=="reliquia":
@@ -305,6 +305,8 @@ def desenhar(s,j,t,nivel_brilho):
         if v.raio(t)>16:
             if not claroes_suaves():
                 brilho(camada,(v.x-cx,v.y),20)
+    from .travessia_fagulha import desenhar as desenhar_fagulha
+    desenhar_fagulha(camada,j,cx)
     for e in j.inimigos:
         projeteis(camada,e,cx,j.lume,j.raio,j.visivel)
     lume(camada,j.lume,cx,t)

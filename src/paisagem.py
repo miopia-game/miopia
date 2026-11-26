@@ -4,14 +4,16 @@ import random
 import unicodedata
 from functools import lru_cache
 import pygame
+from . import abertura_bosque, arte_bosque, arte_ilustrada, desvios_fagulha, licao_vespera, travessia_fagulha
 from .arte_arena import sinais_encontro
 from .arte_combate import inimigo, projeteis, golpe_lume, tranca
-from .ilustracao import (original, AMBAR, OSSO, PALIDO, PERIGO, ROMANOS, TEAL, TINTA, brilho, dica_teclado, fonte, imagem,
+from .arte_lume import desenhar_lume
+from .fases import FASES
+from .hud_reservas import desenhar as reservas
+from .ilustracao import (original, AMBAR, alto_contraste, OSSO, PALIDO, PERIGO, ROMANOS, TEAL, TINTA, brilho, dica_teclado, fonte, imagem,
                          losango, manivela, painel, placa, sprite, tamanho_texto, texto)
 
 CORES = ((77,102,86),(81,119,119),(127,116,72),(97,86,106))
-POSES = {"pulo":4, "queda":5, "agachar":6, "deslize":7, "dano":8,
-         "golpe":9, "clarao":10, "corda":11, "parede":11, "planar":5}
 OBJETOS = {"orvalho":("orvalho",21,31), "valvula":("valvula",51,65), "corda":("corda",38,118),
            "peca":("peca",40,30), "no":("raiz",60,52), "brasa":("raiz",40,48),
            "sino":("sino",42,66), "raiz":("raiz",88,91), "registro":("registro",36,26),
@@ -19,11 +21,17 @@ OBJETOS = {"orvalho":("orvalho",21,31), "valvula":("valvula",51,65), "corda":("c
            "reserva":("registro",38,27)}
 NPC_TAM = {"Nira":(61,65),"Casca":(74,60),"Eco":(48,40),"Brasa":(58,52),
            "Mimo":(56,48),"Candeia":(48,40),"Véspera":(58,47),"Fio":(69,43),
-           "Risca":(81,48),"Pingo":(56,42),"Nó":(75,55),"Coruja":(77,96)}
+           "Risca":(81,48),"Pingo":(56,42),"Nó":(75,55),"Coruja":(96,96)}
 
 
 def slug(s):
     return unicodedata.normalize("NFKD",s.lower()).encode("ascii","ignore").decode()
+
+
+def arte_npc(nome):
+    if nome == "Coruja":
+        return "inimigos-v2/coruja-repouso"
+    return "npc_" + slug(nome)
 
 
 @lru_cache(maxsize=4)
@@ -63,14 +71,13 @@ def raizes_subsolo():
     return sub
 
 
-# Fora dos halos a mata perde também o chão, o fundo e as estruturas. Os dois
-# níveis mais claros são ajustes de acessibilidade, não luz de cenário gratuita.
-SOMBRAS = ((0, 1, 2), (3, 5, 8), (18, 25, 33), (61, 70, 82))
+# Tons do cenário distante, do brilho mínimo ao alto.
+TINTAS_NEVOA = ((41,47,62), (70,80,101), (116,136,153), (153,166,184))
 
 
 @lru_cache(maxsize=1)
 def buffers_nevoa():
-    return tuple(pygame.Surface(t) for t in ((960,540),(960,540),(960,540),(48,27),(960,540)))
+    return tuple(pygame.Surface(t) for t in ((960,540),(960,540),(960,540),(288,162),(960,540)))
 
 
 def capturar_fundo(camada,cy=0):
@@ -79,14 +86,18 @@ def capturar_fundo(camada,cy=0):
     return fundo
 
 
-def aplicar_nevoa(camada, luz, cy=0, fundo=None, nivel=1):
+def nevoa_distante(fundo, borrado, amostra, nivel, cor=None):
+    pygame.transform.smoothscale(fundo, amostra.get_size(), amostra)
+    pygame.transform.smoothscale(amostra, borrado.get_size(), borrado)
+    borrado.fill(TINTAS_NEVOA[nivel] if cor is None else cor, special_flags=pygame.BLEND_RGB_MULT)
+
+
+def aplicar_nevoa(camada, luz, cy=0, fundo=None, nivel=1, cor=None):
     """Fora da luz só existe o fundo distante. Não vaza a silhueta do terreno."""
     area=pygame.Rect(0,cy,960,540)
     nitido,borrado,inversa,pequeno,_=buffers_nevoa()
     nitido.blit(camada,(0,0),area)
-    pygame.transform.smoothscale(nitido if fundo is None else fundo,(48,27),pequeno)
-    pygame.transform.smoothscale(pequeno,(960,540),borrado)
-    borrado.fill(((65,78,93),(78,92,108),(97,111,125),(120,135,150))[nivel],special_flags=pygame.BLEND_RGB_MULT)
+    nevoa_distante(fundo if fundo is not None else nitido, borrado, pequeno, nivel, cor)
     inversa.fill((255,255,255))
     inversa.blit(luz,(0,0),special_flags=pygame.BLEND_RGB_SUB)
     borrado.blit(inversa,(0,0),special_flags=pygame.BLEND_RGB_MULT)
@@ -226,6 +237,14 @@ def terreno(s,t,camera,i):
             from .arte_galeria import colmos
             colmos(s,r)
         return
+    if t.tipo == "apoio_fagulha":
+        arte_bosque.galho(s,r,i,True)
+        for x in range(r.left+12,r.right-8,15):
+            pygame.draw.circle(s,(161,196,145),(x,r.y-2),2)
+        return
+    if t.tipo == "plataforma":
+        arte_bosque.galho(s, r, i, (t.rect.x // 110) % 2 == 0)
+        return
     if t.tipo=='raiz_lisa':
         pygame.draw.rect(s,(52,62,40),r)
         for n in range(3):
@@ -274,7 +293,6 @@ def terreno(s,t,camera,i):
             pygame.draw.aaline(s,(157,148,115),(px,y-3),(px+7,y-4))
         return
     pisos=("chao","galho","bambu","pedra")
-    tile=pisos[i] if t.tipo in ("chao","plataforma") else "bambu"
     if t.tipo=="chao":
         pygame.draw.rect(s,(24,32,32),r)
         # The same top texture joins continuously over a filled soil cross section.
@@ -283,16 +301,17 @@ def terreno(s,t,camera,i):
         for n in range(start,min((r.w+passo-1)//passo,start+8)):
             x=r.left+n*passo
             w=min(passo,r.right-x)
-            s.blit(faixa_solo(tile,n%2),(x,r.top),(0,0,w,50))
+            s.blit(faixa_solo(pisos[i],n%2),(x,r.top),(0,0,w,50))
         for n in range(max(0,(-r.left)//88-1),min((r.w-24)//88+1,max(0,(-r.left)//88)+14)):
             x=r.left+20+n*88+int(math.sin(n*7.1+i)*29)
             if n%4!=2:
                 h=12+int(abs(math.sin(n*4.6+i))*19)
                 sprite(s,"obj_folha",x,r.top+1,h*2,h,n%2==1)
     else:
-        im=imagem("obj_"+tile+".png",r.w,29)
+        im=imagem("obj_bambu.png",r.w,29)
         s.blit(im,(r.x,r.y-4))
-    pygame.draw.line(s,tuple(min(225,v+58) for v in cor),r.topleft,r.topright,2)
+    if t.tipo != "chao" or alto_contraste():
+        pygame.draw.line(s,tuple(min(225,v+58) for v in cor),r.topleft,r.topright,2)
     if t.descida and t.tipo!="grade":
         x=r.centerx
         pygame.draw.lines(s,(169,173,139),False,[(x-4,r.top+5),(x,r.top+8),(x+4,r.top+5)],1)
@@ -335,29 +354,6 @@ def mata_reacesa(s,j,cx,t):
 
 
 
-def passagem(s,x,y,subterranea=True):
-    """Escada escavada na raiz, com soleira e profundidade reconhecíveis."""
-    x,y=round(x),round(y)
-    contorno=[(x-37,y),(x-30,y-59),(x-13,y-77),(x+24,y-68),(x+37,y)]
-    pygame.draw.polygon(s,(47,39,29),contorno)
-    pygame.draw.polygon(s,(10,15,14),[(x-24,y),(x-19,y-53),(x-10,y-64),(x+17,y-57),(x+24,y)])
-    pygame.draw.lines(s,(117,95,58),False,contorno,3)
-    for lado in (-1,1):
-        pygame.draw.lines(s,(80,70,44),False,[(x+lado*31,y-4),(x+lado*43,y+3),(x+lado*57,y+6)],5)
-        pygame.draw.lines(s,(137,124,73),False,[(x+lado*28,y-18),(x+lado*33,y-53),(x+lado*16,y-68)],1)
-    for n in range(4):
-        py=y-7-n*9
-        largura=23-n*3
-        pygame.draw.line(s,(88-n*12,83-n*10,57-n*7),(x-largura,py),(x+largura,py),3)
-    for px,py in ((x-27,y-52),(x+17,y-67),(x+36,y-14)):
-        pygame.draw.ellipse(s,(87,112,64),(px-6,py-4,12,5))
-    # Uma seta talhada numa placa de casca distingue a escada de um portal.
-    pygame.draw.polygon(s,(78,68,44),[(x-17,y-49),(x+14,y-49),(x+17,y-32),(x-14,y-33)])
-    d=1 if subterranea else -1
-    pygame.draw.line(s,AMBAR,(x,y-43),(x,y-37),1)
-    pygame.draw.lines(s,AMBAR,False,[(x-4,y-40),(x,y-40+d*4),(x+4,y-40)],1)
-
-
 def icone_item(s,item,x,y,w=24,h=24):
     if item in ('globo','semente_luz'):
         centro=(round(x),round(y-h*.5))
@@ -381,6 +377,12 @@ def icone_item(s,item,x,y,w=24,h=24):
 def objeto(s,o,j,cx,tempo):
     x=o.x-cx
     if not -105<x<1065: return
+    if (abertura_bosque.ativa(j) and o.x < abertura_bosque.FIM_TRILHA
+            and arte_ilustrada.objeto(s,o,j,x,tempo)):
+        if o.tipo == "npc" and abs(o.x-j.lume.rect.centerx)<140:
+            altura = arte_ilustrada.PERSONAGENS[o.nome][1]
+            texto(s,o.nome,x,o.y-altura-17,14,OSSO,"forte","centerx")
+        return
     if o.tipo=='lanterna':
         from .encontros import desenhar
         desenhar(s,o,j,cx);return
@@ -400,12 +402,13 @@ def objeto(s,o,j,cx,tempo):
         from .arte_galeria import objeto as objeto_galeria
         objeto_galeria(s,o,j,cx)
         return
+    if o.tipo == "reserva_fagulha":
+        desvio = desvios_fagulha.local(j)
+        icone_item(s,desvio.item,x,o.y,25,26)
+        return
     if o.tipo=='marco':
-        y=o.y
-        pygame.draw.line(s,(102,117,75),(x,y),(x,y-50),5)
-        pygame.draw.ellipse(s,(90,110,67),(x-13,y-59,26,22))
-        pygame.draw.line(s,AMBAR,(x-7,y-48),(x+6,y-48),2)
-        brilho(s,(x,y-49),15)
+        sprite(s,"obj_marco",x,o.y,38,57)
+        brilho(s,(x+8,o.y-30),18)
         return
     if o.tipo=="encomenda":
         y=o.y
@@ -419,9 +422,7 @@ def objeto(s,o,j,cx,tempo):
         icone_item(s,"pavio",x,o.y,27,24)
         return
     if o.tipo=="fenda":
-        passagem(s,x,o.y)
-        if abs(o.x-j.lume.rect.centerx)<140:
-            texto(s,"Desvio da figueira",x,o.y-99,13,PALIDO,"forte","centerx")
+        arte_bosque.passagem(s,x,o.y)
         return
     if o.tipo=="pista":
         y=o.y
@@ -450,21 +451,20 @@ def objeto(s,o,j,cx,tempo):
         w,h=NPC_TAM[o.nome]
         ond=math.sin(tempo*2+o.x)*1.6
         if o.nome in ("Eco","Pingo","Candeia"): ond-=4
-        sprite(s,"npc_"+slug(o.nome),x,o.y+ond,w,h+round(ond/2))
+        sprite(s,arte_npc(o.nome),x,o.y+ond,w,h+round(ond/2))
         rotina(s,o.nome,x,o.y+ond,tempo)
         if abs(o.x-j.lume.rect.centerx)<135:
             texto(s,o.nome,x,o.y-h-24,14,OSSO,"forte","centerx")
         return
     if o.tipo in ("saida","voltar"):
-        d = 1 if o.tipo=="saida" else -1
-        pygame.draw.line(s,(115,102,79),(x-10,o.y),(x-10,o.y-34),3)
-        pygame.draw.lines(s,AMBAR,False,[(x-5*d,o.y-19),(x+6*d,o.y-25),(x-5*d,o.y-30)],2)
-        brilho(s,(x-10,o.y-34),17)
-        losango(s,x-10,o.y-34,3)
+        arte_bosque.marco_de_trilha(s, x, o.y, o.tipo == "voltar")
         return
     arte,w,h=OBJETOS[o.tipo]
     if o.tipo=="valvula":
         manivela(s,x,o.y,w,h,j.manivela_girada(o))
+        return
+    if o.id == "corda":
+        arte_ilustrada.cipo(s,x,o.y,tempo)
         return
     if o.tipo=="corda":
         pygame.draw.line(s,(162,134,91),(x,216),(x,o.y-65),3)
@@ -492,17 +492,14 @@ def objeto(s,o,j,cx,tempo):
 
 def lume(s,l,cx,t):
     pos=l.pose
-    fr=POSES.get(pos,0)
-    if pos in ("andar","correr"):
-        fr=(1,2,3,2)[int(t*(11 if pos=="correr" else 7))%4]
     w=58 if pos!="deslize" else 68
-    h={"agachar":22,"deslize":19,"pulo":43,"queda":41,"corda":43,"golpe":34}.get(pos,32)
+    h={"agachar":22,"deslize":19,"pulo":43,"queda":41,"corda":43,"golpe":34}.get(pos,38)
     x=l.rect.centerx-cx
     y=l.rect.bottom
     brilho(s,(x-12*l.face,y-h*.44),55)
     golpe_lume(s,l,cx)
     if l.iframes<=0 or int(t*14)%3!=1:
-        sprite(s,f"lume_{fr}",x,y+1,w,h,l.face<0)
+        desenhar_lume(s, l, x, y+1, (w,h), t)
     if l.batida_asa>0:
         # Dois rastros curtos marcam o impulso extra sem iluminar a tela inteira.
         abertura=1-l.batida_asa/.18
@@ -540,7 +537,8 @@ class Paisagem:
             if "resposta_eco" in j.eventos:
                 self.lampejos=(j.tempo, 1124, 329)
             paleta={"coleta":AMBAR,"raiz":(160,225,160),"acerto":(229,206,160),
-                    "dano":PERIGO,"pouso":(124,147,131),"porta":(194,170,123)}
+                    "dano":PERIGO,"pouso":(124,147,131),"porta":(194,170,123),
+                    "freio_luz":(249,201,117)}
             for ev in set(j.eventos)&paleta.keys():
                 quantidade=5 if ev=="pouso" else 13
                 for n in range(quantidade):
@@ -578,7 +576,10 @@ class Paisagem:
         recorte=pygame.Rect(0,cy,960,540)
         s.set_clip(recorte)
         i,cx=j.etapa,j.camera
+        intensidade = abertura_bosque.intensidade(j)
+        limite_arte = abertura_bosque.FIM_TRILHA if abertura_bosque.ativa(j) else 0
         s.blit(fundo(i),(-int(cx/max(1,j.fase.width-960)*310),cy-108))
+        abertura_bosque.fundo(s,j,cx,cy)
         if cy>60:
             # As raízes cobrem progressivamente o céu ao descer, no mesmo mundo.
             sub=raizes_subsolo()
@@ -611,7 +612,22 @@ class Paisagem:
             for px in (829,844,1066):
                 pygame.draw.lines(s,(120,147,119),False,[(px-cx,440),(px+5-cx,436),(px+9-cx,438)],2)
         if hasattr(j,"sala_id"): sustentar_galho_do_duelo(s,j,cx)
-        for tr in j.solidos: terreno(s,tr,cx,i)
+        primeiro = FASES[0].plataformas[0] if i==0 and not hasattr(j,"sala_id") else None
+        for tr in j.solidos:
+            r = tr.rect
+            apoio_inicial = (r.x,r.y,r.w) == primeiro and tr.tipo == "plataforma"
+            if tr is abertura_bosque.BROTO:
+                arte_ilustrada.terreno(s,r.move(-round(cx),0),"broto")
+            elif limite_arte and (
+                    tr.tipo == "chao" and r.x < FASES[0].pisos[0][1]
+                    or tr.tipo == "plataforma" and r.x < limite_arte
+            ):
+                if recorte.colliderect(r.move(-round(cx),0).inflate(20,60)):
+                    arte_ilustrada.terreno(s,r.move(-round(cx),0),tr.tipo,apoio_inicial)
+            elif apoio_inicial:
+                arte_bosque.galho(s,r.move(-round(cx),0),i,False,raiz=True)
+            else:
+                terreno(s,tr,cx,i)
         from .rotas_borda import desenhar as desenhar_passarelas
         desenhar_passarelas(s,j,cx)
         if i == 1:
@@ -627,7 +643,12 @@ class Paisagem:
             sinal_do_sino(s,j,cx)
         from .sinalizacao import desenhar as descidas
         descidas(s,j,cx)
-        for o in j.objetos: objeto(s,o,j,cx,t)
+        if limite_arte:
+            arte_ilustrada.vegetacao(s,cx)
+        desvios_fagulha.marca(s,j,cx)
+        for o in j.objetos:
+            if not (abertura_bosque.em_cena(j) and o.tipo == "refugio" and o.x < 100):
+                objeto(s,o,j,cx,t)
         if "raiz" in j.flags or "no" in j.flags: mata_reacesa(s,j,cx,t)
         reforcos = j.boss.ninhada.vivos if j.boss and j.boss.ninhada is not None else ()
         criaturas = (*j.inimigos, *reforcos) if reforcos else j.inimigos
@@ -637,7 +658,7 @@ class Paisagem:
         if j.boss:
             j.boss.desenhar(s,cx)
         # O primeiro plano também faz parte da mata e recebe a mesma sombra.
-        if cy<180:
+        if cy<180 and intensidade<1:
             desloc = int(cx*1.16)%1200
             faixas = (recorte,)
             if i == 3:
@@ -648,8 +669,10 @@ class Paisagem:
             for faixa in faixas:
                 if faixa.width:
                     s.set_clip(faixa)
+                    margem = margens(i)
+                    margem.set_alpha(round(255*(1.-intensidade)))
                     for x in (-desloc,1200-desloc):
-                        s.blit(margens(i),(x,414))
+                        s.blit(margem,(x,414))
             s.set_clip(recorte)
         if i == 1:
             from .corrego_historia import desenhar_agua
@@ -660,13 +683,31 @@ class Paisagem:
         globos(s,j,cx)
         nivel=min(3,self.brilho_mata+int(j.concluida))
         compor_luz(self.luz,j,cx,cy,nivel)
-        aplicar_nevoa(s,self.luz,cy,fundo_visao,nivel)
+        cor = abertura_bosque.cor_distante(j,nivel,TINTAS_NEVOA[nivel]) if abertura_bosque.ativa(j) else None
+        if intensidade:
+            # O fundo frio permanece escuro. Um mínimo de luz revela as silhuetas desenhadas.
+            escuro = round((38,52,70,87)[nivel]*intensidade)
+            self.luz.fill((escuro,escuro,escuro),special_flags=pygame.BLEND_RGB_MAX)
+        aplicar_nevoa(s,self.luz,cy,fundo_visao,nivel,cor)
+        if limite_arte and cx < limite_arte:
+            arte_ilustrada.iluminar_pousos(s,j,cx,nivel,limite_arte)
+        if primeiro is not None and abertura_bosque.em_cena(j) and "valvula" not in j.flags:
+            x, y, largura = primeiro
+            if j.lume.rect.centerx <= x+largura and y-105 <= j.lume.rect.bottom <= y+80:
+                x -= round(cx)
+                if recorte.collidepoint(x+16,y) and self.luz.get_at((x+16,y-cy)).r < 80:
+                    arte_bosque.liquen(s,x,y)
+        if abertura_bosque.broto_aceso(j):
+            # O bordo bioluminescente continua perceptível fora do halo.
+            r = abertura_bosque.BROTO.rect.move(-round(cx), 0)
+            for dx, dy in ((11, -3), (28, 0), (46, -4), (58, 0)):
+                pygame.draw.circle(s, AMBAR, (r.x+dx, r.y+dy), 1)
         from .ilustracao import claroes_suaves
         for v in j.vestigios:
             if v.raio(j.tempo)>16:
                 xy=(round(v.x-cx),round(v.y))
                 idade = j.tempo-v.inicio
-                if idade<.32 and not claroes_suaves():
+                if idade<.32 and not claroes_suaves() and not abertura_bosque.em_cena(j):
                     r=max(5,v.raio(j.tempo))
                     area=pygame.Rect(xy[0]-r,xy[1]-r,r*2,r*2)
                     cor=(163,144,107)
@@ -675,34 +716,42 @@ class Paisagem:
                 if not claroes_suaves():
                     brilho(s,xy,min(27,v.raio(j.tempo)//2))
                 losango(s,*xy,3,AMBAR,False)
+        travessia_fagulha.desenhar(s,j,cx)
         for e in criaturas:
             projeteis(s,e,cx,j.lume,j.raio,j.visivel)
-        if j.boss: sinais_encontro(s,j.boss,cx)
+        if j.boss: sinais_encontro(s,j.boss,cx,prevista=travessia_fagulha.prever_marca(j))
         lume(s,j.lume,cx,t)
+        licao_vespera.desenhar(s,j,cx)
         self.ecos(s,j,cx)
+        abertura_bosque.primeiro_plano(s,j,cx,cy)
         destino.blit(s,(0,0),recorte)
         s.set_clip(None)
 
 
+def avisar_custo_clarao(s,j,y):
+    custo = j.lume.custo_em_vida(j.lume.custo_clarao)
+    if custo > 0:
+        valor = f'{custo:.2f}'.rstrip('0').rstrip('.').replace('.', ',')
+        prefixo = 'K fatal · custa' if custo >= j.lume.vida else 'K custa'
+        painel(s,(20,y,223,22),False)
+        texto(s,dica_teclado(f'{prefixo} {valor} de vida'),29,y+2,12,PERIGO,'forte')
+
+
 def hud(s,j):
+    if abertura_bosque.em_cena(j) and not j.boss:
+        abertura_bosque.hud(s,j)
+        if not j.dialogo:
+            avisar_custo_clarao(s,j,109)
+        return
     from .cartografia import rastro_objetivo, texto_curto
     from .avisos import ocupa_esquerda
     livre=not ocupa_esquerda(j)
     rastro_objetivo(s,j)
-    painel(s,(19,18,213,100))
-    texto(s,'VIDA',33,23,12,(210,139,126),'forte')
-    texto(s,f'{max(0,round(j.lume.vida)):02d}',217,20,20,OSSO,'titulo','right')
-    pygame.draw.rect(s,(50,62,62),(33,47,184,5))
-    pygame.draw.rect(s,(204,122,112),(33,47,round(184*max(0,min(100,j.lume.vida))/100),5))
-    texto(s,'BRILHO',33,58,12,AMBAR,'forte')
-    texto(s,f'{max(0,round(j.lume.energia)):02d}',217,55,20,OSSO,'titulo','right')
-    pygame.draw.rect(s,(50,62,62),(33,82,184,5))
-    pygame.draw.rect(s,AMBAR,(33,82,round(184*max(0,min(100,j.lume.energia))/100),5))
-    for n in range(max(j.vidas_iniciais,j.lume.vidas)): losango(s,38+n*13,104,3,AMBAR,n<j.lume.vidas)
+    reservas(s,j)
     duelo=hasattr(j,"sala_id")
-    leitura=f"Avisos   {j.inimigos[0].sequencia}" if duelo else f"Orvalho  {min(j.orvalhos,3)} / 3"
-    texto(s,leitura,217,95,12,PALIDO,"normal","right")
-    if j.lume.energia<=0 and livre:texto(s,'Sem brilho · habilidades usam vida',22,159,11,(218,151,132),'forte')
+    if duelo:
+        texto(s,f"Avisos {j.inimigos[0].sequencia}",193,105,12,PALIDO,"normal","right")
+    avisar_custo_clarao(s,j,155)
     if j.lume.abate_ate>j.tempo and livre:
         hp,br=j.lume.ganho_abate
         texto(s,f'Abate +{hp:g} vida / +{br:g} brilho',22,175,12,TEAL,'forte')
@@ -745,7 +794,8 @@ def hud(s,j):
 
     if j.boss and not j.boss.vencido:
         chamado = j.boss.estado.startswith('coro_')
-        painel(s,(258,17,402,79 if chamado else 64))
+        segundo_aviso = j.boss.indice == 1 and j.boss.estado == "aviso"
+        painel(s,(258,17,402,101 if segundo_aviso else 79))
         fase=getattr(j.boss,'fase',1)
         nome=j.boss.nome + (' · '+('II' if fase==2 else 'III') if fase>1 else '')
         texto(s,nome,459,22,23,OSSO,"titulo","centerx")
@@ -755,6 +805,12 @@ def hud(s,j):
         else:
             pygame.draw.rect(s,(53,55,52),(279,62,360,6))
             pygame.draw.rect(s,AMBAR,(279,62,round(360*j.boss.vida/j.boss.vida_max),6))
-            texto(s,"Fraqueza exposta = crítico",459,72,10,PALIDO,"normal","centerx")
+            estado = j.boss.estado
+            aviso = estado in ('aviso','investida','rastro','investida_seiva')
+            explicacao = j.boss.pista_fagulha if estado == "busca" else j.boss.dica
+            dica = texto_curto(dica_teclado(explicacao),376,12,'forte')
+            texto(s,dica,459,73,12,PERIGO if aviso else AMBAR,'forte','centerx')
+            if segundo_aviso:
+                texto(s,dica_teclado(j.boss.pista_fagulha),459,94,12,AMBAR,'forte','centerx')
     from .avisos import desenhar
     desenhar(s,j)

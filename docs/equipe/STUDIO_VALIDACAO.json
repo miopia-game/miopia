@@ -1,0 +1,83 @@
+{
+  "cartao": "Q10.0",
+  "data": "2026-11-13",
+  "base": {
+    "testes": 238,
+    "subcasos": 166,
+    "segundos_pytest": 41.38
+  },
+  "regressao_final": {
+    "testes": 240,
+    "subcasos": 166,
+    "segundos_pytest": 41.28,
+    "exit_code": 0,
+    "timeout": false,
+    "segundos_executor": 41.448,
+    "avisos": "44 avisos conhecidos de renderer rápido indisponível no SDL dummy."
+  },
+  "helpers": {
+    "testes": 9,
+    "resultado": "aprovados"
+  },
+  "integracao_exportadores": {
+    "red": "Dois testes falharam porque o ZIP e o TAR omitiram a Pro.",
+    "green": "Três testes passaram, incluindo a regressão anterior de datas/codecs."
+  },
+  "ast": {
+    "root": "miopia",
+    "findings": [],
+    "limitations": [
+      "Heuristic candidates are not confirmed bugs.",
+      "No proof of dt correctness, collision safety or full call-graph coverage.",
+      "FRect or scalar float positions do not require Vector2."
+    ]
+  },
+  "capturas": {
+    "total": 27,
+    "resolucao": [
+      960,
+      540
+    ],
+    "inspecionadas": [
+      "menu.png",
+      "exploracao/inicio.png",
+      "exploracao/final.png"
+    ],
+    "falhas": []
+  },
+  "exploracao": {
+    "frames_executed": 1100,
+    "seed": 9101,
+    "unique_observed_nodes": 14,
+    "transitions": 1100,
+    "failures": [],
+    "python_memory_retained_delta": 645861,
+    "python_memory_peak": 5421093,
+    "memory_scope": "tracemalloc includes the explorer graph and telemetry; not total RSS or proof of a game leak",
+    "coverage_claim": "observed states only; no full-map or human-playability claim"
+  },
+  "visual": {
+    "changed_pixel_ratio": 0.9324537037037037,
+    "issues": [],
+    "limite": "Diferença de pixels não aprova clareza ou arte."
+  },
+  "controle_timeout": {
+    "exit_code": 124,
+    "timed_out": true,
+    "resultado": "124 intencional; nenhum sucesso falso."
+  },
+  "preservacao": {
+    "arquivos_monitorados": 247,
+    "alterados": 0,
+    "pacotes": "S09 preservados, sem nova distribuição neste cartão."
+  },
+  "revisao_humana": "Pendente para R10.1/R10.2/R10.3, C05 e A02; integração não aprova experiência nem direitos.",
+  "logs_locais": "work/studio/Q10.0/ (ignorado no Git; comandos de reprodução em Q10.0-studio.md).",
+  "revisao_final": {
+    "tipo": "independente, somente leitura",
+    "bloqueantes": 0,
+    "ajuste_documental": "Identificação clara da base do cartão e lista de arquivos afetados completadas no fechamento.",
+    "limite": "Jogabilidade, catálogo automático e direitos não aprovados pela revisão."
+  },
+  "estado": "DONE técnico"
+}

@@ -7,13 +7,14 @@ import pygame
 from .visao import DURACAO, Vestigio
 from .combate import Arma, Inimigo
 from .taticas import Habitante
+from .travessia_fagulha import CORTE_PRATICADO, ORIGEM_MORCEGO, MorcegoDoGalho, avisar_pouso, lancar, reagir
 from .fases import VIGIA_X, TRANCA_X
 from .fases import (ARENA, CHAO, FIM_ARENA, FALAS, FASES, MEIO, RAIZ, SAIDA,
                     RAMAIS, Objeto, Terreno, terrenos)
 
 
 from . import narrativa, corte_vertical, subsolo, raizes_bosque, recursos, resgates, vento_taquaral
-from . import aula_sino, corrego_historia, galeria_taquaral, nicho_taquaral, rotas_borda
+from . import aula_sino, corrego_historia, desvios_fagulha, galeria_taquaral, licao_vespera, nicho_taquaral, rotas_borda
 
 
 @dataclass(frozen=True)
@@ -28,6 +29,7 @@ class Comando:
     interagir: bool = False
     forte: bool = False
     carregado: bool = False
+    fagulha: bool = False
 
 
 def aproximar(valor, alvo, passo):
@@ -52,6 +54,7 @@ class Lume:
         self.iframes = self.impacto = self.planeio = 0.
         self.energia = 100.
         self.vida = 100.
+        self.custo_clarao = 22.
         self.abate_ate=0.;self.ganho_abate=(0.,0.)
         self.combo_acertos=0
         self.vidas = vidas
@@ -221,17 +224,21 @@ class Lume:
             self.ignorar_topo = None
         return saltou
 
+    def custo_em_vida(self, custo):
+        return max(0., custo-self.energia)
+
     def gastar_brilho(self,custo):
         if self.vida<=0:return False
+        vida = self.custo_em_vida(custo)
         brilho=min(self.energia,custo)
         self.energia=max(0.,self.energia-brilho)
-        self.vida=max(0.,self.vida-(custo-brilho))
+        self.vida=max(0.,self.vida-vida)
         return True
 
     def atacar(self, cmd):
         if cmd.golpe or cmd.forte:
             self.arma.pedir(cmd.baixo and not self.chao, cmd.deslize and bool(cmd.mover),cmd.forte,cmd.carregado)
-        if cmd.clarao and self.pulso_cd <= 0 and self.gastar_brilho(getattr(self,"custo_clarao",22.)):
+        if cmd.clarao and self.pulso_cd <= 0 and self.gastar_brilho(self.custo_clarao):
             self.pulso, self.pulso_cd = .55, 2.50
             self.arma.clarao()
             return True
@@ -248,7 +255,6 @@ MAX_FAGULHAS = max(perfil[2] for perfil in NIVEIS.values())
 # O pino da roda fica nesta posição quando a alteração no mundo já foi feita.
 MANIVELAS = {
     aula_sino.PASSARELA: (aula_sino.PASSARELA, "Examinar a passarela baixada"),
-    "valvula": ("valvula", "Examinar a corda baixada"),
     "dreno": ("dreno", "Examinar o canal drenado"),
     "ponte": ("ponte", "Examinar a ponte estendida"),
     "ralo": ("ralo", "Examinar a comporta aberta"),
@@ -327,6 +333,8 @@ class Jornada:
         self.sino_eco_inicio = None
         self.camera_y = 0.
         self.vestigios.clear()
+        self.fagulha = None
+        self.vespera_sinal = None
         self.etapa = indice
         self.fase = FASES[indice]
         self.flags = self.historico.setdefault((self.volta, indice), set())
@@ -347,7 +355,9 @@ class Jornada:
             self.notificar(self.fase.name)
 
     def povoar_superficie(self):
-        self.inimigos = [Habitante(*e, dificuldade=self.dificuldade) for e in self.fase.inimigos
+        self.inimigos = [
+            MorcegoDoGalho(self.dificuldade) if self.etapa == 0 and e[1] == ORIGEM_MORCEGO
+            else Habitante(*e, dificuldade=self.dificuldade) for e in self.fase.inimigos
                          if "inimigo_" + str(e[1]) not in self.flags]
         if subsolo.ativo(self) and "inimigo_2860" not in self.flags:
             self.inimigos.append(Habitante("aranha", 2860, 1102, dificuldade=self.dificuldade, ouve_pousos=True))
@@ -477,6 +487,11 @@ class Jornada:
         return sum(1 for k in self.flags if k.startswith("gota_"))
 
     @property
+    def fagulha_ativa(self):
+        f = self.fagulha
+        return f if f and f.restante(self.tempo) > 0 else None
+
+    @property
     def raio(self):
         if self.lume.energia<=0:return 0.
         portatil = 90 + .38 * max(0., min(100., self.lume.energia))
@@ -486,7 +501,7 @@ class Jornada:
         if self.boss and not self.boss.vencido:
             portatil += 22
         elif self.minichefe is not None:portatil+=14
-        return portatil
+        return portatil*.77 if self.fagulha_ativa else portatil
 
     @property
     def minichefe(self):
@@ -540,6 +555,11 @@ class Jornada:
             out.append(Terreno(pygame.Rect(TRANCA_X, 223, 36, CHAO-223), "tranca"))
         if self.boss:
             out.extend(Terreno(rect, "arena") for rect in self.boss.apoios())
+        if self.etapa == 0 and self.vestigios:
+            from .abertura_bosque import BROTO, broto_aceso
+            if broto_aceso(self):
+                out.append(BROTO)
+        out.extend(desvios_fagulha.terrenos(self))
         return out
 
     @property
@@ -591,6 +611,7 @@ class Jornada:
             out.extend(galeria_taquaral.objetos(self))
         out.extend(resgates.objetos(self))
         out.extend(rotas_borda.objetos(self))
+        out.extend(desvios_fagulha.objetos(self))
         from .encontros import objetos as lanternas
         out.extend(lanternas(self))
         return out
@@ -776,6 +797,8 @@ class Jornada:
         self.veneziana_inicio = None
         self.sino_eco_inicio = None
         self.vestigios.clear()
+        self.fagulha = None
+        self.vespera_sinal = None
         if self.estado == "caido":
             self.estado = "jogando"
         self.boss = None
@@ -857,6 +880,9 @@ class Jornada:
         if o.tipo=='lanterna':
             from .encontros import interagir
             interagir(self,o);return
+        if o.tipo == "reserva_fagulha":
+            desvios_fagulha.recolher(self,o)
+            return
         if o.tipo=='sobrevivente':
             resgates.conversar(self,o)
             return
@@ -899,8 +925,8 @@ class Jornada:
             if "encomenda_recolhida" not in self.flags:
                 self.flags.update(("encomenda_aceita","encomenda_recolhida"))
                 self.missao="entrega_mimo"
-                self.notificar("Pacote de Mimo na bolsa de missão. Leve-o a Mimo no abrigo da entrada.",7.)
-                self.memorizar("A mochila dos casulos","Um pacote de tanino ficou na varanda alta. Mimo prometeu preparar a lâmina para atravessar carapaças.")
+                self.notificar("Mochila de ervas recolhida. Leve-o a Mimo no abrigo da entrada.",7.)
+                self.memorizar("A mochila dos casulos","A mochila de ervas de Mimo ficou na varanda alta. Mimo prometeu preparar a lâmina para atravessar carapaças.")
                 self.eventos.append("coleta")
         elif o.id == "placa_canal":
             self.flags.add("pista_canal")
@@ -918,7 +944,7 @@ class Jornada:
             self.flags.add(o.id)
             self.dialogo = self.fase.registro
             self.memorizar(*self.dialogo)
-            mapas = ("A válvula dos galhos solta a corda da peça. Além do marco, as paredes do poço levam à cunha.",
+            mapas = ("O cipó depois da vigia leva à peça da porteira. Além do marco, as paredes do poço levam à cunha.",
                      "Drene o canal e busque a lingueta no túnel. Depois da ponte, desça pela grade e solte o ralo.",
                      "O nó revela três apoios para alcançar a brasa. A vagem fica do outro lado da ponte quebrada.",
                      "A roldana solta a corda do contrapeso. Além do marco, o sino fica sob a grade da câmara.")
@@ -952,6 +978,10 @@ class Jornada:
                 l.rect.centerx = o.x + 10
                 l.vx = l.vy = 0.
                 self.eventos.append("corda")
+                if self.etapa == 0 and o.id == "corda" and "valvula" not in self.flags:
+                    # A mesma marca evita conceder a pontuação de passagem duas vezes em saves antigos.
+                    self.flags.add("valvula")
+                    self.pontuacao += 25
         elif o.tipo == "refugio":
             recursos.descansar(self,o)
         elif o.tipo=='marco':
@@ -1016,6 +1046,8 @@ class Jornada:
                     from .tutorial import confirmar
                     confirmar(self,'interacao')
                 return
+        if cmd.fagulha:
+            lancar(self)
         vida_antes=self.lume.vida
         clarao = self.lume.atacar(cmd)
         if self.lume.vida<vida_antes:
@@ -1025,6 +1057,9 @@ class Jornada:
             self.perder_fagulha('sacrificio' if self.lume.vida<vida_antes else 'vida');return
         if clarao:
             from .luzes_mundo import claro
+            if cmd.baixo and not self.lume.chao and self.lume.vy > 96:
+                self.lume.vy = 38.
+                self.eventos.append("freio_luz")
             for e in self.inimigos:
                 if e.ativo and math.dist(e.rect.center,self.lume.rect.center)<=520 and not claro(self,e.rect.center):
                     e.cego=.8 if e.tipo!='carabideo' else .4
@@ -1043,6 +1078,7 @@ class Jornada:
             self.passo(dt / passos, cmd if i == 0 else retido, clarao and i == 0)
             if self.estado != "jogando":
                 break
+        licao_vespera.atualizar(self)
         from .descoberta import revelar
         revelar(self)
         from .tutorial import atualizar as ensinar
@@ -1055,7 +1091,10 @@ class Jornada:
                 and l.rect.left<t.rect.right for t in self.solidos):
             self.retorno_queda = tuple(l.rect.midbottom)
             aula_sino.pisar(self)
+        antes = self.tempo
         self.tempo += dt
+        avisar_pouso(self,antes)
+        desvios_fagulha.revelar(self)
         while self.vestigios and self.tempo - self.vestigios[0].inicio >= self.vestigios[0].duracao:
             self.vestigios.pop(0)
         self.aviso_t = max(0., self.aviso_t - dt)
@@ -1136,10 +1175,14 @@ class Jornada:
             l.rect.left = max(l.rect.left, ARENA)
             ruido = 1.0 if l.slide > 0 or pouso else min(.66, abs(l.vx) / 360) if l.chao else .08
             vida_chefe=self.boss.vida
+            fagulha = self.fagulha_ativa
+            if fagulha and fagulha.progresso(self.tempo) < 1:
+                fagulha = None
             eventos = self.boss.update(dt, l.rect, ruido=ruido, golpe=golpe, clarao=clarao,
                                        interagir=cmd.interagir, direcao=cmd.mover,
                                        serie=l.arma.serie,bonus_dano=l.bonus_dano,
-                                       dano_corte=2*l.arma.perfil.dano if l.arma.perfil else 2.)
+                                       dano_corte=2*l.arma.perfil.dano if l.arma.perfil else 2.,
+                                       fagulha=fagulha)
             self.eventos.extend(e for e in eventos if e != "dano_jogador")
             if self.boss.vida<vida_chefe and golpe and self.boss.ultimo_corte==l.arma.serie:self.acertou_combo()
             if 'gota_final' in eventos:
@@ -1202,7 +1245,11 @@ class Jornada:
                 and outro.ativo and abs(outro.rect.centerx-e.rect.centerx)<350),None)
             vida_antes=e.vida
             resultado = e.acertar(lume.arma, golpe, clarao, lume)
-            if e.vida<vida_antes and golpe and lume.arma.serie==e.ultimo_corte:self.acertou_combo()
+            if e.vida < vida_antes and golpe and lume.arma.serie == e.ultimo_corte:
+                self.acertou_combo()
+                if (self.modo == "historia" and isinstance(e, MorcegoDoGalho) and not clarao
+                        and lume.arma.tipo in ("corte1", "corte2", "corte3", "avanco", "retorno", "queda")):
+                    self.tutorial.add(CORTE_PRATICADO)
             if resultado:
                 self.eventos.append(resultado)
                 if (lume.arma.tipo == "queda" and golpe and lume.arma.serie == e.ultimo_corte
@@ -1218,7 +1265,8 @@ class Jornada:
                     if self.em_vertical:
                         self.cartografia.add("vigia_"+str(e.origem[0]))
                     else:
-                        self.flags.add("inimigo_" + str(e.origem[0]))
+                        origem = ORIGEM_MORCEGO if isinstance(e, MorcegoDoGalho) else e.origem[0]
+                        self.flags.add("inimigo_" + str(origem))
                     self.pontuacao += 18
                     self.recuperar_abate(10,18) if isinstance(e,raizes_bosque.Caruncho) else self.recuperar_abate()
                     if isinstance(e, nicho_taquaral.CobraDosBercos):
@@ -1232,8 +1280,10 @@ class Jornada:
             dentro_do_clarao = any(math.dist(e.rect.center, (v.x, v.y)) <= v.raio(self.tempo)
                                    for v in self.vestigios)
             raio_isca = max(self.raio, 225) if dentro_do_clarao else self.raio
-            avisos, atingiu = e.update(dt, lume, raio_isca, "no" in self.flags or dentro_do_clarao, terrenos)
-            self.sons_espaciais.extend(avisos)
+            atingiu = False
+            if not reagir(self,e,dt,terrenos):
+                avisos, atingiu = e.update(dt,lume,raio_isca,"no" in self.flags or dentro_do_clarao,terrenos)
+                self.sons_espaciais.extend(avisos)
             vivos = []
             for p in e.projeteis:
                 contato = p.avancar(dt, lume, terrenos, golpe, clarao)

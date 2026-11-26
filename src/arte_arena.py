@@ -1,51 +1,27 @@
 """Camada de cenário e sinais das arenas. Posições mecânicas vêm de Encontro."""
 from functools import lru_cache
-from math import cos, sin, tau
-from pathlib import Path
+from math import cos, hypot, sin, tau
+from .ilustracao import AMBAR, brilho, dica_teclado, texto
 import pygame
 
-from .chefes import ESCURO, FERRUGEM, FIO, OURO, PELE, TEAL, _quadros
+from . import arte_inimigos as fauna, movimento_arte
+from .chefes import ESCURO, FERRUGEM, FIO, OURO, PELE, TEAL
 
-
-ARTES = Path(__file__).resolve().parent.parent / "assets" / "arte"
+GUARDIOES = (("asa-fendida", (147, 108)), ("tecela", (146, 140)),
+             ("casco-oco", (146, 112)), ("coruja", (164, 128)))
 
 
 @lru_cache(maxsize=16)
 def _peca(nome, largura, altura):
-    arte = pygame.image.load(str(ARTES / ("obj_" + nome + ".png")))
-    return pygame.transform.smoothscale(arte, (largura, altura))
-
-
-@lru_cache(maxsize=8)
-def _retrato(indice, postura):
-    return pygame.image.load(str(ARTES / f"chefe_{indice}_{postura}.png"))
-
-
-@lru_cache(maxsize=512)
-def _corpo(indice, pose, quadro, face):
-    # Variações pequenas mantêm os pontos de contato estáveis entre quadros.
-    postura = ((0, 0, 1, 1), (0, 0, 1, 1), (0, 0, 0, 1), (0, 1, 1, 0))[indice][pose]
-    arte = _retrato(indice, postura)
-    largura = [(103, 147), (131, 125), (112, 117), (107, 159)][indice][postura]
-    altura = largura * arte.get_height() / arte.get_width()
-    ciclo = (0, 1, 0, -1)[quadro]
-    folego = (1.3, 2.0, 2.8, 0.8)[pose]
-    w, h = round(largura + ciclo*folego), round(altura - ciclo*folego)
-    corpo = pygame.transform.smoothscale(arte, (w,h))
-    if face > 0:
-        corpo = pygame.transform.flip(corpo, True, False)
-    if pose == 2 and indice in (0,3):
-        corpo = pygame.transform.rotate(corpo, face * (4 + ciclo * 1.5))
-    return corpo
+    from .ilustracao import imagem
+    return imagem("obj_" + nome + ".png",largura,altura)
 
 
 @lru_cache(maxsize=4)
-def _gravura(nome):
-    # Uma imagem gravada no marco de entrada conserva a silhueta dos guardiões.
-    quadro = _quadros(nome)[0,0,1]
-    pigmento = pygame.mask.from_surface(quadro).to_surface(
+def _gravura(ident):
+    quadro = fauna.quadro(ident, "repouso", 53, 43, 1)
+    return pygame.mask.from_surface(quadro).to_surface(
         setcolor=(124,147,132,120), unsetcolor=(0,0,0,0))
-    return pygame.transform.smoothscale(pigmento, (53,43))
 
 
 def _roda(surf, centro, t):
@@ -141,7 +117,7 @@ def _cenario(surf,e,cx,cy):
     l, r = round(e.inicio-cx), round(e.inicio+e.largura-cx)
     _parede(surf,l+28,base,1)
     _parede(surf,r-28,base,-1)
-    marco = _gravura(e.ficha.folha)
+    marco = _gravura(GUARDIOES[e.indice][0])
     surf.blit(marco,marco.get_rect(center=(l+31,base-98)))
     for apoio in e.apoios():
         _apoio(surf, apoio.move(-int(cx),-int(cy)), e.indice)
@@ -193,20 +169,42 @@ def _cenario(surf,e,cx,cy):
         marca_do_sino(surf,round(e.dir-cx),base-118,e.sino_soou or e.tecnica=="sino")
 
 
-def _linha_de_aviso(surf, inicio, fim):
-    dx,dy = fim[0]-inicio[0],fim[1]-inicio[1]
-    pontos = max(1,round((dx*dx+dy*dy)**.5/16))
-    for i in range(pontos):
-        a,b = i/pontos,(i+.46)/pontos
-        pygame.draw.line(surf,FERRUGEM,(inicio[0]+dx*a,inicio[1]+dy*a),
-                         (inicio[0]+dx*b,inicio[1]+dy*b),2)
-    pygame.draw.circle(surf,FERRUGEM,tuple(round(v) for v in fim),7,1)
-    return pontos
+def marcas_fagulha(s,e,cx,cy,prevista):
+    for mx,my in e.marcas_fagulha():
+        x,y = round(mx-cx),round(my-cy)
+        acesa = e.marca_acesa == (mx,my)
+        mirando = prevista == (mx,my)
+        cor = OURO if acesa or mirando else (170,146,98)
+        if mirando:
+            brilho(s,(x,y),30)
+        if e.indice == 0:
+            pontos = [(x-19,y+7),(x-9,y+3),(x,y+5),(x+11,y+2),(x+19,y+6)]
+            pygame.draw.lines(s,cor,False,pontos,2)
+            pygame.draw.lines(s,cor,True,[(x-4,y),(x,y-6),(x+4,y),(x,y+5)],1)
+        elif e.indice == 1:
+            pygame.draw.lines(s,cor,False,[(x-23,y+2),(x-9,y-10),(x+10,y-10),(x+23,y+2)],1)
+            for dx in (-12,0,12):
+                pygame.draw.line(s,cor,(x+dx,y-8),(x+dx,y+3))
+        elif e.indice == 2:
+            pygame.draw.ellipse(s,(113,58,46) if acesa else (67,47,39),(x-32,y-4,64,10))
+            for dx in (-18,0,18):
+                pygame.draw.circle(s,cor,(x+dx,y),3,1)
+        else:
+            pygame.draw.lines(s,cor,False,[(x-11,y+4),(x-8,y-9),(x,y-13),(x+8,y-9),(x+11,y+4)],2)
+            pygame.draw.circle(s,cor,(x,y+1),3,1)
+        if acesa or mirando:
+            pygame.draw.ellipse(s,OURO,(x-24,y+2,48,12),2 if mirando else 1)
+        if mirando:
+            texto(s,dica_teclado("G"),x,y-29,12,AMBAR,"forte","centerx")
+    if e.reacao_fagulha == "seiva" and e.estado == "aberto":
+        x,y = round(e.x-cx),round(e.chao-cy)
+        for dx in (-21,-10,11,22):
+            pygame.draw.lines(s,OURO,False,[(x+dx,y-3),(x+dx//2,y-20),(x+dx,y-26)],2)
 
 
 def _sinais_do_chamado(surf, e, cx, cy):
     from .arte_resgates import vagalume
-    from .ultimo_chamado import MEIA_FAIXA, altura_das_penas, ninhos
+    from .ultimo_chamado import altura_das_penas, ninhos
 
     for indice, (tx, ty) in enumerate(ninhos(e)):
         x, y = round(tx-cx), round(ty-cy)
@@ -221,81 +219,68 @@ def _sinais_do_chamado(surf, e, cx, cy):
                 vagalume(surf,x+desloc,y-45,e.relogio+n,OURO,'tila',.5)
         else:
             pygame.draw.ellipse(surf, PELE, (x-11,y+16,22,6), 1)
-    base = round(e.chao-cy)
-    if e.coro_faixas:
+    if e.coro_faixas and e.estado == 'coro_queda':
         for centro in e.coro_faixas:
-            x = round(centro-cx)
-            bordas = x-MEIA_FAIXA, x+MEIA_FAIXA
-            pygame.draw.line(surf, FERRUGEM, (bordas[0],base-3), (bordas[1],base-3), 3)
-            if e.estado == 'coro_aviso':
-                for borda in bordas:
-                    for y in range(base-194, base-18, 23):
-                        pygame.draw.line(surf, FERRUGEM, (borda,y), (borda,y+10), 2)
-                for y in (base-180, base-108, base-37):
-                    pygame.draw.lines(surf, OURO, False, [(x-7,y-5), (x,y+3), (x+7,y-5)], 2)
-            else:
-                y = round(altura_das_penas(e)-cy)
-                for dx, dy in ((-15,-6), (0,0), (15,-13)):
-                    pygame.draw.polygon(surf, FIO, [(x+dx-3,y+dy-26), (x+dx+5,y+dy-15),
-                                                    (x+dx,y+dy), (x+dx-6,y+dy-11)])
-                    pygame.draw.line(surf, OURO, (x+dx,y+dy-14), (x+dx,y+dy+2), 2)
-    elif e.estado == 'coro_aviso':
-        _linha_de_aviso(surf, (e.x-cx,e.alvo_y-cy), (e.destino-cx,e.alvo_y-cy))
+            x,y = round(centro-cx),round(altura_das_penas(e)-cy)
+            for dx, dy in ((-15,-6), (0,0), (15,-13)):
+                pygame.draw.polygon(surf,FIO,[(x+dx-3,y+dy-26),(x+dx+5,y+dy-15),
+                                             (x+dx,y+dy),(x+dx-6,y+dy-11)])
+                pygame.draw.line(surf,OURO,(x+dx,y+dy-14),(x+dx,y+dy+2),2)
 
 
-def _mira(surf, e, cx, cy):
+def _sinais_do_chefe(surf, e, cx, cy):
     x, y = e.x-cx, e.y-cy
     if e.estado.startswith('coro_'):
-        _sinais_do_chamado(surf, e, cx, cy)
-        return
-    if e.indice == 2 and e.estado == 'aviso' and e.tecnica == 'salto':
-        from .casco import ponto_salto
-        # Mesmo arco parabólico e mesma aterrissagem usados pela simulação.
-        for n in range(0, 24, 2):
-            pontos = []
-            for p in (n/24, (n+1)/24):
-                px,py=ponto_salto((e.x,e.y),e.destino,e.alvo_y,p)
-                pontos.append((px-cx,py-cy))
-            pygame.draw.line(surf, FERRUGEM, *pontos, 2)
-        pygame.draw.ellipse(surf, FERRUGEM, (e.destino-cx-34,e.chao-cy-11,68,10),2)
-        return
-    if e.indice == 2 and e.estado in ('aviso', 'varrida_casco') and e.tecnica == 'varrida':
-        l = x if e.frente > 0 else x-113
-        pygame.draw.rect(surf, FERRUGEM, (l,e.chao-cy-72,113,71), 1, border_radius=8)
-        for n in range(3):
-            px = x+e.frente*(27+n*27)
-            pygame.draw.lines(surf, OURO, False, [(px-e.frente*6,e.chao-cy-32),(px,e.chao-cy-38),(px-e.frente*6,e.chao-cy-44)],2)
-        return
-    if e.indice == 3 and e.estado == 'aviso' and e.tecnica == 'penas':
-        dx, dy = e.destino-e.x, e.alvo_y-e.y
-        for fator in (-.16, .16):
-            _linha_de_aviso(surf, (x,y), (x+dx-dy*fator,y+dy+dx*fator))
-        return
-    if e.estado in ("aviso", "rastro"):
-        # A indicação desenha o plano de ataque, inclusive por cima da penumbra.
-        if e.indice==1:
-            fim = (e.destino-cx, e.alvo_y-cy)
-            inicio = (x,y)
-        else:
-            fim = (e.destino-cx, e.alvo_y-cy)
-            inicio = (x,e.alvo_y-cy)
-        pontos = _linha_de_aviso(surf,inicio,fim)
-        if e.indice==1 and e.segundo_fio is not None:
-            x2,y2 = e.segundo_fio
-            _linha_de_aviso(surf,inicio,(x2-cx,y2-cy))
-        if e.indice==0 and e.asa_rasteira:
-            # Folhas levantando da linha de voo; forma legível também em mudo.
-            for i in range(1,pontos,3):
-                px = inicio[0]+(fim[0]-inicio[0])*i/pontos
-                pygame.draw.lines(surf,FIO,False,[(px-4,fim[1]+3),(px,fim[1]-2),(px+4,fim[1]+3)],2)
-        for j in [-1,0,1]:
-            pygame.draw.line(surf,FERRUGEM,(x+j*6,y-43),(x+j*9,y-50),2)
+        _sinais_do_chamado(surf,e,cx,cy)
+    if e.estado in ("aviso","rastro","coro_aviso"):
+        # O aviso fica junto ao corpo. Três marcas curtas indicam que ele está preparando o golpe.
+        for j in (-1,0,1):
+            pygame.draw.line(surf,FERRUGEM,(x+j*6,y-44),(x+j*10,y-51),2)
     if e.estado == "aberto":
         ax,ay = e._marca()
         mx,my = round(ax-cx),round(ay-cy)
         r = 12+round(2*sin(e.relogio*6))
         pygame.draw.circle(surf,OURO,(mx,my),r,1)
         pygame.draw.lines(surf,OURO,True,[(mx-4,my),(mx,my-5),(mx+4,my),(mx,my+5)],2)
+
+
+def postura(e):
+    estado = e.estado
+    # Envelopes visuais. O relógio da luta permanece sob controle da arena.
+    janela = {"aviso": (.95, 1.02, .63, .66)[e.indice], "rastro": .85,
+              "chama_ninhada": .65, "muda_casco": 1.05, "muda_coruja": .95,
+              "desce": 1., "investida": 2., "investida_seiva": 3.,
+              "varrida_casco": .18, "salto_casco": .76, "freio_casco": .76,
+              "recolhe_coruja": .65, "flor": .5, "coro_aviso": .9,
+              "coro_investida": 2., "coro_queda": .55}.get(estado, 1.)
+    progresso = fauna.fracao(1-e.tempo/janela)
+    tecnica = getattr(e, "tecnica", "")
+    if e.indice == 0:
+        tecnica = ("mergulho" if e.asa_mira_no_ar else "rasante_baixo" if e.asa_rasteira
+                   else "fagulha" if e.asa_isca else "rasante")
+    elif e.indice == 1:
+        if estado == "desce":
+            return "recuo", "queda", progresso
+        if estado == "busca" and e.fios:
+            distancia = min(hypot(f.x-e.x, f.y-e.y) for f in e.fios)
+            if distancia < 38:
+                return "ataque", "fio", distancia/38
+        tecnica = "fio_duplo" if e.segundo_fio else "fio"
+    elif e.indice == 3 and estado == "recolhe_coruja" and tecnica == "penas" and e.tempo > .24:
+        return "ataque", tecnica, fauna.fracao((.40-e.tempo)/.16)
+
+    if estado in {"aviso", "rastro", "coro_aviso", "chama_ninhada", "muda_casco", "muda_coruja"}:
+        return "preparacao", tecnica, progresso
+    if estado in {"investida", "investida_seiva", "varrida_casco", "salto_casco",
+                  "coro_investida", "coro_queda"}:
+        return "ataque", estado if estado not in {"investida", "salto_casco"} else tecnica, progresso
+    if estado in {"freio_casco", "recolhe_coruja", "flor"}:
+        return "recuo", "salto_casco" if tecnica == "salto" else tecnica, progresso
+    if estado == "aberto":
+        return "brecha", tecnica, progresso
+    if estado == "repouso":
+        return "repouso", tecnica, progresso
+    return "neutro", tecnica, progresso
 
 
 def desenhar_encontro(surf,e,cx,cy=0):
@@ -312,16 +297,13 @@ def desenhar_encontro(surf,e,cx,cy=0):
         face = x+e.frente*25
         pygame.draw.arc(surf,TEAL,(face-r,y-14-r,2*r,2*r),-.8 if e.frente>0 else 2.35,
                         .8 if e.frente>0 else 3.95,1)
-    pose = {"aviso":1,"rastro":1,"investida_seiva":2,"investida":2,"desce":2,"flor":2,"aberto":3,"repouso":3,
-            'salto_casco':2,'varrida_casco':2,'muda_casco':3,'muda_coruja':1,'recolhe_coruja':0}.get(e.estado,0)
-    if e.indice==0 and e.estado=="aviso" and e.asa_rasteira:
-        pose = 2  # abre as asas horizontalmente já na preparação do rasante
-    if e.estado=='coro_aviso':pose=1
-    if e.estado in ('coro_investida', 'coro_queda'):pose=2
-    imagem = _corpo(e.indice,pose,int(e.relogio*(5 if pose==0 else 8))%4,e.frente)
-    caixa = imagem.get_rect(center=(x,y))
-    caixa.bottom = min(caixa.bottom, round(e.chao-cy+2))
-    surf.blit(imagem,caixa)
+    ident, medida = GUARDIOES[e.indice]
+    fase, tecnica, progresso = postura(e)
+    centro = not (e.indice == 2 and e.estado != "salto_casco")
+    pe = y if centro else round(e.chao-cy+2)
+    passos = movimento_arte.deslocamento(e, e.x, e.relogio, e.frente)
+    fauna.corpo(surf, ident, fase, x, pe, medida, e.frente, e.relogio, progresso, tecnica,
+                centro=centro, passos=passos)
     if e.indice in (2,3) and getattr(e,'fase',1)==2 and not e.vencido:
         # Cicatrizes e penas destacadas conservam a leitura da fase em mudo.
         for n in range(3):
@@ -332,8 +314,9 @@ def desenhar_encontro(surf,e,cx,cy=0):
 
 
 
-def sinais_encontro(surf,e,cx,cy=0):
-    """Fios e marcas de ataque continuam visíveis além do alcance pessoal."""
+def sinais_encontro(surf,e,cx,cy=0,prevista=None):
+    """Renderiza projéteis em curso e sinais junto dos guardiões."""
+    marcas_fagulha(surf,e,cx,cy,prevista)
     if e.ninhada is not None and e.ninhada.cascas:
         for origem in e.ninhada.cascas:
             x, y = round(origem-cx), round(e.chao-cy)
@@ -361,4 +344,9 @@ def sinais_encontro(surf,e,cx,cy=0):
             pygame.draw.line(surf,tom,(x,faixa.bottom),(x+14,faixa.top),1)
         pygame.draw.line(surf,tom,faixa.topleft,faixa.topright,1)
         pygame.draw.line(surf,tom,faixa.bottomleft,faixa.bottomright,1)
-    _mira(surf,e,cx,cy)
+    ident = GUARDIOES[e.indice][0]
+    fase, tecnica, progresso = postura(e)
+    if not e.vencido:
+        base = e.chao if e.indice == 2 and e.estado != "salto_casco" else min(e.chao,e.y+22)
+        fauna.efeito_ataque(surf, ident, tecnica, fase, (e.x-cx,base-cy), e.frente, progresso, 1.7)
+    _sinais_do_chefe(surf,e,cx,cy)

@@ -7,6 +7,36 @@ import pygame
 
 RAIZ = Path(__file__).resolve().parents[1]
 ARTE = RAIZ / "assets" / "arte"
+OBJETOS_ATLAS = {
+    nome: indice for indice, nome in enumerate((
+        "obj_orvalho.png", "obj_valvula.png", "obj_corda.png", "obj_peca.png",
+        "obj_tocha_acesa.png", "obj_refugio.png", "obj_marco.png", "obj_raiz.png",
+    ))
+}
+GALHOS_ATLAS = {
+    "galho_enraizado.png": 0, "galho_musgo.png": 1,
+    "galho_seco.png": 2, "galho_broto.png": 3,
+}
+TERRENO_PINTADO = {
+    "pintado_raiz.png": 0, "pintado_galho.png": 1,
+    "pintado_solo.png": 2, "pintado_broto.png": 3,
+}
+ELENCO_PINTADO = {
+    "pintado_mimo.png": 0, "pintado_nira.png": 1, "pintado_vespera.png": 2,
+    "pintado_roda.png": 3, "pintado_registro.png": 4, "pintado_pacote.png": 5,
+    "pintado_passagem.png": 6, "pintado_orvalho.png": 7,
+}
+UTENSILIOS_BOSQUE = {
+    "mochila_bosque.png": 2,
+}
+FLORA_BOSQUE = {
+    "bosque_sarcas.png": 0, "bosque_samambaias.png": 1,
+    "bosque_fungos.png": 2, "bosque_juncos.png": 3,
+}
+HUD_MIOPIA = {
+    "hud_asa.png": 0, "hud_asa_ferida.png": 1, "hud_asa_critica.png": 2,
+    "hud_abdomen.png": 3, "hud_folha.png": 4, "hud_fagulha.png": 5,
+}
 OSSO = (232, 231, 210)
 PALIDO = (176, 197, 184)
 AMBAR = (241, 183, 101)
@@ -14,13 +44,13 @@ TINTA = (10, 18, 23)
 TEAL = (104, 139, 132)
 PERIGO = (245, 154, 122)
 ROMANOS = ("I", "II", "III", "IV")
-_leitura = ContextVar("leitura", default=(100, False, False, None))
+_leitura = ContextVar("leitura", default=(100, False, False, None, False))
 
 
 @contextmanager
 def estilo(preferencias, controles=None):
     estado = (preferencias.get("texto",100), preferencias.get("contraste",False),
-              preferencias.get("claroes_suaves",False), controles)
+              preferencias.get("claroes_suaves",False), controles, preferencias.get("numeros_hud",False))
     anterior = _leitura.set(estado)
     try:
         yield
@@ -38,6 +68,10 @@ def alto_contraste():
 
 def claroes_suaves():
     return _leitura.get()[2]
+
+
+def numeros_hud():
+    return _leitura.get()[4]
 
 
 def dica_teclado(msg):
@@ -83,6 +117,36 @@ def linhas(msg, largura, tam=17, estilo="normal"):
     return out
 
 
+def dica_local(s, tecla, rotulo, ponto):
+    """Desenha uma ação curta acima de um ponto da cena, em coordenadas da tela."""
+    tecla = dica_teclado(tecla)
+    rotulo = dica_teclado(rotulo)
+    estilo = "forte"
+    tamanho = tamanho_texto(16)
+    f = fonte(tamanho, estilo)
+    chave = fonte(tamanho_texto(15), estilo)
+    largura_tecla = max(24, chave.size(tecla)[0] + 12) if tecla else 0
+    margem = largura_tecla + 8 if tecla else 0
+    corpo = linhas(rotulo, 250 - margem, 16, estilo)
+    largura = margem + max(f.size(linha)[0] for linha in corpo)
+    passo = f.get_height()
+    altura = max(passo + 4, passo * len(corpo))
+    x, y = ponto
+    x = max(12, min(s.get_width() - largura - 12, round(x - largura / 2)))
+    y = max(90, min(s.get_height() - altura - 12, round(y - altura - 12)))
+    if tecla:
+        caixa = pygame.Rect(x, y, largura_tecla, passo + 4)
+        pygame.draw.rect(s, (16, 22, 32), caixa, border_radius=5)
+        pygame.draw.rect(s, AMBAR if alto_contraste() else (204, 167, 109), caixa, 1, border_radius=5)
+        texto(s, tecla, caixa.centerx, y + 2, 15, AMBAR, estilo, "centerx")
+    for n, linha in enumerate(corpo):
+        pos = x + margem, y + 2 + n * passo
+        sombra = tinta(linha, tamanho, (10, 13, 22), estilo)
+        for dx, dy in ((-1,-1), (0,-1), (1,-1), (-1,0), (1,0), (-1,1), (0,1), (1,1)):
+            s.blit(sombra, (pos[0] + dx, pos[1] + dy))
+        texto(s, linha, *pos, 16, OSSO, estilo)
+
+
 def paragrafo(surf, msg, x, y, largura, tam=17, cor=OSSO, estilo="normal", entre=None):
     for linha in linhas(msg, largura, tam, estilo):
         texto(surf, linha, x, y, tam, cor, estilo)
@@ -92,9 +156,40 @@ def paragrafo(surf, msg, x, y, largura, tam=17, cor=OSSO, estilo="normal", entre
 
 @lru_cache(maxsize=150)
 def original(nome):
+    if nome in OBJETOS_ATLAS:
+        return _celula("objetos_atlas.png", OBJETOS_ATLAS[nome], 4)
+    if nome in GALHOS_ATLAS:
+        return _celula("galhos_atlas.png", GALHOS_ATLAS[nome], 2)
+    if nome in TERRENO_PINTADO:
+        return _celula("bosque_terreno_atlas.png", TERRENO_PINTADO[nome], 2)
+    if nome in ELENCO_PINTADO:
+        return _celula("bosque_elenco_atlas.png", ELENCO_PINTADO[nome], 4)
+    if nome in UTENSILIOS_BOSQUE:
+        return _celula("bosque_utensilios_atlas.png", UTENSILIOS_BOSQUE[nome], 2)
+    if nome in FLORA_BOSQUE:
+        return _celula("bosque_flora_atlas.png", FLORA_BOSQUE[nome], 2, divisor_superior=.60)
+    if nome in HUD_MIOPIA:
+        return _celula("hud_miopia_atlas.png", HUD_MIOPIA[nome], 3)
     path = ARTE / nome
     im = pygame.image.load(str(path))
-    return im.convert_alpha() if path.suffix == ".png" else im.convert()
+    if path.suffix != ".png":
+        return im.convert()
+    im = im.convert_alpha()
+    if nome in ("passagem_raizes.png", "morcego_poleiro.png"):
+        return im.subsurface(im.get_bounding_rect(min_alpha=100)).copy()
+    return im
+
+
+def _celula(atlas, indice, colunas, *, divisor_superior=None):
+    folha = original(atlas)
+    largura, altura = folha.get_width()//colunas, folha.get_height()//2
+    linha, coluna = divmod(indice, colunas)
+    x = coluna*largura
+    if linha == 0 and divisor_superior is not None:
+        divisao = round(folha.get_width()*divisor_superior)
+        x, largura = (divisao, folha.get_width()-divisao) if coluna else (0, divisao)
+    celula = folha.subsurface((x, linha*altura, largura, altura))
+    return celula.subsurface(celula.get_bounding_rect(min_alpha=100)).copy()
 
 
 @lru_cache(maxsize=600)

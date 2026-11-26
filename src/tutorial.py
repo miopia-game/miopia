@@ -3,6 +3,8 @@ from .narrativa import ITENS
 from . import vento_taquaral
 from . import galeria_taquaral
 
+RECUPERAVEIS = {'primeiros_passos', 'salto'}
+
 CURTAS={
     'primeiros_passos':'Ande com A / D ou com as setas.',
     'salto':'Aperte Espaço para saltar.',
@@ -71,15 +73,18 @@ def atualizar(j,cmd):
         verificar_pratica(j,cmd)
     x,y=j.lume.rect.midbottom
     bosque=j.etapa==0 and not j.em_vertical and y<500
+    if bosque and x<710 and 'pulso' in j.eventos:
+        j.tutorial.add('praticado_clarao_bosque')
     taquaral=j.etapa==2 and not j.em_vertical
     candidatos=[];condicoes=set()
     def dica(ident,cond,titulo,texto):
         if cond:condicoes.add(ident)
-        if cond and ident not in j.tutorial:
+        pendente = ident in RECUPERAVEIS and 'praticado_'+ident not in j.tutorial
+        if cond and (ident not in j.tutorial or pendente):
             curto=CURTAS.get(ident,texto.split('.')[0]+'.')
             candidatos.append((ident,titulo,curto,texto))
     dica('primeiros_passos',bosque and x<220,'O primeiro caminho','A / D ou as setas movem Lume. Siga pela direita.')
-    dica('salto',bosque and 70<x<250,'Salte para o primeiro galho','Aperte Espaço para saltar. Segure um pouco para ganhar altura; toque rápido para um salto curto.')
+    dica('salto',bosque and 70<x<250,'Salte para o primeiro galho','Aperte Espaço para saltar. A borda clara à direita mostra onde pousar.')
     dica('interacao',bosque and 119<x<269,'Encontre os moradores','Aproxime-se de Nira ou Mimo e use E quando a opção aparecer. E também opera mecanismos e abre bolsas de trilha.')
     dica('vento_taquaral',taquaral and 197<x<318 and y>230,'As sementes sobem',
          'Salte entre os colmos onde as sementes sobem e segure Espaço quando começar a cair. O vento leva Lume até o beiral. Do lado exposto, as sementes correm de lado e mostram para onde as asas são levadas.')
@@ -125,7 +130,8 @@ def atualizar(j,cmd):
         candidatos=locais
     elif locais:candidatos=locais
     if candidatos:
-        ident,titulo,texto,detalhe=candidatos[0];j.tutorial.add(ident)
+        ident,titulo,texto,detalhe=min(candidatos, key=lambda dica:dica[0] in j.tutorial)
+        j.tutorial.add(ident)
         j.ensino_id=ident
         j.ensino_titulo=titulo;j.ensino_texto=texto;j.ensino_detalhe=detalhe
         j.ensino_inicio=j.tempo;j.ensino_ate=j.tempo+6.

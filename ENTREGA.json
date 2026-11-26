@@ -1,6 +1,14 @@
 {
-  "data": "2026-11-23",
-  "rodada": "S40",
-  "testes": 422,
-  "subcasos": 176
+  "data": "2026-11-25",
+  "rodada": "S40 · revisão jogável do Bosque",
+  "base_academica": "S40 de 23/11/2026",
+  "guia": "docs/equipe/GUIA_DE_CONTINUIDADE.md",
+  "previa": "docs/midia/bosque-em-jogo.mp4",
+  "base_git": {
+    "repositorio": "miopia-game/miopia",
+    "commit": "d00f15469d2062c28f5863d92f3c0e1bc68fe63c",
+    "testes": 422,
+    "subcasos": 176
+  },
+  "revisao_git": "9b70f323fdba82eae2e2c11b3d6398d38d734a38"
 }

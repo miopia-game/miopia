@@ -92,13 +92,14 @@ def coordenar(j):
 
 def desenhar(s,o,j,cx):
     import pygame
-    from .ilustracao import AMBAR,brilho
+    from .ilustracao import brilho,sprite
     x,y=o.x-cx,o.y;ident=o.id.split('_',1)[1]
     if o.id.startswith('nucleo_'):
         pygame.draw.polygon(s,(146,194,148),[(x,y-34),(x+11,y-17),(x,y-4),(x-11,y-17)])
         brilho(s,(x,y-17),20)
+    elif ident in j.tochas:
+        sprite(s,"obj_tocha_acesa",x,y,46,80)
+        brilho(s,(x,y-49),38)
     else:
         pygame.draw.lines(s,(103,117,68),False,[(x-12,y),(x-4,y-24),(x,y-72),(x+10,y-58)],6)
         pygame.draw.ellipse(s,(170,162,100),(x-15,y-81,30,18),2)
-        if ident in j.tochas:
-            pygame.draw.circle(s,AMBAR,(round(x),y-78),8);brilho(s,(x,y-78),38)

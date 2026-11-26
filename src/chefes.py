@@ -114,6 +114,11 @@ class Encontro:
         self.atingiu = False
         self.asa_rasteira = False
         self.asa_mira_no_ar = False
+        self.asa_isca = None
+        self.ultima_fagulha = None
+        self.asa_brecha_fagulha = False
+        self.marca_acesa = None
+        self.reacao_fagulha = ""
         self.fios = []
         self.segundo_fio = None
         self.tramas = []
@@ -161,25 +166,40 @@ class Encontro:
             return "Os casulos se abrem nas marcas. A cortina freia as crias próximas."
         if self.estado.startswith('coro_'):
             if self.coro_faixas:
-                return 'Saia das faixas das penas.'
+                return 'Penas no alto. Mova-se antes que caiam.'
             if self.estado in ('coro_aviso', 'coro_investida'):
-                return 'Leia a altura da linha e desvie do rasante.'
+                return 'Leia a altura do voo e desvie do rasante.'
             return 'E recolhe orvalho · K responde no ninho marcado'
         if self.estado == "aberto":
+            if self.reacao_fagulha == "teia":
+                return "Seda queimada · ataque o ventre com J"
+            if self.reacao_fagulha == "seiva":
+                return "Patas presas · salte e ataque a casca com J"
+            if self.reacao_fagulha == "sino":
+                return "Sino soou à distância · suba e use K na face"
+            if self.indice == 0:
+                if self.asa_brecha_fagulha:
+                    return "Brecha da fagulha · suba e ataque o dorso"
+                return "Brecha · suba e ataque o dorso"
             return self.ficha.janela
         if self.indice == 0 and self.estado in ("aviso", "investida"):
+            if self.asa_isca:
+                return "Voo na fagulha · saia da altura da asa"
             if self.asa_mira_no_ar:
-                return "Ela marcou sua altura. Saia da linha de voo."
+                return "Mude de altura · mira no ar"
             if self.asa_rasteira:
-                return "Asas abertas rente ao apoio. Salte quando ela se aproximar."
-            return "Asas recolhidas na altura do peito. Abaixe-se para ela passar."
-        if self.indice == 1 and self.estado == "aviso" and self.segundo_fio is not None:
-            return "A teia bifurca. Saia das duas linhas ou rompa os fios com a cortina."
+                return "Salte · voo baixo"
+            return "Abaixe-se · voo alto"
+        if self.indice == 1 and self.estado == "desce" and self.reacao_fagulha == "teia":
+            return "O fio queimou · a Tecelã está caindo"
+        if self.indice == 1 and self.estado == "aviso":
+            return ("Dois fios vindo · E na roda abre a água" if self.segundo_fio
+                    else "Fio vindo · E na roda abre a água")
         if self.indice == 2:
             if self.estado == 'muda_casco':
                 return 'O casco rachou: agora encadeia dois golpes. Leia o segundo aviso.'
             if self.estado == 'aviso':
-                return {'salto': 'Ele vai saltar até a marca. Saia da queda e pule a onda.',
+                return {'salto': 'Ele vai saltar. Mova-se e pule a onda.',
                         'varrida': 'O chifre varre a frente. Afaste-se ou passe por cima.',
                         'retorno': 'Ele muda de lado: prepare outra esquiva.',
                         'carga': 'Chifre baixo. Salte quando ele se aproximar.'}.get(self.tecnica, self.ficha.pista)
@@ -190,9 +210,11 @@ class Encontro:
             if self.engatado:
                 return "Caminhe com a seiva até o aro âmbar no chão."
         if self.indice == 3:
+            if self.tecnica == "sino" and self.reacao_fagulha == "sino" and self.estado in ("aviso","investida"):
+                return "Sino soou · desvie do voo até a raiz direita"
             if self.estado == 'aviso':
-                return {'garra': 'A garra cruza a faixa marcada. Mude de altura.',
-                        'penas': 'Duas penas cercam a mira. Saia das linhas.',
+                return {'garra': 'A garra desce em diagonal. Mude de altura.',
+                        'penas': 'Duas penas vindo. Saia de frente à Coruja.',
                         'rasante': 'Leia a altura do voo antes de saltar ou abaixar.'}.get(self.tecnica, 'O sino a leva à raiz riscada. Suba para lançar K perto da face.')
             if self.sino_movido:
                 return "E na roda toca o sino. Na raiz direita, suba e lance K perto da face exposta."
@@ -224,6 +246,40 @@ class Encontro:
         if self.indice == 2 and not self.tabua_quebrada:
             apoios.append(pygame.Rect(self.inicio+self.largura//2-46, base-45, 92, 10))
         return apoios
+
+    def marcas_fagulha(self):
+        if self.vencido:
+            return ()
+        if self.indice == 0:
+            return tuple((apoio.centerx, apoio.top-4) for apoio in self.apoios()[2:])
+        if self.indice == 1:
+            return ((round(self.cortina),self.chao-4),)
+        if self.indice == 2:
+            return ((self.inicio+self.largura//2,self.chao-4),)
+        if self.sino_movido and not self.estado.startswith("coro_"):
+            return ((self.valvula,self.chao-4),)
+        return ()
+
+    def marca_fagulha(self, fagulha):
+        if not fagulha:
+            return None
+        return next((p for p in self.marcas_fagulha()
+                     if hypot(fagulha.destino[0]-p[0],fagulha.destino[1]-p[1]) <= 24), None)
+
+    def alvo_fagulha(self, fagulha):
+        if fagulha is self.ultima_fagulha:
+            return None
+        return self.marca_fagulha(fagulha)
+
+    @property
+    def pista_fagulha(self):
+        return (
+            "G · lance a fagulha num patamar marcado",
+            "G na seda · faça o fio cruzar a marca",
+            "G na seiva · induza a carga a cruzar a marca",
+            "G sob o sino · toque à distância" if self.sino_movido else
+            "E move o sino · G pode tocá-lo depois",
+        )[self.indice]
 
     def _perto(self, corpo, x, alcance=59):
         return abs(corpo.centerx-x) <= alcance and self.chao-86 <= corpo.bottom <= self.chao+24
@@ -286,7 +342,8 @@ class Encontro:
 
     def _marca(self):
         if self.indice == 0:
-            return self.x - self.frente * 27, self.chao - 80
+            y = self.y-7 if self.asa_brecha_fagulha else self.chao-80
+            return self.x-self.frente*27, y
         if self.indice == 1:
             return self.x, self.chao - 30
         if self.indice == 2:
@@ -309,6 +366,8 @@ class Encontro:
         self.sino_soou = False
         self.engatado = self.assentado = False
         self.barrel_x = self.inicio + 102
+        self.asa_brecha_fagulha = False
+        self.reacao_fagulha = ""
         self._mudar("busca", (.55 if self.indice in (2, 3) else 1.6) * self.ritmo.recuperacao)
 
     def _atualizar_aberto(self, corpo, golpe, clarao, eventos, permitir=True):
@@ -347,13 +406,21 @@ class Encontro:
         self._mudar("aviso", duracao)
         eventos.append("aviso")
 
-    def _voar(self, dt, corpo, eventos, velocidade):
+    def _voar(self, dt, corpo, eventos, velocidade, fagulha=None):
         self.y = self.alvo_y
         self.x = aproximar(self.x, self.destino, velocidade*dt)
         # A faixa anunciada permanece na mesma altura até o fim do voo.
         faixa = pygame.FRect(self.x-32, self.y-12, 64, 19)
         self._colisao(corpo, faixa, eventos)
         if abs(self.x-self.destino) < .01:
+            if self.asa_isca:
+                isca = self.asa_isca
+                self.asa_isca = None
+                if fagulha is isca:
+                    self.asa_brecha_fagulha = True
+                    self._abrir(3.3, eventos)
+                    eventos.append("brecha_fagulha")
+                    return
             if self.impacta:
                 self.y = self.chao - (57 if self.indice == 0 else 72)
                 janela = 2.8
@@ -376,11 +443,18 @@ class Encontro:
         piso = apoio.top if apoio is not None else self.chao
         return piso - (10 if self.asa_rasteira else 31)
 
-    def _asa(self, dt, corpo, eventos):
+    def _asa(self, dt, corpo, eventos, fagulha):
         if self.estado == "busca":
             altura_vigia = self.chao - 93 + sin(self.relogio * 3) * 5
             self.y = aproximar(self.y, min(altura_vigia, corpo.centery), dt * 120)
             if self.tempo <= 0:
+                marca = self.alvo_fagulha(fagulha)
+                if marca and abs(self.x-marca[0]) >= 95:
+                    self.asa_isca = self.ultima_fagulha = fagulha
+                    self.asa_mira_no_ar = False
+                    self.asa_rasteira = False
+                    self._aviso_investida(marca[0],marca[1]-27,.92,False,eventos)
+                    return
                 esquerda = corpo.centerx <= self.esq+133
                 direita = corpo.centerx >= self.dir-133
                 impacta = esquerda or direita
@@ -404,9 +478,9 @@ class Encontro:
             if self.tempo <= 0:
                 self._mudar("investida", 2.)
         elif self.estado == "investida":
-            self._voar(dt, corpo, eventos, 552 if self.asa_rasteira else 498)
+            self._voar(dt, corpo, eventos, 552 if self.asa_rasteira else 498, fagulha)
 
-    def _tecela(self, dt, corpo, eventos):
+    def _tecela(self, dt, corpo, eventos, fagulha):
         # A roda abre a água imediatamente. A aranha cai quando um fio tenso
         # encontra a cortina, o que também funciona para quem abriu antes do aviso.
         if self.agua > 0 and (self.estado == "aviso" or self.fios):
@@ -419,7 +493,8 @@ class Encontro:
             self.y = aproximar(self.y, self.chao-31, dt*215)
             if self.tempo <= 0:
                 self.y = self.chao-31
-                self._abrir(2.85 if self.progresso else 4.8, eventos)
+                janela = 2.85 if self.reacao_fagulha == "teia" or self.progresso else 4.8
+                self._abrir(janela, eventos)
             return
         if self.estado == "busca":
             self.y = aproximar(self.y, self.chao-208, dt*172)
@@ -449,9 +524,18 @@ class Encontro:
             self._mudar("busca", .98*self.ritmo.recuperacao)
             eventos.append("teia")
         vivos = []
+        marca = self.alvo_fagulha(fagulha)
         for fio in self.fios:
             fio.x += fio.vx*dt
             fio.y += fio.vy*dt
+            if marca and hypot(fio.x-marca[0],fio.y-marca[1]) <= 45:
+                self.fios.clear()
+                self.segundo_fio = None
+                self.reacao_fagulha = "teia"
+                self.ultima_fagulha = fagulha
+                self._mudar("desce",.85)
+                eventos.append("teia_queimada")
+                return
             if pygame.FRect(fio.x-6,fio.y-6,12,12).colliderect(corpo):
                 eventos.append("dano_jogador")
             elif self.esq-28 <= fio.x <= self.dir+28 and fio.y >= self.chao-4:
@@ -469,15 +553,15 @@ class Encontro:
                 eventos.append("dano_jogador")
         self.tramas = [t for t in self.tramas if t.tempo > 0 and not t.tocada]
 
-    def _casco(self, dt, corpo, direcao, eventos):
+    def _casco(self, dt, corpo, direcao, eventos, fagulha):
         from .casco import atualizar
-        atualizar(self, dt, corpo, direcao, eventos)
+        atualizar(self, dt, corpo, direcao, eventos, fagulha)
 
-    def _coruja(self, dt, corpo, ruido, eventos):
+    def _coruja(self, dt, corpo, ruido, eventos, fagulha):
         from .coruja import atualizar
-        atualizar(self, dt, corpo, ruido, eventos)
+        atualizar(self, dt, corpo, ruido, eventos, fagulha)
 
-    def update(self, dt, corpo, *, ruido=0., golpe=None, clarao=False, interagir=False, direcao=0, serie=None, bonus_dano=1., dano_corte=2.):
+    def update(self, dt, corpo, *, ruido=0., golpe=None, clarao=False, interagir=False, direcao=0, serie=None, bonus_dano=1., dano_corte=2., fagulha=None):
         """Recebe bordas de comando (golpe, clarão e E); retorna eventos desta atualização."""
         eventos = []
         self.relogio += dt
@@ -485,6 +569,7 @@ class Encontro:
         self.agua = max(0., self.agua-dt)
         if self.vencido:
             return eventos
+        self.marca_acesa = self.marca_fagulha(fagulha)
         if self.estado.startswith('coro_'):
             from .ultimo_chamado import atualizar
             self.tempo-=dt
@@ -523,13 +608,13 @@ class Encontro:
                 self.ultimo_golpe_t = self.relogio
             self._atualizar_aberto(corpo, golpe, clarao, eventos, permitir=fraco)
         elif self.indice == 0:
-            self._asa(dt, corpo, eventos)
+            self._asa(dt, corpo, eventos, fagulha)
         elif self.indice == 1:
-            self._tecela(dt, corpo, eventos)
+            self._tecela(dt, corpo, eventos, fagulha)
         elif self.indice == 2:
-            self._casco(dt, corpo, direcao, eventos)
+            self._casco(dt, corpo, direcao, eventos, fagulha)
         else:
-            self._coruja(dt, corpo, ruido, eventos)
+            self._coruja(dt, corpo, ruido, eventos, fagulha)
         return eventos
 
     def desenhar(self, tela, camera_x, camera_y=0):

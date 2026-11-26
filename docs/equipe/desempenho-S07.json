@@ -1,0 +1,125 @@
+{
+  "metodo": "CPU, SDL dummy, 20 quadros de aquecimento; sem flip ou espera do monitor.",
+  "cenas": {
+    "bosque": {
+      "simulacao": {
+        "mediana_ms": 0.995,
+        "p95_ms": 1.771,
+        "max_ms": 2.033
+      },
+      "desenho": {
+        "mediana_ms": 7.093,
+        "p95_ms": 11.784,
+        "max_ms": 12.421
+      }
+    },
+    "clarao": {
+      "simulacao": {
+        "mediana_ms": 1.027,
+        "p95_ms": 1.602,
+        "max_ms": 2.182
+      },
+      "desenho": {
+        "mediana_ms": 8.126,
+        "p95_ms": 10.769,
+        "max_ms": 13.752
+      }
+    },
+    "subsolo": {
+      "simulacao": {
+        "mediana_ms": 0.923,
+        "p95_ms": 3.484,
+        "max_ms": 7.084
+      },
+      "desenho": {
+        "mediana_ms": 9.554,
+        "p95_ms": 16.139,
+        "max_ms": 17.483
+      }
+    },
+    "casco": {
+      "simulacao": {
+        "mediana_ms": 0.36,
+        "p95_ms": 0.65,
+        "max_ms": 1.798
+      },
+      "desenho": {
+        "mediana_ms": 7.387,
+        "p95_ms": 10.074,
+        "max_ms": 12.924
+      }
+    },
+    "coruja": {
+      "simulacao": {
+        "mediana_ms": 0.397,
+        "p95_ms": 2.14,
+        "max_ms": 5.883
+      },
+      "desenho": {
+        "mediana_ms": 9.23,
+        "p95_ms": 15.28,
+        "max_ms": 18.568
+      }
+    },
+    "galeria": {
+      "simulacao": {
+        "mediana_ms": 1.172,
+        "p95_ms": 3.008,
+        "max_ms": 8.507
+      },
+      "desenho": {
+        "mediana_ms": 10.929,
+        "p95_ms": 18.286,
+        "max_ms": 20.126
+      }
+    },
+    "poco": {
+      "simulacao": {
+        "mediana_ms": 1.404,
+        "p95_ms": 2.116,
+        "max_ms": 2.479
+      },
+      "desenho": {
+        "mediana_ms": 11.47,
+        "p95_ms": 15.232,
+        "max_ms": 15.916
+      }
+    },
+    "caruncho": {
+      "simulacao": {
+        "mediana_ms": 1.087,
+        "p95_ms": 3.282,
+        "max_ms": 6.245
+      },
+      "desenho": {
+        "mediana_ms": 8.386,
+        "p95_ms": 12.813,
+        "max_ms": 15.327
+      }
+    },
+    "jardim": {
+      "simulacao": {
+        "mediana_ms": 1.529,
+        "p95_ms": 3.087,
+        "max_ms": 5.994
+      },
+      "desenho": {
+        "mediana_ms": 10.226,
+        "p95_ms": 17.012,
+        "max_ms": 18.255
+      }
+    },
+    "retorno": {
+      "simulacao": {
+        "mediana_ms": 1.08,
+        "p95_ms": 2.205,
+        "max_ms": 3.949
+      },
+      "desenho": {
+        "mediana_ms": 11.234,
+        "p95_ms": 18.996,
+        "max_ms": 24.189
+      }
+    }
+  }
+}
