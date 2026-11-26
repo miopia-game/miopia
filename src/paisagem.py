@@ -11,7 +11,7 @@ from .arte_combate import inimigo, projeteis, golpe_lume, tranca
 from .arte_lume import desenhar_lume
 from .fases import FASES
 from .hud_reservas import desenhar as reservas
-from .ilustracao import (original, AMBAR, alto_contraste, OSSO, PALIDO, PERIGO, ROMANOS, TEAL, TINTA, brilho, dica_teclado, fonte, imagem,
+from .ilustracao import (carregar_arte, original, AMBAR, alto_contraste, OSSO, PALIDO, PERIGO, ROMANOS, TEAL, TINTA, brilho, dica_teclado, fonte, imagem,
                          losango, manivela, painel, placa, sprite, tamanho_texto, texto)
 
 CORES = ((77,102,86),(81,119,119),(127,116,72),(97,86,106))
@@ -35,11 +35,17 @@ def arte_npc(nome):
     return "npc_" + slug(nome)
 
 
-@lru_cache(maxsize=4)
+PANORAMAS = ("bosque", "corrego", "taquaral", "gruta")
+TONS_PANORAMA = ((65,72,89), (119,129,148), (152,164,183), (190,202,218))
+
+
+@lru_cache(maxsize=2)
 def fundo(i):
-    img=pygame.transform.smoothscale(original(f"fundo_{i}.jpg"), (1270,714))
-    img.fill((158,174,182),special_flags=pygame.BLEND_RGB_MULT)
-    return img
+    # A câmera avança sobre pixels do panorama. Cada janela consome 1920 × 1080.
+    arte = carregar_arte(f"panoramas/{PANORAMAS[i]}.jpg")
+    pintura = pygame.nativa(arte, (1280,720))
+    pintura.fill((191,202,211), special_flags=pygame.BLEND_RGB_MULT)
+    return pintura
 
 
 @lru_cache(maxsize=4)
@@ -598,7 +604,10 @@ class Paisagem:
         i,cx=j.etapa,j.camera
         intensidade = abertura_bosque.intensidade(j)
         limite_arte = abertura_bosque.FIM_TRILHA if abertura_bosque.ativa(j) else 0
-        s.blit(fundo(i),(-int(cx/max(1,j.fase.width-960)*310),cy-108))
+        panorama = fundo(i)
+        margem = panorama.get_width() - recorte.w
+        deslocamento = margem * cx / max(1, j.fase.width-recorte.w)
+        s.blit(panorama, (-deslocamento, cy-108))
         abertura_bosque.fundo(s,j,cx,cy)
         if cy>60:
             # As raízes cobrem progressivamente o céu ao descer, no mesmo mundo.
@@ -700,12 +709,14 @@ class Paisagem:
         nivel=min(3,self.brilho_mata+int(j.concluida))
         arte_fagulha.iluminar_cenario(s,j,cx)
         compor_luz(self.luz,j,cx,cy,nivel)
-        cor = abertura_bosque.cor_distante(j,nivel,TINTAS_NEVOA[nivel]) if abertura_bosque.ativa(j) else None
+        cor = TONS_PANORAMA[nivel]
+        if abertura_bosque.ativa(j):
+            cor = abertura_bosque.cor_distante(j,nivel,cor)
         if intensidade:
             # O fundo frio permanece escuro. Um mínimo de luz revela as silhuetas desenhadas.
             escuro = round((38,52,70,87)[nivel]*intensidade)
             self.luz.fill((escuro,escuro,escuro),special_flags=pygame.BLEND_RGB_MAX)
-        aplicar_nevoa(s,self.luz,cy,fundo_visao,nivel,cor,intensidade)
+        aplicar_nevoa(s,self.luz,cy,fundo_visao,nivel,cor,nitidez=1.)
         if limite_arte and cx < limite_arte:
             arte_ilustrada.iluminar_pousos(s,j,cx,nivel,limite_arte)
         if primeiro is not None and abertura_bosque.em_cena(j) and "valvula" not in j.flags:

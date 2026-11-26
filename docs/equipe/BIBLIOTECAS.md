@@ -49,3 +49,7 @@ python -m tools.gravar_bosque --saida work/entrega/previa
 ```
 
 O gravador começa pela História com um perfil descartável, verifica o pouso da fagulha e o abate, grava a imagem em 960 × 540 e decodifica o vídeo para conferir o arquivo. O MP4 é silencioso. Para avaliar som e tempo de reação com controle físico, abra a partida normalmente.
+
+## Pinturas da campanha em Full HD
+
+VTracer 0.6.15 foi usado na conversão inicial das áreas de cor em caminhos de Bézier. Os mestres editáveis acompanham o projeto. O exportador usa resvg-py 0.5.0 e Pillow para refazer os oito JPGs. O jogo usa apenas os arquivos prontos. O novo gravador captura o quadro físico em 1920 × 1080 e o áudio estéreo do mixer. [Produção e comandos](../arte/PINTURAS_DOS_BIOMAS.md)

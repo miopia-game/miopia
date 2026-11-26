@@ -1,3 +1,4 @@
 # Ferramentas de criação. Instale em conjunto com requirements-dev.txt para gravar a prévia.
 Pillow==13.0.0
 imageio-ffmpeg==0.8.1
+resvg-py==0.5.0

@@ -180,14 +180,17 @@ def original(nome):
         return _celula("bosque_flora_atlas.png", FLORA_BOSQUE[nome], 2, divisor_superior=.60)
     if nome in HUD_MIOPIA:
         return _celula("hud_miopia_atlas.png", HUD_MIOPIA[nome], 3)
-    path = ARTE / nome
-    im = sdl.image.load(str(path))
-    if path.suffix != ".png":
-        return im.convert(_FORMATO_RGB)
-    im = im.convert(_FORMATO_RGBA)
+    im = carregar_arte(nome)
     if nome in ("passagem_raizes.png", "morcego_poleiro.png"):
         return im.subsurface(im.get_bounding_rect(min_alpha=100)).copy()
     return im
+
+
+def carregar_arte(nome):
+    """Lê os pixels da pintura. O chamador escolhe qual versão manter no cache."""
+    path = ARTE / nome
+    im = sdl.image.load(str(path))
+    return im.convert(_FORMATO_RGBA if path.suffix == ".png" else _FORMATO_RGB)
 
 
 def _celula(atlas, indice, colunas, *, divisor_superior=None):

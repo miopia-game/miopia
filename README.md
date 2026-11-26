@@ -6,6 +6,8 @@ Lume é um vaga-lume míope numa floresta em seca. De perto, ele enxerga o galho
 
 [Assistir à abertura jogável até o primeiro morcego](docs/midia/bosque-em-jogo.mp4) · [Ver os 13 encontros em movimento](docs/midia/playtest-dos-13-encontros.mp4) · [Abrir o guia para continuar o projeto](docs/equipe/GUIA_DE_CONTINUIDADE.md)
 
+As quatro pinturas da campanha acompanham a câmera em Full HD. [Assistir ao playtest do Bosque, Córrego, Taquaral e Gruta](docs/midia/quatro-pinturas-em-jogo.mp4) · [Comparar os contornos em tamanho real](docs/midia/quatro-pinturas-antes-e-depois.png)
+
 ## Jogar
 
 A partida, os menus e o mapa são renderizados em **1920 × 1080**. F11 alterna janela e tela cheia. Em telas Retina, a janela pode ocupar 960 × 540 pontos e usar os 1920 × 1080 pixels físicos. [Comparar o detalhe da pintura e da interface](docs/midia/bosque-detalhe-1080p.png)

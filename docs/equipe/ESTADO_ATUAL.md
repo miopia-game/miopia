@@ -1,3 +1,5 @@
+As quatro pinturas laterais foram redesenhadas com o traço do elenco. A câmera percorre panoramas de 2560 × 1440 e exibe 1920 × 1080 pixels por quadro. [Ver as quatro fases em movimento](../midia/quatro-pinturas-em-jogo.mp4) · [Mestres e produção](../arte/PINTURAS_DOS_BIOMAS.md)
+
 A prévia Full HD renderiza o mundo, os efeitos e a interface a 1920 × 1080. A física, o enquadramento e as áreas clicáveis usam as unidades anteriores. A textura de apresentação e as gravações recebem o quadro físico da App. [Abertura em 1080p](../midia/bosque-em-jogo.mp4) · [Comparação de detalhes](../midia/bosque-detalhe-1080p.png)
 
 Nesta prévia local, a fagulha atravessa o vão em linha reta, ilumina a pintura durante o voo e acende a casca no contato. O poleiro do morcego ganhou um tronco, e a terra encobre os elementos de fundo. O vídeo da abertura inclui o áudio da partida. [Jogar e ver a travessia](../../README.md)

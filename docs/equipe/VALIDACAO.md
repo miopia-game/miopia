@@ -1,8 +1,14 @@
+# Quatro pinturas em movimento · 26/11
+
+Foram gravados 480 quadros por bioma com o desenho, a entrada e o áudio da App. Os capítulos do MP4 começam aos 0, 8, 16 e 24 segundos. A decodificação confirmou 1.920 quadros, duração de 32 segundos, 1920 × 1080 a 60 fps e áudio estéreo a 44,1 kHz. No quadro 165 de cada capítulo, a posição de câmera e de Lume coincide com a versão anterior. Nos quatro trajetos completos também coincidiram posição, vida e estado de jogo em todos os quadros. Os inícios foram preparados separadamente para avaliar as pinturas laterais. [Filme](../midia/quatro-pinturas-em-jogo.mp4) · [Recortes do mesmo quadro em escala 1:1](../midia/quatro-pinturas-antes-e-depois.png)
+
+As oito imagens foram reproduzidas byte a byte a partir dos quatro mestres. O lançador do macOS abriu o menu e o Bosque em Full HD. A suíte passou em 495 testes e 176 subtestes. Os quatro testes novos conferem a resolução física dos arquivos, os pixels usados pela câmera e o caminho da névoa na renderização. [Mestres e reprodução](../arte/PINTURAS_DOS_BIOMAS.md) · [Testes dos biomas](../../tests/test_pinturas_biomas.py)
+
 # Renderização Full HD · prévia de 26/11
 
 Na tela Retina do Mac, o SDL mediu 960 × 540 pontos de janela, 1920 × 1080 pixels físicos e 1920 × 1080 pixels na saída do renderizador. No menu, os 2.073.600 pixels RGB lidos da apresentação coincidiram com o quadro da aplicação. O mapa, as fontes, o HUD e a pintura dos apoios têm testes de rasterização. A câmera e a simulação conservam as coordenadas da campanha. [Janela e entrada](../../src/janela_hd.py) · [Superfícies e desenho](../../src/pygame_hd.py)
 
-A regressão completa passou em 491 testes e 176 subtestes. O playtest automatizado percorreu a abertura do Bosque, lançou para os dois lados e venceu o primeiro morcego. Os 30 ensaios preparados do Campo de testes também tiveram a tela desenhada em 1920 × 1080. As quatro pinturas distantes herdadas medem 836 × 470 ou 836 × 471. A nitidez desses fundos ainda depende do detalhe presente nos arquivos de origem. [Vídeo com som](../midia/bosque-em-jogo.mp4) · [Comparação dos detalhes](../midia/bosque-detalhe-1080p.png)
+A regressão completa passou em 491 testes e 176 subtestes. O playtest automatizado percorreu a abertura do Bosque, lançou para os dois lados e venceu o primeiro morcego. Os 30 ensaios preparados do Campo de testes também tiveram a tela desenhada em 1920 × 1080. Na revisão 206a09b, as quatro pinturas distantes herdadas mediam 836 × 470 ou 836 × 471. Naquela revisão, o detalhe dos arquivos de origem limitava a nitidez desses fundos. [Vídeo com som](../midia/bosque-em-jogo.mp4) · [Comparação dos detalhes](../midia/bosque-detalhe-1080p.png)
 
 # Nitidez do Bosque e voo da fagulha · prévia de 26/11
 

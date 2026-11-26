@@ -2,6 +2,8 @@
 
 **T00.4, conferência de 06/11/2026.** A equipe usa esta lista para separar o piloto privado dos arquivos que podem vir a integrar uma edição pública. O pacote acadêmico já montado continua servindo de referência para o teste do jogo. Para uma demo externa, jogo na loja, material de divulgação ou repositório público, a produção mantém os itens abaixo em quarentena até que o responsável registre uma decisão específica para aquele uso. Quarentena aqui é uma regra de seleção do futuro pacote. Os arquivos instalados continuam nos locais originais.
 
+As quatro pinturas laterais usadas até a revisão `206a09b` foram substituídas na revisão Full HD. A lista histórica abaixo registra o acervo acadêmico daquela época. [Origem dos quatro cenários atuais](arte/PINTURAS_DOS_BIOMAS.md)
+
 ## Materiais que chegaram à versão atual
 
 **S35.** A tranca, a parede de colmos, o cofre e a lâmpada do Nicho

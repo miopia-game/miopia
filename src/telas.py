@@ -119,11 +119,11 @@ def opcoes_ajustes(a,s):
             "Brilho da mata  ·  "+("Mínimo","Noturno","Médio","Alto")[p["brilho"]],
             "Som  ·  "+("silenciado" if p["mudo"] else "ligado"),"Controles","Acessibilidade","Voltar"]
     opcoes(a,s,labels,77,127,390,32,18)
-    from .paisagem import amostra_nevoa, mascara_luz, nevoa_distante
+    from .paisagem import TONS_PANORAMA, mascara_luz, nevoa_distante
     # Demonstra foco e fundo escuro, sem a antiga amostra de breu absoluto.
     amostra = imagem("fundo_0.jpg",340,188).copy()
     borrado=pygame.Surface(amostra.get_size())
-    nevoa_distante(amostra,borrado,amostra_nevoa(amostra.get_size()),p["brilho"])
+    nevoa_distante(amostra,borrado,None,p["brilho"],cor=TONS_PANORAMA[p["brilho"]],nitidez=1.)
     mascara = pygame.Surface(amostra.get_size())
     mascara.fill((0,0,0))
     mascara.blit(mascara_luz(66,p["brilho"]),(104,30),special_flags=pygame.BLEND_RGB_MAX)
@@ -261,8 +261,8 @@ def dialogo(a,s):
 
 def cena(a,s):
     titulo,msg,i=PROLOGO[a.quadro]
-    img=imagem(f"fundo_{i}.jpg",1030,580)
-    pygame.blit(s, img,(-30,-28))
+    img=imagem(f"fundo_{i}.jpg",960,540)
+    pygame.blit(s, img,(0,0))
     pygame.blit(s, placa(960,540,94),(0,0))
     painel(s,(0,302,960,238),False)
     texto(s,"PRÓLOGO     "+ROMANOS[a.quadro],65,323,14,AMBAR,"forte")
