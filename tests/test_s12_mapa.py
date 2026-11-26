@@ -35,7 +35,8 @@ def test_arrastar_mapa_parcial_preserva_mascara_em_faixas(app):
 
     # Captura somente as operações que apagam terreno desconhecido.
     cor = (12, 22, 24)
-    mascara = pygame.Surface(QUADRO.size)
+    pixels = (2*QUADRO.w, 2*QUADRO.h)
+    mascara = pygame.Surface(pixels)
     desenhar_rect = pygame.draw.rect
     operacoes = 0
 
@@ -52,7 +53,8 @@ def test_arrastar_mapa_parcial_preserva_mascara_em_faixas(app):
     from src.cartografia import dimensoes
     mundo = app.mapa_visor.janela(j)
     largura, altura = dimensoes(j)
-    esperado = pygame.Surface(QUADRO.size)
+    assert app.mapa_visor.camada.get_size() == pixels
+    esperado = pygame.Surface(pixels)
     for x in range(0, largura, TAMANHO):
         for y in range(0, altura, TAMANHO):
             if (x >= mundo.right or y >= mundo.bottom
@@ -63,7 +65,7 @@ def test_arrastar_mapa_parcial_preserva_mascara_em_faixas(app):
             right = round((x+TAMANHO-mundo.x) * (QUADRO.w/mundo.w))
             top = round((y-mundo.y) * (QUADRO.h/mundo.h))
             bottom = round((y+TAMANHO-mundo.y) * (QUADRO.h/mundo.h))
-            desenhar_rect(esperado, cor, (left, top, right-left+1, bottom-top+1))
+            desenhar_rect(esperado, cor, (2*left, 2*top, 2*(right-left+1), 2*(bottom-top+1)))
     assert pygame.image.tobytes(mascara, 'RGB') == pygame.image.tobytes(esperado, 'RGB')
     assert j.salvar() == antes
     assert operacoes <= math.ceil(largura/TAMANHO) + len(j.explorado)

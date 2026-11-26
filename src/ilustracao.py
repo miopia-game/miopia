@@ -3,10 +3,14 @@ from functools import lru_cache
 from contextlib import contextmanager
 from contextvars import ContextVar
 from pathlib import Path
-import pygame
+import pygame as sdl
+
+from . import pygame_hd as pygame
 
 RAIZ = Path(__file__).resolve().parents[1]
 ARTE = RAIZ / "assets" / "arte"
+_FORMATO_RGB = sdl.Surface((1, 1), depth=32)
+_FORMATO_RGBA = sdl.Surface((1, 1), sdl.SRCALPHA, depth=32)
 OBJETOS_ATLAS = {
     nome: indice for indice, nome in enumerate((
         "obj_orvalho.png", "obj_valvula.png", "obj_corda.png", "obj_peca.png",
@@ -88,7 +92,13 @@ def fonte(tamanho, estilo="normal"):
 
 @lru_cache(maxsize=384)
 def tinta(msg, tamanho, cor, estilo):
-    return fonte(tamanho, estilo).render(msg, True, cor)
+    # O layout usa as métricas do caderno. A fonte rasteriza o contorno em Full HD.
+    medidas = fonte(tamanho, estilo).size(msg)
+    pixels = fonte(tamanho * 2, estilo).render(msg, True, cor)
+    tamanho_fisico = (medidas[0] * 2, medidas[1] * 2)
+    if pixels.get_size() != tamanho_fisico:
+        pixels = sdl.transform.smoothscale(pixels, tamanho_fisico)
+    return pygame.nativa(pixels, medidas)
 
 
 def texto(surf, msg, x, y, tam=17, cor=OSSO, estilo="normal", alinhar="left"):
@@ -97,7 +107,7 @@ def texto(surf, msg, x, y, tam=17, cor=OSSO, estilo="normal", alinhar="left"):
     im = tinta(str(msg), tamanho_texto(tam), cor, estilo)
     rect = im.get_rect(top=y)
     setattr(rect, alinhar, x)
-    surf.blit(im, rect)
+    pygame.blit(surf, im, rect)
     return rect
 
 
@@ -143,7 +153,7 @@ def dica_local(s, tecla, rotulo, ponto):
         pos = x + margem, y + 2 + n * passo
         sombra = tinta(linha, tamanho, (10, 13, 22), estilo)
         for dx, dy in ((-1,-1), (0,-1), (1,-1), (-1,0), (1,0), (-1,1), (0,1), (1,1)):
-            s.blit(sombra, (pos[0] + dx, pos[1] + dy))
+            pygame.blit(s, sombra, (pos[0] + dx, pos[1] + dy))
         texto(s, linha, *pos, 16, OSSO, estilo)
 
 
@@ -171,10 +181,10 @@ def original(nome):
     if nome in HUD_MIOPIA:
         return _celula("hud_miopia_atlas.png", HUD_MIOPIA[nome], 3)
     path = ARTE / nome
-    im = pygame.image.load(str(path))
+    im = sdl.image.load(str(path))
     if path.suffix != ".png":
-        return im.convert()
-    im = im.convert_alpha()
+        return im.convert(_FORMATO_RGB)
+    im = im.convert(_FORMATO_RGBA)
     if nome in ("passagem_raizes.png", "morcego_poleiro.png"):
         return im.subsurface(im.get_bounding_rect(min_alpha=100)).copy()
     return im
@@ -201,7 +211,7 @@ def imagem(nome, largura, altura, espelho=False):
 def sprite(surf, nome, x, pe, largura, altura, espelho=False):
     im = imagem(nome + ".png", int(largura), int(altura), espelho)
     r = im.get_rect(midbottom=(round(x), round(pe)))
-    surf.blit(im, r)
+    pygame.blit(surf, im, r)
     return r
 
 
@@ -229,7 +239,7 @@ def placa(w, h, opacidade=213):
 
 def painel(surf, r, friso=True):
     r = pygame.Rect(r)
-    surf.blit(placa(r.w,r.h,249 if alto_contraste() else 213),r)
+    pygame.blit(surf, placa(r.w,r.h,249 if alto_contraste() else 213),r)
     if friso:
         pygame.draw.line(surf, TEAL, r.topleft,(r.right-1,r.top))
         pygame.draw.line(surf, (53,72,70), r.bottomleft,(r.right-1,r.bottom))
@@ -246,4 +256,4 @@ def halo(raio):
 
 
 def brilho(surf, xy, raio):
-    surf.blit(halo(raio),(int(xy[0])-raio,int(xy[1])-raio))
+    pygame.blit(surf, halo(raio),(int(xy[0])-raio,int(xy[1])-raio))

@@ -2,29 +2,43 @@
 from functools import lru_cache
 import math
 
-import pygame
+from . import pygame_hd as pygame
 from .arte_combate import inimigo, projeteis
 from . import arquivo_casca, arte_fio, corte_vertical as corte, fio_corte
-from .ilustracao import AMBAR, OSSO, PALIDO, TEAL, brilho, imagem, losango, manivela, sprite, texto
+from .ilustracao import AMBAR, OSSO, PALIDO, TEAL, brilho, imagem, losango, manivela, original, sprite, texto
 
 
 @lru_cache(maxsize=1)
 def camadas():
-    fundo=imagem("corte_da_figueira.jpg",1144,1670).copy()
+    fundo=pygame.transform.smoothscale(original("corte_da_figueira.jpg"), (1144,1670))
     fundo.fill((186,198,199),special_flags=pygame.BLEND_RGB_MULT)
     return fundo,pygame.Surface((960,corte.ALTURA+80)),pygame.Surface((960,540))
 
 
-@lru_cache(maxsize=1)
-def suportes():
-    """Galhos ligados ao tronco e escoras naturais dão origem às duas colunas de apoios."""
-    out=pygame.Surface((2432,corte.ALTURA),pygame.SRCALPHA)
+LADO_SETOR = 384
+
+
+@lru_cache(maxsize=16)
+def suporte_do_setor(sx, sy):
+    """Só a área pintada de cada setor das escoras fica residente em Full HD."""
+    tamanho = min(LADO_SETOR, 2432-sx), min(LADO_SETOR, corte.ALTURA-sy)
+    out = pygame.Surface(tamanho, pygame.SRCALPHA)
+
+    def pontos(coords):
+        return [(x-sx, y-sy) for x,y in coords]
+
+    def linha(cor, a, b, largura):
+        pygame.draw.line(out, cor, *pontos((a,b)), largura)
+
+    def linhas(cor, coords, largura):
+        pygame.draw.lines(out, cor, False, pontos(coords), largura)
+
     for centro,ramo in ((370,1),(1224,-1)):
         curva=[(centro+round(math.sin(y*.004)*36),y) for y in range(215,1080,16)]
         margem=[(x-5-int(y*.009),y) for x,y in curva]
         outra=[(x+6+int(y*.008),y) for x,y in curva]
-        pygame.draw.polygon(out,(37,46,40,220),margem+list(reversed(outra)))
-        pygame.draw.lines(out,(83,91,73,210),False,margem,2)
+        pygame.draw.polygon(out,(37,46,40,220),pontos(margem+list(reversed(outra))))
+        linhas((83,91,73,210),margem,2)
         for tr in corte.terrenos():
             if tr.tipo!="plataforma" or tr.rect.left>=corte.BOCA_LESTE or not 338 < tr.rect.top < 970: continue
             if (tr.rect.centerx<800) != (ramo==1): continue
@@ -32,32 +46,46 @@ def suportes():
             x=centro+round(math.sin((h+58)*.004)*36)
             destino=tr.rect.centerx
             base=[(x,h+57),(x+ramo*19,h+48),(destino-ramo*33,h+24),(destino,h+9)]
-            pygame.draw.lines(out,(52,60,49,235),False,base,8)
-            pygame.draw.lines(out,(98,101,77,230),False,base,1)
+            linhas((52,60,49,235),base,8)
+            linhas((98,101,77,230),base,1)
     # A régua de cheia pertence ao poço; marcas e água reaparecem sob o jogador.
     for n in range(10):
         yy=1485-n*9
-        pygame.draw.line(out,(127,143,119,220),(814,yy),(814+(10 if n%3==0 else 5),yy-1),2)
-    pygame.draw.line(out,(103,114,94,210),(812,1490),(812,1392),3)
+        linha((127,143,119,220),(814,yy),(814+(10 if n%3==0 else 5),yy-1),2)
+    linha((103,114,94,210),(812,1490),(812,1392),3)
     # A oficina e os berços compartilham a mesma armação. As cordas chegam
     # aos apoios reais, assim a descida ainda é legível quando o brilho fecha.
     for x in (1780,2318):
-        pygame.draw.lines(out,(51,60,48),False,[(x-38,1818),(x+4,1428),(x-8,1030),(x,728)],15)
-        pygame.draw.line(out,(102,109,81),(x-5,778),(x-29,1792),2)
-    pygame.draw.lines(out,(123,111,77),False,[(1515,970),(1780,723),(2070,741),(2320,708)],5)
+        linhas((51,60,48),[(x-38,1818),(x+4,1428),(x-8,1030),(x,728)],15)
+        linha((102,109,81),(x-5,778),(x-29,1792),2)
+    linhas((123,111,77),[(1515,970),(1780,723),(2070,741),(2320,708)],5)
     for tr in corte.terrenos():
         if tr.tipo!="plataforma" or tr.rect.left<1590: continue
         x,y=tr.rect.centerx,tr.rect.top
         poste=1780 if x<1970 else 2318
-        pygame.draw.line(out,(109,103,79),(poste,y-86),(x,y+4),2)
-        pygame.draw.lines(out,(75,85,66),False,[(x-42,y+5),(x-20,y+25),(x+28,y+21),(x+50,y+5)],4)
+        linha((109,103,79),(poste,y-86),(x,y+4),2)
+        linhas((75,85,66),[(x-42,y+5),(x-20,y+25),(x+28,y+21),(x+50,y+5)],4)
         if y>1090:
             # Borda de uma folha dobrada que já serviu de berço.
-            pygame.draw.arc(out,(150,147,105),(x-32,y-13,66,21),3.14,6.28,2)
+            pygame.draw.arc(out,(150,147,105),(x-sx-32,y-sy-13,66,21),3.14,6.28,2)
     for x in (1510,1695,1888,2093,2302):
         for y in (1789,1795,1803):
-            pygame.draw.line(out,(77,117,115),(x-30,y),(x+53,y-2),1)
-    return out
+            linha((77,117,115),(x-30,y),(x+53,y-2),1)
+    pintado = out.get_bounding_rect()
+    if pintado.width:
+        return out.subsurface(pintado).copy(), pintado.move(sx, sy)
+    return None
+
+
+def desenhar_suportes(camada, cx, cy):
+    visivel = pygame.Rect(cx,cy,960,540).clip(pygame.Rect(0,0,2432,corte.ALTURA))
+    for x in range(visivel.left//LADO_SETOR*LADO_SETOR, visivel.right, LADO_SETOR):
+        for y in range(visivel.top//LADO_SETOR*LADO_SETOR, visivel.bottom, LADO_SETOR):
+            setor = suporte_do_setor(x, y)
+            if setor:
+                arte, lugar = setor
+                camada.blit(arte, (lugar.x-cx, lugar.y))
+
 
 @lru_cache(maxsize=2)
 def janela_arquivo(fechada):
@@ -226,6 +254,7 @@ def desenhar_ponto(camada,o,j,cx):
 
 
 def desenhar(s,j,t,nivel_brilho):
+    s = pygame.destino(s)
     from . import arte_fagulha
     from .paisagem import lume, terreno, aplicar_nevoa, compor_luz, capturar_fundo
     from .ilustracao import claroes_suaves
@@ -237,7 +266,7 @@ def desenhar(s,j,t,nivel_brilho):
                          round(cy*(bg.get_height()-540)/(corte.ALTURA-540)),960,540)
     camada.blit(bg,(0,cy),recorte)
     fundo_visao=capturar_fundo(camada,cy)
-    camada.blit(suportes(),(0,cy),pygame.Rect(cx,cy,960,540))
+    desenhar_suportes(camada, cx, cy)
     x=corte.RAIZ_X-cx
     alto,baixo=corte.PISO_ARQUIVO,corte.PISO_POCO
     if cy<baixo and cy+540>alto-36 and -24<x<984:

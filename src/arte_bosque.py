@@ -1,7 +1,7 @@
 """Ilustrações de casca compartilhadas pelo terreno e pelas passagens."""
 from functools import lru_cache
 
-import pygame
+from . import pygame_hd as pygame
 
 from .ilustracao import AMBAR, alto_contraste, imagem, sprite
 

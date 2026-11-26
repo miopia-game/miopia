@@ -2,7 +2,7 @@
 from functools import lru_cache
 from math import cos, hypot, sin, tau
 from .ilustracao import AMBAR, brilho, dica_teclado, texto
-import pygame
+from . import pygame_hd as pygame
 
 from . import arte_inimigos as fauna, movimento_arte
 from .chefes import ESCURO, FERRUGEM, FIO, OURO, PELE, TEAL
@@ -20,8 +20,7 @@ def _peca(nome, largura, altura):
 @lru_cache(maxsize=4)
 def _gravura(ident):
     quadro = fauna.quadro(ident, "repouso", 53, 43, 1)
-    return pygame.mask.from_surface(quadro).to_surface(
-        setcolor=(124,147,132,120), unsetcolor=(0,0,0,0))
+    return pygame.silhueta(quadro, (124,147,132,120))
 
 
 def _roda(surf, centro, t):

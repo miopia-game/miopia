@@ -1,5 +1,5 @@
 """O sino soterrado demonstra o sinal que a Coruja segue na arena."""
-import pygame
+from . import pygame_hd as pygame
 
 from .descoberta import TAMANHO
 from .ilustracao import PALIDO

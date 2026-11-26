@@ -3,7 +3,7 @@ import math
 import random
 import unicodedata
 from functools import lru_cache
-import pygame
+from . import pygame_hd as pygame
 from . import abertura_bosque, arte_bosque, arte_ilustrada, desvios_fagulha, licao_vespera, travessia_fagulha
 from . import arte_fagulha
 from .arte_arena import sinais_encontro
@@ -37,7 +37,7 @@ def arte_npc(nome):
 
 @lru_cache(maxsize=4)
 def fundo(i):
-    img=imagem(f"fundo_{i}.jpg",1270,714).copy()
+    img=pygame.transform.smoothscale(original(f"fundo_{i}.jpg"), (1270,714))
     img.fill((158,174,182),special_flags=pygame.BLEND_RGB_MULT)
     return img
 
@@ -95,6 +95,7 @@ def capturar_fundo(camada,cy=0):
 
 
 def nevoa_distante(fundo, borrado, amostra, nivel, cor=None, nitidez=0.):
+    borrado = pygame.destino(borrado)
     if nitidez >= 1:
         borrado.blit(fundo, (0, 0))
     else:
@@ -110,6 +111,7 @@ def nevoa_distante(fundo, borrado, amostra, nivel, cor=None, nitidez=0.):
 
 def aplicar_nevoa(camada, luz, cy=0, fundo=None, nivel=1, cor=None, nitidez=0.):
     """Fora da luz só existe o fundo distante. Não vaza a silhueta do terreno."""
+    camada = pygame.destino(camada)
     area=pygame.Rect(0,cy,960,540)
     nitido,borrado,inversa,pequeno,_=buffers_nevoa()
     nitido.blit(camada,(0,0),area)
@@ -144,6 +146,7 @@ def buffer_luz():
 
 
 def compor_luz(luz,j,cx,cy,brilho_mata):
+    luz = pygame.destino(luz)
     from .visao import fontes
     from .ilustracao import claroes_suaves
     luz.fill((0,0,0))
@@ -579,6 +582,7 @@ class Paisagem:
             pygame.draw.line(s,cor,(round(px),round(py)),(round(px-vx*.025),round(py-vy*.025)),2)
 
     def desenhar(self,s,j,t):
+        s = pygame.destino(s)
         if j.em_vertical:
             from .corte_vertical import desenhar_vertical
             desenhar_vertical(s,j,t,self.brilho_mata)

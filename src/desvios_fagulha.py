@@ -2,7 +2,7 @@
 from dataclasses import dataclass
 from math import dist
 
-import pygame
+from . import pygame_hd as pygame
 
 from .fases import Objeto, Terreno
 

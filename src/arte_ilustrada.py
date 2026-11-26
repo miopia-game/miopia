@@ -2,7 +2,7 @@
 from functools import lru_cache
 from math import sin
 
-import pygame
+from . import pygame_hd as pygame
 
 from .fases import CHAO, FASES, GALHO_DO_MORCEGO, Terreno
 from .ilustracao import alto_contraste, imagem, original, sprite
@@ -177,6 +177,7 @@ def _solo(s, r):
 
 def iluminar_pousos(s, j, cx, nivel, fim):
     """Desenha a borda útil dos apoios sem revelar objetos atrás deles."""
+    s = pygame.destino(s)
     for t in j.solidos:
         if t.tipo not in ("plataforma","apoio") or t.rect.x >= fim:
             continue

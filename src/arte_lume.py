@@ -2,7 +2,7 @@
 from functools import lru_cache
 from math import pi, sin
 
-import pygame
+from . import pygame_hd as pygame
 
 from .ilustracao import original
 from . import movimento_arte

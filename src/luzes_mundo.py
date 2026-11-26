@@ -1,6 +1,6 @@
 """Luz permanente criada pelo jogador e clareiras conquistadas em desafios."""
 import math,re
-import pygame
+from . import pygame_hd as pygame
 from functools import lru_cache
 
 RAIO_GLOBO=440

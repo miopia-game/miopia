@@ -1,6 +1,6 @@
 """Calhas, berços e polias originais, desenhados nas coordenadas do Jardim."""
 import math
-import pygame
+from . import pygame_hd as pygame
 from .ilustracao import AMBAR,OSSO,brilho
 from .fauna_jardim import FLOR, PLACA
 

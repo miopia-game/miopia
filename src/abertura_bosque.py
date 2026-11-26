@@ -2,7 +2,7 @@
 from functools import lru_cache
 from math import dist, sin
 
-import pygame
+from . import pygame_hd as pygame
 
 from .avisos import pista_interacao
 from .fases import Terreno
@@ -33,7 +33,9 @@ def intensidade(j):
 @lru_cache(maxsize=2)
 def fundo_sombrio(largura=None, altura=None):
     nome = "bosque_figueira_tinta.png"
-    arte = (original(nome) if largura is None else imagem(nome, largura, altura)).copy()
+    if largura is None:
+        largura, altura = original(nome).get_size()
+    arte = pygame.transform.smoothscale(original(nome), (largura, altura))
     arte.fill((180,192,201), special_flags=pygame.BLEND_RGB_MULT)
     return arte
 

@@ -16,8 +16,9 @@ from tests.test_campanha import resolver_arena
 def capturar():
     app=App(temporaria=True)
     destino=RAIZ/"capturas"
+    destino.mkdir(parents=True, exist_ok=True)
     app.desenhar()
-    pygame.image.save(app.tela,str(destino/"menu.png"))
+    pygame.image.save(app.quadro_renderizado,str(destino/"menu.png"))
     piloto=Percurso()
     app.jogo=piloto.jogo
     app.jogar()
@@ -28,10 +29,10 @@ def capturar():
         frame=round(piloto.jogo.tempo*60)
         if frame==128:
             app.desenhar()
-            pygame.image.save(app.tela,str(destino/"bosque.png"))
+            pygame.image.save(app.quadro_renderizado,str(destino/"bosque.png"))
         if frame%5==0 and frame<=360:
             app.desenhar()
-            menor=pygame.transform.smoothscale(app.tela,(576,324))
+            menor=pygame.transform.smoothscale(app.quadro_renderizado,(576,324))
             im=Image.frombytes("RGB",menor.get_size(),pygame.image.tobytes(menor,"RGB"))
             frames.append(im.quantize(colors=112,method=Image.Quantize.MEDIANCUT))
     piloto.tick=quadro
@@ -54,7 +55,7 @@ def capturar():
             avisos+=1
             if avisos==50:
                 app.desenhar()
-                pygame.image.save(app.tela,str(destino/"coruja.png"))
+                pygame.image.save(app.quadro_renderizado,str(destino/"coruja.png"))
     piloto.tick=encontro
     resolver_arena(piloto)
     app.mem.db.close()

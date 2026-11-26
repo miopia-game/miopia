@@ -2,7 +2,7 @@
 from dataclasses import dataclass
 import math
 
-import pygame
+from . import pygame_hd as pygame
 
 from .fases import CHAO, Objeto, Terreno
 

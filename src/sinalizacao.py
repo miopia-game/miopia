@@ -1,6 +1,6 @@
 """Grades abertas, folhas pendentes e câmera que deixa enxergar a descida."""
 import math
-import pygame
+from . import pygame_hd as pygame
 
 
 def descidas(j):

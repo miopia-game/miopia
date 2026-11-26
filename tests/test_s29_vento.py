@@ -19,11 +19,11 @@ def test_sementes_mostram_duas_direcoes_em_taquaral(app):
     j = entrar(app)
     j.recolocar((300, 333))
     app.desenhar()
-    tela = pygame.display.get_surface()
+    tela = app.quadro_renderizado
     # O halo cobre o encontro das duas correntes. A semente é clara
     # e o risco ao lado parece uma haste, na direção do movimento.
     sementes = pygame.mask.from_threshold(tela, (203, 202, 146), (1, 1, 1))
-    for rect in (pygame.Rect(226, 257, 90, 108), pygame.Rect(322, 261, 88, 106)):
+    for rect in (pygame.Rect(452, 514, 180, 216), pygame.Rect(644, 522, 176, 212)):
         mascara = pygame.Mask(tela.get_size())
         faixa = pygame.Mask(rect.size, fill=True)
         mascara.draw(faixa, rect.topleft)

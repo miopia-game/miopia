@@ -2,7 +2,7 @@
 import math
 from itertools import chain
 
-import pygame
+from . import pygame_hd as pygame
 
 from . import aula_sino
 from .ilustracao import AMBAR, OSSO, PALIDO, TEAL, fonte, losango, painel, tamanho_texto, texto

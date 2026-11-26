@@ -2,7 +2,7 @@
 from functools import lru_cache
 from math import pi
 
-import pygame
+from . import pygame_hd as pygame
 
 from .ilustracao import AMBAR, OSSO, PALIDO, alto_contraste, imagem, numeros_hud, sprite, texto
 
@@ -42,6 +42,7 @@ def _abdomen():
 
 
 def desenhar(s, j):
+    s = pygame.destino(s)
     contraste = alto_contraste()
     s.blit(_fundo(contraste),(17,13))
     vida = j.lume.vida

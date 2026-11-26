@@ -1,6 +1,6 @@
 """Sinais e encaixes da raiz: tudo usa as coordenadas físicas da região."""
 import math
-import pygame
+from . import pygame_hd as pygame
 from .ilustracao import AMBAR, OSSO, PALIDO, brilho, texto
 from . import raizes_bosque as r
 

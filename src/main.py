@@ -10,6 +10,8 @@ os.environ.setdefault("SDL_RENDER_SCALE_QUALITY","1")
 os.environ.setdefault("PYGAME_HIDE_SUPPORT_PROMPT","1")
 import pygame
 from src import telas, ambiental, mapa_visor, tutorial
+from src import pygame_hd
+from src.janela_hd import Janela, LOGICA
 from src.audio import Audio
 from src.controles import ACOES, EVENTOS_PAD, PADRAO, Controles, Gamepad
 from src.ensaios import ENSAIOS, INDICE_ARANHA, SEMENTE_ARANHA, preparar_ensaio
@@ -32,10 +34,11 @@ class App:
         pygame.init()
         fonte.cache_clear()
         tinta.cache_clear()
-        self.cheia=False
-        self.tela=self.janela()
-        pygame.display.set_caption("Miopia · A última luz da mata")
-        pygame.display.set_icon(imagem_lume("parado",0,64,64))
+        icone = pygame_hd.destino(imagem_lume("parado",0,64,64)).pixels
+        self.janela = Janela(icone)
+        self.cheia = self.janela.cheia
+        self.quadro_renderizado = self.janela.quadro
+        self.tela = pygame_hd.nativa(self.quadro_renderizado, LOGICA)
         self.mem=Memoria(temporaria)
         self.controles = Controles(self.mem.prefs["teclas"])
         self.gamepad = Gamepad()
@@ -87,13 +90,6 @@ class App:
         self.registro_etapa=0
         self.resposta=None
         self.musica("menu")
-
-    def janela(self):
-        flags=pygame.SCALED | (pygame.FULLSCREEN if self.cheia else pygame.RESIZABLE)
-        try:
-            return pygame.display.set_mode((960,540),flags)
-        except pygame.error:
-            return pygame.display.set_mode((960,540))
 
     def musica(self,cena):
         self.audio.tocar_musica(cena)
@@ -500,6 +496,8 @@ class App:
         self.resposta=None;self.mudar('registro')
 
     def evento(self,e):
+        if e.type == pygame.MOUSEBUTTONDOWN and not self.tela.get_rect().collidepoint(e.pos):
+            return
         if e.type==pygame.QUIT:
             self.rodando=False
             return
@@ -566,7 +564,7 @@ class App:
             self.controles.ultimo_pad = False
         if k==pygame.K_F11:
             self.cheia=not self.cheia
-            self.tela=self.janela()
+            self.janela.tela_cheia(self.cheia)
             return
         if k==pygame.K_F10:
             self.mem.prefs["mudo"]=not self.mem.prefs["mudo"]
@@ -819,15 +817,16 @@ class App:
         try:
             while self.rodando:
                 dt=min(.07,clock.tick(60)/1000)
-                for e in pygame.event.get(): self.evento(e)
+                for e in pygame.event.get(): self.evento(self.janela.evento_logico(e))
                 if not self.rodando: break
                 self.atualizar(dt)
                 self.desenhar()
-                pygame.display.flip()
+                self.janela.apresentar(self.quadro_renderizado)
         finally:
             self.fechar_tentativa("janela")
             self.salvar_campanha()
             self.mem.db.close()
+            self.janela.fechar()
             pygame.quit()
 
 def principal():
@@ -854,10 +853,11 @@ def principal():
     for n in range(15):
         app.atualizar(1/60)
         app.desenhar()
-        pygame.display.flip()
-    if args.captura: pygame.image.save(app.tela,str(args.captura))
-    print("Miopia OK · menu, recursos e Bosque em 960 × 540")
+        app.janela.apresentar(app.quadro_renderizado)
+    if args.captura: pygame.image.save(app.quadro_renderizado,str(args.captura))
+    print("Miopia OK · menu, recursos e Bosque em 1920 × 1080")
     app.mem.db.close()
+    app.janela.fechar()
     pygame.quit()
 
 if __name__=="__main__":

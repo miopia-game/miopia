@@ -1,7 +1,7 @@
 """Marcas do canal e retomada do trabalho de Casca e Fio."""
 import math
 
-import pygame
+from . import pygame_hd as pygame
 
 from .fases import CHAO, RAIZ, Objeto
 

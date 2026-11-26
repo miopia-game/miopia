@@ -1,5 +1,5 @@
 """A vigia aponta a marca. O jogador decide se ilumina e atravessa."""
-import pygame
+from . import pygame_hd as pygame
 
 from .arte_fagulha import desenhar_voo
 from .ilustracao import AMBAR, brilho, claroes_suaves, dica_local

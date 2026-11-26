@@ -1,7 +1,7 @@
 """Berços, régua e reparos de Fio desenhados na própria figueira."""
 import math
 
-import pygame
+from . import pygame_hd as pygame
 
 from . import fio_corte
 from .ilustracao import AMBAR, OSSO, brilho, losango, sprite, texto

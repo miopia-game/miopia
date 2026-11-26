@@ -2,7 +2,7 @@
 from functools import lru_cache
 from math import cos, pi, sin
 
-import pygame
+from . import pygame_hd as pygame
 
 from .ilustracao import OSSO, brilho, claroes_suaves, original
 from . import movimento_arte

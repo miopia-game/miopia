@@ -8,6 +8,8 @@ Lume é um vaga-lume míope numa floresta em seca. De perto, ele enxerga o galho
 
 ## Jogar
 
+A partida, os menus e o mapa são renderizados em **1920 × 1080**. F11 alterna janela e tela cheia. Em telas Retina, a janela pode ocupar 960 × 540 pontos e usar os 1920 × 1080 pixels físicos. [Comparar o detalhe da pintura e da interface](docs/midia/bosque-detalhe-1080p.png)
+
 Instale Python 3.10 a 3.14 e baixe ou clone este repositório. Na pasta do jogo, abra **Jogar Miopia.command** no macOS, **rodar.bat** no Windows ou execute **./rodar.sh** no Linux. A primeira abertura pode usar a internet para instalar o Pygame CE. Se preferir usar o terminal, estes comandos funcionam no macOS e no Linux.
 
 ```sh

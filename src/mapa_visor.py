@@ -1,6 +1,6 @@
 """Enquadramento do mapa; navegar é uma ação de interface, nunca descoberta."""
 from copy import copy
-import pygame
+from . import pygame_hd as pygame
 from .cartografia import dimensoes
 
 QUADRO=pygame.Rect(85,231,780,202)
@@ -76,11 +76,13 @@ class Visor:
                     tuple((o.id,o.tipo,o.x,o.y) for o in j.objetos),
                     (alvo.id,alvo.nome,alvo.x,alvo.y) if alvo else None,
                     tuple(j.lume.rect),j.camera,j.camera_y,getattr(j,'_mapa_sem_lume',False))
+        if self.camada is None:
+            self.camada = pygame.Surface(QUADRO.size).pixels
+        desenho = pygame.nativa(self.camada, QUADRO.size)
         if assinatura!=self.chave_cache:
-            if self.camada is None:self.camada=pygame.Surface(QUADRO.size)
-            mapa_local(self.camada,j,self.camada.get_rect(),janela_mundo=r)
+            mapa_local(desenho,j,desenho.get_rect(),janela_mundo=r)
             self.chave_cache=assinatura;self.construcoes+=1
-        s.blit(self.camada,QUADRO)
+        pygame.blit(s,desenho,QUADRO)
 
 
 def ativo(a):

@@ -37,7 +37,7 @@ def medir_arrasto(a):
         evento(pygame.MOUSEMOTION,pos=(centro[0],centro[1]+dy),rel=(0,dy))
         a.atualizar(1/60);a.desenhar()
         if n>=15:amostras.append((time.perf_counter()-ini)*1000)
-        telas.update(pygame.image.tobytes(a.tela,'RGB'))
+        telas.update(pygame.image.tobytes(a.quadro_renderizado,'RGB'))
     evento(pygame.MOUSEBUTTONUP,button=1,pos=centro)
     assert v.construcoes-antes==75 and j.explorado==explorado
     return {**resumo(amostras),'redesenhos':v.construcoes-antes,'celulas':len(explorado),

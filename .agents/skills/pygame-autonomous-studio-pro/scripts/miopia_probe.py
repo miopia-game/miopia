@@ -101,7 +101,7 @@ def run(args):
 
             def capture(name):
                 app.desenhar()
-                frame = app.tela.copy()
+                frame = getattr(app, 'quadro_renderizado', app.tela).copy()
                 path = out/f'{name}.png'
                 pygame.image.save(frame, str(path))
                 report['captures'].append({'file': path.name, 'state': snapshot(app),

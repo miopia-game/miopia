@@ -45,7 +45,7 @@ def locais(j):
 
 
 def desenhar(s,j,ponto,mundo):
-    import pygame
+    from . import pygame_hd as pygame
     for x,y,t in locais(j):
         if not mundo.collidepoint(x,y):continue
         px,py=ponto(x,y);cor=CORES[t]

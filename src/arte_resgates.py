@@ -1,6 +1,6 @@
 """Vaga-lumes originais desenhados com formas, sem folhas de terceiros."""
 import math
-import pygame
+from . import pygame_hd as pygame
 from .resgates import POR_ID, PREFIXO_JARDIM, fontes
 from .rotas_borda import PREFIXO as PREFIXO_BORDA
 

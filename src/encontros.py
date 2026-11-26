@@ -91,7 +91,7 @@ def coordenar(j):
 
 
 def desenhar(s,o,j,cx):
-    import pygame
+    from . import pygame_hd as pygame
     from .ilustracao import brilho,sprite
     x,y=o.x-cx,o.y;ident=o.id.split('_',1)[1]
     if o.id.startswith('nucleo_'):

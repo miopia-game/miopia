@@ -2,7 +2,7 @@
 from functools import lru_cache
 from math import exp, hypot, sin
 
-import pygame
+from . import pygame_hd as pygame
 
 from .ilustracao import alto_contraste, claroes_suaves
 
@@ -17,6 +17,7 @@ def _luz_refletida(raio, intensidade):
 
 
 def iluminar_cenario(s, j, cx):
+    s = pygame.destino(s)
     f = j.fagulha_ativa
     if f is None:
         return
@@ -58,7 +59,7 @@ def _aura(raio, suave):
 
 
 def _emissao(s, x, y, raio):
-    s.blit(_aura(raio, claroes_suaves()), (round(x)-raio, round(y)-raio),
+    pygame.blit(s, _aura(raio, claroes_suaves()), (round(x)-raio, round(y)-raio),
            special_flags=pygame.BLEND_RGB_ADD)
 
 

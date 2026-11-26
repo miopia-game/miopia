@@ -7,6 +7,8 @@ from weakref import WeakKeyDictionary
 
 import pygame
 
+from . import pygame_hd
+
 from .ilustracao import ARTE, original
 
 N_QUADROS = 24
@@ -83,23 +85,25 @@ def _folha(nome):
 
 
 @lru_cache(maxsize=512)
-def _quadro(nome, indice, medida, lado, angulo):
+def _quadro(nome, indice, medida, lado, angulo, densidade=1):
+    transform = pygame_hd.transform if densidade == 2 else pygame.transform
     fonte = _folha(nome)
     w, h, margem = _medidas()[nome]
     linha, coluna = divmod(indice, COLUNAS)
     largura, altura = w+2*margem, h+2*margem
     celula = fonte.subsurface((coluna*largura, linha*altura, largura, altura))
     escala = min(medida[0]/w, medida[1]/h)
-    quadro = pygame.transform.smoothscale(celula, (round(largura*escala), round(altura*escala)))
+    quadro = transform.smoothscale(celula, (round(largura*escala), round(altura*escala)))
     if lado < 0:
-        quadro = pygame.transform.flip(quadro, True, False)
+        quadro = transform.flip(quadro, True, False)
     if angulo:
-        quadro = pygame.transform.rotate(quadro, angulo*lado)
+        quadro = transform.rotate(quadro, angulo*lado)
     return quadro, quadro.get_bounding_rect(min_alpha=70), round(margem*escala)
 
 
 def desenhar(s, nome, indice, x, y, medida, lado, *, centro=False, angulo=0):
-    quadro, pigmento, margem = _quadro(nome, indice % N_QUADROS, medida, lado, angulo)
+    s = pygame_hd.destino(s)
+    quadro, pigmento, margem = _quadro(nome, indice % N_QUADROS, medida, lado, angulo, s.escala)
     ponto = round(x), round(y)
     if centro:
         caixa = quadro.get_rect(center=ponto)

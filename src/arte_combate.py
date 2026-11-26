@@ -1,6 +1,6 @@
 """Silhuetas, rastros e avisos. Os sinais são desenhados no ponto usado pela colisão."""
 import math
-import pygame
+from . import pygame_hd as pygame
 from .ilustracao import AMBAR, OSSO, PALIDO, PERIGO, alto_contraste, brilho, claroes_suaves, imagem, losango, texto
 from . import arte_inimigos as fauna, movimento_arte
 from .fauna_jardim import TEMPO_CACA
@@ -16,7 +16,7 @@ def efeito(s, nome, centro, dimensoes, espelho=False):
     if nome in ('pesado','quebra','retorno','aurora'):nome='corte3' if nome!='retorno' else 'corte2'
     asset = "efeito_" + nome
     textura = imagem(asset + ".png", *dimensoes, espelho)
-    s.blit(textura, textura.get_rect(center=centro))
+    pygame.blit(s, textura, textura.get_rect(center=centro))
 
 
 def golpe_lume(s, lume, cx):

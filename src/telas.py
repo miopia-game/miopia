@@ -1,7 +1,7 @@
-"""Menus e páginas desenhados em 960 × 540. As áreas clicáveis são as linhas visíveis."""
+"""Menus e páginas em Full HD, com áreas clicáveis em coordenadas da interface."""
 import math
 from functools import lru_cache
-import pygame
+from . import pygame_hd as pygame
 from .ensaios import ENSAIOS, INDICE_ARANHA
 from . import abertura_bosque, ambiental, arte_ilustrada
 from .controles import ACOES, ROTULOS_PAD, nome_tecla
@@ -26,7 +26,7 @@ def _fundo_menu():
 
 
 def fundo(s,a):
-    s.blit(_fundo_menu(),(0,0))
+    pygame.blit(s, _fundo_menu(),(0,0))
     for n in range(9):
         x=450+n*54+math.sin(a.relogio*.45+n)*14
         y=(160+n*41-a.relogio*(4+n%3))%480
@@ -44,7 +44,7 @@ def opcoes(a,s,nomes,x,y,w,passo=34,tam=18,limite=None):
         r=pygame.Rect(x,y+(i-primeiro)*passo,w,passo-2)
         ativo=a.selecao==i
         if ativo:
-            s.blit(placa(r.w,r.h,199),r)
+            pygame.blit(s, placa(r.w,r.h,199),r)
             pygame.draw.line(s,(129,124,94),r.bottomleft,r.bottomright)
             losango(s,r.x+12,r.centery,4)
         estilo="forte" if ativo else "normal"
@@ -67,7 +67,7 @@ def menu(a,s):
 
 def livro(a,s,titulo,supra=""):
     fundo(s,a)
-    s.blit(placa(960,540,147),(0,0))
+    pygame.blit(s, placa(960,540,147),(0,0))
     painel(s,(52,35,856,470))
     if supra: texto(s,supra,81,54,13,AMBAR,"forte")
     texto(s,titulo,80,74,39,OSSO,"titulo")
@@ -132,7 +132,7 @@ def opcoes_ajustes(a,s):
     borrado.blit(inversa,(0,0),special_flags=pygame.BLEND_RGB_MULT)
     amostra.blit(mascara,(0,0),special_flags=pygame.BLEND_RGB_MULT)
     amostra.blit(borrado,(0,0),special_flags=pygame.BLEND_RGB_ADD)
-    s.blit(amostra,(517,146))
+    pygame.blit(s, amostra,(517,146))
     texto(s,"Visibilidade na mata",517,344,15,PALIDO)
     texto(s,"Esquerda / direita  ajustar     Enter ou clique  avançar",82,410,16,PALIDO)
     if a.ajustes_da_historia:
@@ -186,7 +186,7 @@ def pausa(a,s):
 
 def morte(a,s):
     j=a.jogo
-    s.blit(placa(960,540,174),(0,0))
+    pygame.blit(s, placa(960,540,174),(0,0))
     painel(s,(177,102,606,338))
     texto(s,"Você morreu",480,135,58,OSSO,"titulo","centerx")
     terminal=j.estado=="derrota"
@@ -250,7 +250,7 @@ def dialogo(a,s):
         x = 179
     elif nome in NPC_TAM:
         img=imagem(arte_npc(nome)+".png",76,70)
-        s.blit(img,(88,379-recuo)); x=179
+        pygame.blit(s, img,(88,379-recuo)); x=179
     rotulo, cor = arte_ilustrada.FUNCOES.get(nome, ("", AMBAR))
     nome_r = texto(s,nome,x,355-recuo,20,cor,"titulo")
     if rotulo:
@@ -262,8 +262,8 @@ def dialogo(a,s):
 def cena(a,s):
     titulo,msg,i=PROLOGO[a.quadro]
     img=imagem(f"fundo_{i}.jpg",1030,580)
-    s.blit(img,(-30,-28))
-    s.blit(placa(960,540,94),(0,0))
+    pygame.blit(s, img,(-30,-28))
+    pygame.blit(s, placa(960,540,94),(0,0))
     painel(s,(0,302,960,238),False)
     texto(s,"PRÓLOGO     "+ROMANOS[a.quadro],65,323,14,AMBAR,"forte")
     texto(s,titulo,62,347,39,OSSO,"titulo")
@@ -435,8 +435,8 @@ def registro(a,s):
 
 def capitulo(a,s):
     j=a.jogo
-    s.blit(imagem(f"fundo_{j.etapa}.jpg",960,540),(0,0))
-    s.blit(placa(960,540,116),(0,0))
+    pygame.blit(s, imagem(f"fundo_{j.etapa}.jpg",960,540),(0,0))
+    pygame.blit(s, placa(960,540,116),(0,0))
     painel(s,(60,270,840,213))
     texto(s,"TRAVESSIA   "+ROMANOS[j.etapa],83,287,14,AMBAR,"forte")
     texto(s,f"{j.restauradas}/4 raízes restauradas",873,287,14,PALIDO,"forte","right")

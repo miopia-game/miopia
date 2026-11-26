@@ -40,7 +40,7 @@ def test_o_caderno_mostra_so_os_fatos_da_viagem_salva(app):
     tecla(app, pygame.K_LEFT)
     assert app.pagina == telas.paginas_diario(app)-2  # A viagem.
     app.desenhar()
-    assert pygame.display.get_surface().get_size() == (960, 540)
+    assert app.quadro_renderizado.get_size() == (1920, 1080)
 
 
 def test_capitulo_em_revisita_lembra_o_que_ja_foi_restaurado(app):
@@ -96,7 +96,7 @@ def test_o_sino_ensina_o_sinal_sem_audio_e_repete_apos_recarregar(app):
         passo(app)
     assert j.visivel((2635, 428)) and j.lume.energia == 0
     app.desenhar()
-    cores = pygame.mask.from_threshold(pygame.display.get_surface(), (219, 198, 133), (1, 1, 1))
+    cores = pygame.mask.from_threshold(app.quadro_renderizado, (219, 198, 133), (1, 1, 1))
     assert cores.count() > 15
     salvo = j.carregar(j.salvar())
     assert not salvo.visivel((2635, 428))

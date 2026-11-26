@@ -1,3 +1,9 @@
+# Renderização Full HD · prévia de 26/11
+
+Na tela Retina do Mac, o SDL mediu 960 × 540 pontos de janela, 1920 × 1080 pixels físicos e 1920 × 1080 pixels na saída do renderizador. No menu, os 2.073.600 pixels RGB lidos da apresentação coincidiram com o quadro da aplicação. O mapa, as fontes, o HUD e a pintura dos apoios têm testes de rasterização. A câmera e a simulação conservam as coordenadas da campanha. [Janela e entrada](../../src/janela_hd.py) · [Superfícies e desenho](../../src/pygame_hd.py)
+
+A regressão completa passou em 491 testes e 176 subtestes. O playtest automatizado percorreu a abertura do Bosque, lançou para os dois lados e venceu o primeiro morcego. Os 30 ensaios preparados do Campo de testes também tiveram a tela desenhada em 1920 × 1080. As quatro pinturas distantes herdadas medem 836 × 470 ou 836 × 471. A nitidez desses fundos ainda depende do detalhe presente nos arquivos de origem. [Vídeo com som](../midia/bosque-em-jogo.mp4) · [Comparação dos detalhes](../midia/bosque-detalhe-1080p.png)
+
 # Nitidez do Bosque e voo da fagulha · prévia de 26/11
 
 A gravação usa os comandos da App pela História. O piloto parte do começo do Bosque, lança da borda de Véspera, cruza até o poleiro, vence o primeiro morcego e lança de volta. Foram 1.231 quadros a 60 fps com áudio estéreo do mixer do jogo. O tiro para a direita passou de 23 para 15 atualizações até o pouso e consumiu 26 de brilho nas duas versões. O morcego caiu no quadro 1.009 nas duas gravações. [Vídeo da partida](../midia/bosque-em-jogo.mp4) · [Comparar o disparo e o pouso nas duas versões](../midia/fagulha-antes-e-depois.mp4)

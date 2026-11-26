@@ -1,6 +1,6 @@
 """Tabuletas, berços e mecanismos da Galeria das Sementes."""
 import math
-import pygame
+from . import pygame_hd as pygame
 
 from . import galeria_taquaral as galeria
 from . import nicho_taquaral as nicho
