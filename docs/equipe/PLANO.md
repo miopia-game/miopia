@@ -1,5 +1,9 @@
 A próxima rodada da equipe é observar uma pessoa que ainda não jogou. Peça que atravesse o Bosque e vença o primeiro morcego. Depois da tentativa, pergunte onde ela achou que podia pousar e qual golpe percebeu acertar. Registre o momento no vídeo para orientar o ajuste seguinte. [Roteiro de playtest](GUIA_DE_CONTINUIDADE.md#assumindo-a-próxima-rodada)
 
+## AMB-01 · Movimento ambiental dos quatro biomas
+
+O playtest de oito segundos por região permite avaliar se a vegetação responde ao vento, se a água corre no leito pintado e se os pingos partem das raízes. A avaliação de intensidade pelo jogador e pela equipe fica aberta. [Playtest](../midia/cenarios-vivos-em-jogo.mp4) · [Técnica e fontes da animação](../arte/PINTURAS_DOS_BIOMAS.md)
+
 # Próximos sprints a partir do S36
 
 A prioridade é proteger o progresso e ajustar a economia de combate.

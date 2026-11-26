@@ -6,6 +6,8 @@ Lume é um vaga-lume míope numa floresta em seca. De perto, ele enxerga o galho
 
 [Assistir à abertura jogável até o primeiro morcego](docs/midia/bosque-em-jogo.mp4) · [Ver os 13 encontros em movimento](docs/midia/playtest-dos-13-encontros.mp4) · [Abrir o guia para continuar o projeto](docs/equipe/GUIA_DE_CONTINUIDADE.md)
 
+As samambaias e o bambu cedem ao vento, a água percorre duas quedas no Córrego e as raízes da Gruta pingam sobre o remanso. [Ver os quatro cenários animados na partida](docs/midia/cenarios-vivos-em-jogo.mp4) · [Observar os detalhes com a câmera parada](docs/midia/cenarios-vivos-em-detalhe.mp4)
+
 As quatro pinturas da campanha acompanham a câmera em Full HD. [Assistir ao playtest do Bosque, Córrego, Taquaral e Gruta](docs/midia/quatro-pinturas-em-jogo.mp4) · [Comparar os contornos em tamanho real](docs/midia/quatro-pinturas-antes-e-depois.png)
 
 ## Jogar

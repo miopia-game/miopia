@@ -71,8 +71,16 @@ def primeiro_plano(s,j,cx,cy):
         if -110 < x < 1070:
             planta = imagem(nome,largura,altura,espelho)
             planta.set_alpha(round(227*a))
-            pe = cy+563+round(2*sin(j.tempo*1.4+mundo))
-            s.blit(planta,planta.get_rect(midbottom=(x,pe)))
+            pe = cy + 563
+            pos = planta.get_rect(midbottom=(x, pe))
+            if nome == "bosque_samambaias.png":
+                # A raiz fica presa à terra. As pontas recebem a rajada antes de voltar.
+                amplitude = 5.5*sin(j.tempo*1.45-mundo*.003) + 2*sin(j.tempo*2.31-mundo*.005)
+                for y in range(0, altura, 2):
+                    curva = (1-y/altura)**1.7
+                    s.blit(planta, (pos.x+amplitude*curva, pos.y+y), (0,y,largura,min(2,altura-y)))
+            else:
+                s.blit(planta, (pos.x, pos.y+round(2*sin(j.tempo*1.4+mundo))))
 
 
 def broto_aceso(j):

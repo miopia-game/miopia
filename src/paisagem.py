@@ -5,7 +5,7 @@ import unicodedata
 from functools import lru_cache
 from . import pygame_hd as pygame
 from . import abertura_bosque, arte_bosque, arte_ilustrada, desvios_fagulha, licao_vespera, travessia_fagulha
-from . import arte_fagulha
+from . import arte_fagulha, agua_pintada, vento_pintado
 from .arte_arena import sinais_encontro
 from .arte_combate import inimigo, projeteis, golpe_lume, tranca
 from .arte_lume import desenhar_lume
@@ -46,6 +46,16 @@ def fundo(i):
     pintura = pygame.nativa(arte, (1280,720))
     pintura.fill((191,202,211), special_flags=pygame.BLEND_RGB_MULT)
     return pintura
+
+
+def desenhar_panorama(s, etapa, origem, tempo, cobertura_abertura=0.):
+    s.blit(fundo(etapa), origem)
+    if etapa == 1:
+        agua_pintada.corrego(s, origem, tempo)
+    elif etapa == 3:
+        agua_pintada.gruta(s, origem, tempo)
+    elif cobertura_abertura < 1:
+        vento_pintado.folhagem(s, PANORAMAS[etapa], origem, tempo)
 
 
 @lru_cache(maxsize=4)
@@ -607,7 +617,8 @@ class Paisagem:
         panorama = fundo(i)
         margem = panorama.get_width() - recorte.w
         deslocamento = margem * cx / max(1, j.fase.width-recorte.w)
-        s.blit(panorama, (-deslocamento, cy-108))
+        origem = (-deslocamento, cy-108)
+        desenhar_panorama(s, i, origem, t, intensidade)
         abertura_bosque.fundo(s,j,cx,cy)
         if cy>60:
             # As raízes cobrem progressivamente o céu ao descer, no mesmo mundo.

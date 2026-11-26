@@ -1,3 +1,11 @@
+# AMB-01 · Movimento nos quatro cenários
+
+O piloto repetiu os pontos iniciais e os comandos do playtest de `0df105a`. Cada capítulo mostra oito segundos de jogo a 1920 × 1080 e 60 fps, com áudio estéreo do mixer. Outra gravação usa quatro recortes físicos 1:1 do mesmo compositor, por seis segundos, com a câmera parada. Ela mostra a flexão das frondes, os colmos e folhas ao vento, a segunda queda do Córrego e as gotas chegando ao espelho d’água da Gruta. [Playtest](../midia/cenarios-vivos-em-jogo.mp4) · [Quatro recortes](../midia/cenarios-vivos-em-detalhe.mp4)
+
+Nos quatro trajetos completos, a posição de Lume, a câmera, a vida e o estado da partida coincidiram quadro a quadro com o playtest anterior. Os testes locais repetem a mesma pose, deslocam a câmera e verificam o fundo estático entre quadros. Os dois atlas também foram regenerados dos panoramas e conferidos byte a byte. A regressão final passou em 500 testes e 176 subtestes. O lançador do macOS abriu o menu e o Bosque em Full HD. [Regressão das animações](../../tests/test_cenarios_vivos.py) · [Gerador dos atlas](../../tools/animar_folhagem.py)
+
+No ensaio de desenho com SDL dummy neste Mac, foram medidos 214 quadros por bioma após o aquecimento. No Taquaral, o percentil 95 caiu de 18,94 ms com o protótipo em JPEG para 10,83 ms com as poses indexadas. Essa medição cobre o desenho local. A avaliação visual da intensidade do vento e da água continua com a equipe.
+
 # Quatro pinturas em movimento · 26/11
 
 Foram gravados 480 quadros por bioma com o desenho, a entrada e o áudio da App. Os capítulos do MP4 começam aos 0, 8, 16 e 24 segundos. A decodificação confirmou 1.920 quadros, duração de 32 segundos, 1920 × 1080 a 60 fps e áudio estéreo a 44,1 kHz. No quadro 165 de cada capítulo, a posição de câmera e de Lume coincide com a versão anterior. Nos quatro trajetos completos também coincidiram posição, vida e estado de jogo em todos os quadros. Os inícios foram preparados separadamente para avaliar as pinturas laterais. [Filme](../midia/quatro-pinturas-em-jogo.mp4) · [Recortes do mesmo quadro em escala 1:1](../midia/quatro-pinturas-antes-e-depois.png)

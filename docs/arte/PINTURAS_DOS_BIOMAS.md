@@ -15,6 +15,19 @@ As quatro composições foram geradas com OpenAI ImageGen. Cada chamada recebeu 
 
 A campanha mostra uma janela de 1920 × 1080 do panorama com margem para a câmera. O terreno e Lume passam mais rápido que o fundo. A máscara de luz continua a ocultar o que Lume ainda não iluminou. Na pintura distante, a névoa altera a cor e a luminosidade preservando os contornos. A abertura de Véspera e as salas verticais têm composições próprias. [Compositor da campanha](../../src/paisagem.py)
 
+## Vento, correnteza e goteiras
+
+No Bosque, as frondes grandes cedem mais nas pontas do que perto da haste. Na abertura, as samambaias do primeiro plano se curvam com o pé preso ao chão. No Taquaral, uma oscilação mais lenta passa pelos colmos e chega com atraso às folhas. A forma e a cor das poses vêm dos JPGs da própria equipe. O gerador deforma áreas delimitadas da pintura em resolução nativa. Os dois atlas guardam as regiões que mudam e deixam aparecer o fundo original entre elas. Eles já acompanham o jogo. [Gerador das poses](../../tools/animar_folhagem.py) · [Vento em jogo](../../src/vento_pintado.py)
+
+No Córrego, os filetes descem pelos veios já pintados nas duas quedas. Cada queda termina em respingos e espuma, e os reflexos atravessam o remanso. Na Gruta, cinco goteiras têm intervalos próprios. O pingo cresce na ponta da raiz, acelera na queda e abre dois anéis ao tocar a poça. Água e plantas usam as coordenadas do panorama e o relógio da partida. Entram antes da máscara de luz, do terreno, dos inimigos e do HUD. [Água do Córrego e da Gruta](../../src/agua_pintada.py)
+
+Para recriar os atlas depois de editar as pinturas, execute o primeiro comando na raiz, com as ferramentas de arte instaladas. O segundo gera os quatro recortes do compositor em escala física 1:1 com a câmera fixa. A gravação da partida usa o piloto descrito na seção seguinte.
+
+```sh
+python -m tools.animar_folhagem
+python -m tools.gravar_detalhes_ambientais --saida work/detalhes-ambientais.mp4
+```
+
 ## Repetir o playtest
 
 A gravação abre uma partida descartável por bioma. Os quatro pontos iniciais são preparados e a câmera se estabiliza. Daí em diante, o piloto envia os comandos de andar, pular, lançar a fagulha, golpear e acionar o clarão. Cada capítulo dura oito segundos. O arquivo de cada fase inclui o trajeto e quatro quadros integrais em PNG. O comparativo usa recortes em escala 1:1 do mesmo quadro da base e da nova versão, com os mesmos comandos e brilho. [Vídeo com quatro capítulos](../midia/quatro-pinturas-em-jogo.mp4) · [Antes e depois](../midia/quatro-pinturas-antes-e-depois.png)
