@@ -3,7 +3,7 @@ import pygame
 
 from src import avisos
 from src.fases import CHAO
-from tests.test_s20_raiz import passo, tecla
+from tests.test_s20_raiz import esperar_piso, passo, tecla
 
 
 def iniciar(app):
@@ -118,12 +118,18 @@ def test_deslize_e_planagem_contam_quando_a_fisica_executa(app):
     j = iniciar(app)
     j.recolocar((1090, CHAO))
     esperar_licao(app, 'deslize')
+    tecla(app, pygame.K_SPACE)
+    passo(app, pygame.K_SPACE)
+    assert not j.lume.chao
     tecla(app, pygame.K_LSHIFT)
     passo(app, pygame.K_LSHIFT)
-    assert 'praticado_deslize' not in j.tutorial
+    assert j.lume.slide == 0 and 'praticado_deslize' not in j.tutorial
+    esperar_piso(app, CHAO)
+    x = j.lume.rect.centerx
     tecla(app, pygame.K_LSHIFT)
-    passo(app, pygame.K_LSHIFT, pygame.K_d)
-    assert j.lume.slide>0 and 'praticado_deslize' in j.tutorial
+    passo(app, pygame.K_LSHIFT)
+    assert j.lume.slide > 0 and j.lume.rect.centerx != x
+    assert 'praticado_deslize' in j.tutorial
 
     j.recolocar((1320, CHAO))
     esperar_licao(app, 'planagem')

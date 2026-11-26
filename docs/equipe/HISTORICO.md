@@ -1,3 +1,5 @@
+**26/11/2026 · Cenário, esquiva e controles da S40.** A abertura recebeu a pintura da figueira e dicas para o rasante e o mergulho do primeiro morcego. Shift parado inicia a esquiva no chão. Na atualização de um perfil que usava G para pular, o salto manteve a tecla e a fagulha passou para uma tecla livre. [Mudanças e testes do Bosque](https://github.com/miopia-game/miopia/pull/3)
+
 **25/11/2026 · Revisão jogável no GitHub.** Integrados o Bosque revisado, as reações à fagulha e os movimentos do elenco. O [guia da revisão](GUIA_DE_CONTINUIDADE.md) reúne arquivos, vídeos, bibliotecas e o trabalho que passa à equipe.
 
 # Histórico de implementação e correções

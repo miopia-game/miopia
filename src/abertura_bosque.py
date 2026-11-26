@@ -31,8 +31,8 @@ def intensidade(j):
 
 @lru_cache(maxsize=2)
 def fundo_sombrio(largura, altura):
-    arte = imagem("bosque_ilustrado.png", largura, altura).copy()
-    arte.fill((130,157,145), special_flags=pygame.BLEND_RGB_MULT)
+    arte = imagem("bosque_figueira_tinta.png", largura, altura).copy()
+    arte.fill((180,192,201), special_flags=pygame.BLEND_RGB_MULT)
     return arte
 
 
@@ -76,14 +76,27 @@ def broto_aceso(j):
                              for v in j.vestigios)
 
 
-def corte_praticavel(j):
+def pista_combate(j):
     lume = j.lume
     if CORTE_PRATICADO in j.tutorial or lume.arma.tipo or lume.impacto > 0 or lume.em_corda:
-        return False
+        return None
     area = lume.arma.area_corte_rapido(lume)
-    return any(isinstance(e, MorcegoDoGalho) and e.ativo
-               and e.estado not in ("poleiro", "investida")
-               and area.colliderect(e.rect) and j.visivel(e.rect.center) for e in j.inimigos)
+    for e in j.inimigos:
+        if not isinstance(e, MorcegoDoGalho) or not e.ativo or not j.visivel(e.rect.center):
+            continue
+        if e.estado == "aviso":
+            if (lume.chao and abs(e.rect.centerx - lume.rect.centerx) <= 175
+                    and abs(e.rect.centery - lume.rect.centery) < 100):
+                tecla, verbo = ("S", "Abaixar") if e.tecnica == "rasante" else ("A / D", "Sair do mergulho")
+                return tecla, verbo, lume.rect.midtop
+        elif e.estado not in ("poleiro", "investida") and area.colliderect(e.rect):
+            return "J", "Cortar", lume.rect.midtop
+    return None
+
+
+def corte_praticavel(j):
+    dica = pista_combate(j)
+    return dica is not None and dica[0] == "J"
 
 
 def pista(j):
@@ -106,8 +119,9 @@ def pista(j):
         if lume.face < 0:
             return "", "Vire para a marca", ponto
         return None
-    if corte_praticavel(j):
-        return "J", "Cortar", ponto
+    combate = pista_combate(j)
+    if combate:
+        return combate
 
     interacao = j.interacao
     if interacao and ("reserva" not in interacao or min(lume.vida, lume.energia) < 100):

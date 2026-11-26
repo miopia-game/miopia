@@ -45,6 +45,11 @@ def carregar(dados):
         return {}
     remap = {p: k for p, k in dados.items() if p in ACOES and valida(p, k)
              and k not in FIXAS and k != PADRAO[p]}
+    # G era livre na S40. Preserve a ação anterior de quem já usava essa tecla.
+    if "fagulha" not in dados and list(remap.values()).count(pg.K_g) == 1:
+        ocupadas = FIXAS.union(PADRAO.values(), remap.values())
+        candidatas = (pg.K_h, *range(pg.K_a, pg.K_z + 1), *range(pg.K_0, pg.K_9 + 1))
+        remap["fagulha"] = next(tecla for tecla in candidatas if tecla not in ocupadas)
     # Voltar ao padrão pode reocupar uma tecla usada em outro vínculo.
     while remap:
         donos = Counter(({**PADRAO, **remap}).values())

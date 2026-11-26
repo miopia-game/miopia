@@ -1,4 +1,4 @@
-A próxima decisão da equipe é testar a leitura do primeiro combate e do cenário com um jogador novo. O [roteiro e o estudo opcional](GUIA_DE_CONTINUIDADE.md#assumindo-a-próxima-rodada) permitem comparar as versões.
+A próxima rodada da equipe é observar como uma pessoa que ainda não jogou lê o cenário e enfrenta o primeiro morcego. O roteiro indica o que observar e traz as duas gravações da abertura. [Roteiro de playtest](GUIA_DE_CONTINUIDADE.md#assumindo-a-próxima-rodada)
 
 # Próximos sprints a partir do S36
 

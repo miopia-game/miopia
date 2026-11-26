@@ -25,20 +25,23 @@ No Windows, use `py -3.12 -m venv .venv` com o Python 3.12 e substitua `.venv/bi
 | Andar | A / D ou setas |
 | Pular, bater as asas no ar e planar na queda | Espaço, segundo toque e manter pressionado |
 | Abaixar ou atravessar um apoio que permite descida | S ou S + Espaço |
-| Deslizar no chão enquanto anda | A / D + Shift |
+| Deslizar no chão na direção do olhar | Shift |
 | Corte rápido e golpe pesado | J e L |
 | Clarear os arredores | K |
 | Lançar uma fagulha na direção do olhar | G |
 | Conversar, ler ou usar um mecanismo | E |
 | Abrir o mapa e o diário | M ou Tab |
 
-Ajustes permite remapear os comandos, ampliar o texto e suavizar clarões. No galho de Véspera, observe o lampejo da vigia e vire Lume para o pouso. O clarão revela o que está perto. A fagulha deixa luz no lugar onde cai.
+Em **Ajustes** você pode remapear os comandos, ampliar o texto e suavizar clarões. Se você já usava G para outra ação na S40, essa ação continua em G. As dicas mostram a tecla livre que o jogo atribuiu à fagulha.
+
+No galho de Véspera, observe o lampejo da vigia e vire Lume para o pouso. O clarão revela o que está perto. A fagulha deixa luz no lugar onde cai.
 
 ## Continuar o desenvolvimento
 
 A campanha atravessa o Bosque das Samambaias, o Córrego Fundo, o Taquaral e a Gruta da Figueira. O guia reúne as mudanças desde a S40, as fontes da arte, as bibliotecas, os playtests e o próximo trecho sugerido para a equipe.
 
 - [Guia de continuidade e roteiro de playtest](docs/equipe/GUIA_DE_CONTINUIDADE.md)
+- [Cenário, esquiva e primeiro combate do Bosque](docs/arte/ESTUDO_DO_BOSQUE.md)
 - [Bibliotecas, editores e instalação](docs/equipe/BIBLIOTECAS.md)
 - [Folhas de produção dos inimigos](docs/arte/fontes) e [comparação feita na partida](docs/midia/antes-e-agora-na-partida.png)
 - [Histórico das versões Git da equipe](docs/equipe/VERSOES.md)

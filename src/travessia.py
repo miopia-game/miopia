@@ -139,7 +139,7 @@ class Lume:
         self.na_parede = bool(contato)
         if cmd.mover and self.trava_lateral <= 0 and self.slide <= 0:
             self.face = 1 if cmd.mover > 0 else -1
-        if cmd.deslize and cmd.mover and self.chao and self.slide_cd <= 0:
+        if cmd.deslize and self.chao and self.slide_cd <= 0:
             self.slide, self.slide_cd = .62, 1.04
             self.altura(True, solidos)
             r = self.rect

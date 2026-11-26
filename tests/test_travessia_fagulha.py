@@ -161,3 +161,35 @@ def test_dica_local_do_cipo_e_do_primeiro_corte(app):
     assert "praticado_corte_morcego" in j.tutorial
     assert "praticado_corte_morcego" in j.carregar(j.salvar()).tutorial
     assert not pista(j) or pista(j)[0] != "J"
+
+
+def test_deslize_parado_segue_a_face_e_respeita_recarga(app):
+    j = iniciar(app)
+    for face in (-1, 1):
+        j.recolocar((520, 442))
+        passo(app)
+        j.lume.face = face
+        x = j.lume.rect.centerx
+        tecla(app, pygame.K_LSHIFT)
+        passo(app)
+        assert j.lume.slide > 0 and (j.lume.rect.centerx - x) * face > 0
+        recarga = j.lume.slide_cd
+        tecla(app, pygame.K_LSHIFT)
+        passo(app)
+        assert 0 < j.lume.slide_cd < recarga
+
+
+def test_aviso_do_morcego_distingue_rasante_e_mergulho(app):
+    from src.abertura_bosque import pista
+
+    j = iniciar(app)
+    j.recolocar((1034, 240))
+    j.lume.face = 1
+    morcego = next(e for e in j.inimigos if isinstance(e, MorcegoDoGalho))
+    morcego.rect.midbottom = (1083, 240)
+    morcego.estado = "aviso"
+    for tecnica, comando in (("rasante", "S"), ("mergulho", "A / D")):
+        morcego.tecnica = tecnica
+        assert pista(j)[0] == comando
+    morcego.estado = "recuo"
+    assert pista(j)[:2] == ("J", "Cortar")

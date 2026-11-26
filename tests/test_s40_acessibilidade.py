@@ -1,5 +1,6 @@
 """Entrada pela App e apresentação de acessibilidade do S40."""
 import pygame
+import pytest
 
 from src import ilustracao
 from src.controles import carregar
@@ -8,6 +9,43 @@ from src.paisagem import compor_luz
 from src.visao import Vestigio
 from tests.test_s20_raiz import passo, tecla
 from tests.test_s31_historia import iniciar
+
+
+@pytest.mark.parametrize("tecla_clarao", [pygame.K_u, pygame.K_h])
+def test_perfil_s40_preserva_salto_em_g_ao_ganhar_fagulha(tmp_path, monkeypatch, tecla_clarao):
+    from src.main import App
+
+    monkeypatch.setenv("MIOPIA_DADOS", str(tmp_path))
+    antigas = {"salto": pygame.K_g, "luz": tecla_clarao}
+    banco = Memoria()
+    banco.guardar("preferencias", {"teclas": antigas})
+    banco.db.close()
+
+    app = App()
+    try:
+        jogo = iniciar(app)
+        passo(app)
+        controles = app.controles
+        assert controles.codigos("salto")[0] == pygame.K_g
+        assert controles.codigos("luz")[0] == tecla_clarao
+        fagulha = controles.codigos("fagulha")[0]
+        assert fagulha not in antigas.values()
+        if tecla_clarao != pygame.K_h:
+            assert fagulha == pygame.K_h
+        assert controles.dicas("G") == pygame.key.name(fagulha).upper()
+        energia = jogo.lume.energia
+        tecla(app, pygame.K_g)
+        passo(app, pygame.K_g)
+        assert jogo.lume.vy < 0 and jogo.lume.energia == energia
+        assert jogo.fagulha_ativa is None
+        jogo.recolocar((799, 248))
+        tecla(app, fagulha)
+        passo(app)
+        assert jogo.fagulha_ativa and jogo.lume.energia < energia
+        assert carregar(controles.teclas) == controles.teclas
+    finally:
+        app.mem.db.close()
+        pygame.quit()
 
 
 def escolher(app, indice):

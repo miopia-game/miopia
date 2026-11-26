@@ -86,18 +86,24 @@ def capturar_fundo(camada,cy=0):
     return fundo
 
 
-def nevoa_distante(fundo, borrado, amostra, nivel, cor=None):
+def nevoa_distante(fundo, borrado, amostra, nivel, cor=None, nitidez=0.):
     pygame.transform.smoothscale(fundo, amostra.get_size(), amostra)
     pygame.transform.smoothscale(amostra, borrado.get_size(), borrado)
+    if nitidez > 0:
+        # Mistura apenas a pintura distante. Criaturas e plataformas ainda passam pela luz.
+        alfa = fundo.get_alpha()
+        fundo.set_alpha(round(255 * nitidez))
+        borrado.blit(fundo, (0, 0))
+        fundo.set_alpha(alfa)
     borrado.fill(TINTAS_NEVOA[nivel] if cor is None else cor, special_flags=pygame.BLEND_RGB_MULT)
 
 
-def aplicar_nevoa(camada, luz, cy=0, fundo=None, nivel=1, cor=None):
+def aplicar_nevoa(camada, luz, cy=0, fundo=None, nivel=1, cor=None, nitidez=0.):
     """Fora da luz só existe o fundo distante. Não vaza a silhueta do terreno."""
     area=pygame.Rect(0,cy,960,540)
     nitido,borrado,inversa,pequeno,_=buffers_nevoa()
     nitido.blit(camada,(0,0),area)
-    nevoa_distante(fundo if fundo is not None else nitido, borrado, pequeno, nivel, cor)
+    nevoa_distante(fundo if fundo is not None else nitido, borrado, pequeno, nivel, cor, nitidez)
     inversa.fill((255,255,255))
     inversa.blit(luz,(0,0),special_flags=pygame.BLEND_RGB_SUB)
     borrado.blit(inversa,(0,0),special_flags=pygame.BLEND_RGB_MULT)
@@ -688,7 +694,7 @@ class Paisagem:
             # O fundo frio permanece escuro. Um mínimo de luz revela as silhuetas desenhadas.
             escuro = round((38,52,70,87)[nivel]*intensidade)
             self.luz.fill((escuro,escuro,escuro),special_flags=pygame.BLEND_RGB_MAX)
-        aplicar_nevoa(s,self.luz,cy,fundo_visao,nivel,cor)
+        aplicar_nevoa(s,self.luz,cy,fundo_visao,nivel,cor,.78*intensidade)
         if limite_arte and cx < limite_arte:
             arte_ilustrada.iluminar_pousos(s,j,cx,nivel,limite_arte)
         if primeiro is not None and abertura_bosque.em_cena(j) and "valvula" not in j.flags:
