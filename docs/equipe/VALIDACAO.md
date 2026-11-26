@@ -1,3 +1,35 @@
+# SPR-03 · Fauna em 1080p a 60 fps
+
+O playtest usa a App e um perfil temporário. Cada capítulo dura cinco segundos e registra uma atualização por quadro com o som do mixer. Os patrulheiros comuns começam em confrontos isolados de posição e família de ataque conhecidas. Os minichefes e guardiões usam os ensaios do jogo. A Cobra dos Berços começa com metade da vida e a cria começa na arena da Tecelã. O piloto envia comandos a Lume. A IA decide quando se mover, lançar o projétil, entrar em contato e recuar. A faixa ampliada acompanha um recorte de 960 × 540 dos mesmos quadros e conserva a velocidade. O nome de cada capítulo é uma legenda da gravação. [Câmera do jogo](../midia/fauna-1080p60.mp4) · [Ver os movimentos de perto](../midia/fauna-detalhe-1080p60.mp4)
+
+| Início | Adversário | Ações ativas observadas | Quadros com ataque visível |
+|---|---|---|---:|
+| 0:00 | Morcego | rasante, rasante baixo | 23 |
+| 0:05 | Aranha | mordida, salto | 11 |
+| 0:10 | Vespa | leque de ferrões, mergulho, queda | 21 |
+| 0:15 | Carabídeo | carga | 27 |
+| 0:20 | Sombra | fenda dupla, orbe | 33 |
+| 0:25 | Cobra | mordida, rasteira | 33 |
+| 0:30 | Caruncho do Viveiro | carga, onda, onda dupla | 43 |
+| 0:35 | Cobra dos Berços | rasteira, veneno | 15 |
+| 0:40 | Cria da ninhada | fio, pique | 33 |
+| 0:45 | Asa Fendida | rasante | 52 |
+| 0:50 | Tecelã do Vão | fio | 13 |
+| 0:55 | Casco Oco | carga | 85 |
+| 1:00 | A Coruja | garra, rasante | 42 |
+| 1:05 | Morcego do Galho | mergulho, queda, rasante, rasante baixo | 29 |
+| 1:10 | Vespa da Fenda | ferrão, mergulho | 18 |
+| 1:15 | Caçada na Ponte | bote de caça | 38 |
+| 1:20 | Último Chamado | investida do coro, queda de penas | 74 |
+
+A contagem cruza a fase ativa da IA com a visibilidade e o enquadramento da criatura. A inspeção dos recortes do filme conferiu patas, cabeça, asas, projéteis e o ponto de onde sai o efeito. Os dois MP4 têm 5.100 quadros, 17 capítulos, vídeo H.264 em 1920 × 1080 a 60 fps e áudio AAC estéreo a 44,1 kHz. Para repetir, rode `.venv/bin/python -m tools.gravar_fauna --saida work/fauna` e `.venv/bin/python -m tools.detalhar_fauna work/fauna`.
+
+Na janela SDL nativa deste Mac, o teste marcou o fim de cada apresentação da App, com as mesmas cenas preparadas, áudio dummy e entrada por teclado programada. Cada encontro teve 60 quadros para aquecer e 240 intervalos medidos. Em 16 dos 17 trechos, a média ficou entre 59,42 e 60,03 fps. A primeira passagem da aranha teve um quadro de 1,06 s e média de 39,34 fps. Duas repetições produziram 60,00 e 60,02 fps com máximos de 15,40 e 15,77 ms de trabalho por quadro após o aquecimento. A causa do pico isolado ficou indeterminada. A cadência do vídeo é fixa e o teste em janela mede a execução ao vivo.
+
+O clarão gerava discos de luz que se cobriam mutuamente. Desenhar apenas a borda que permanece visível preservou a máscara pixel a pixel nos raios testados. No ensaio com K, o morcego passou de 54,30 para 60,02 fps e o carabídeo de 54,54 para 60,02 fps. No trecho da Vespa da Fenda, com dois clarões, a média passou de 50,70 para 59,42 fps. O gerador de movimento reproduziu os 35 pacotes e o manifesto byte a byte.
+
+O lançador abriu o menu e o Bosque em Full HD. A regressão passou em 532 testes e 176 subtestes. Os testes percorrem os 60 quadros das duas asas da Coruja, verificam que a máscara facial conserva os mesmos pixels e que os pés e ventres mantêm o piso. Também conferem 13 efeitos em duas direções, a ausência de desenho de efeito no aviso e o avanço da pose no tempo de preparação da técnica escolhida pelo guardião. A avaliação de legibilidade de cada ataque com jogadores continua com a equipe. [Regressão dos ciclos](../../tests/test_movimento_arte.py) · [Regressão dos efeitos](../../tests/test_efeitos_fauna.py)
+
 # SPR-02 · Animação e resposta dos golpes em 60 fps
 
 Na História, um piloto de teclado percorreu a abertura desde o chão, passou por Véspera, usou G para iluminar o pouso e venceu o primeiro morcego com o espinho. O primeiro quadro do lançamento aparece aos 11,28 s. O combo de três cortes começa aos 14,42 s. As quatro marcas de contato na partida coincidem com perda de vida do morcego. Os dois filmes têm 1.076 quadros decodificados, 17,93 s, 1920 × 1080 a 60 fps e áudio estéreo a 44,1 kHz. O segundo amplia um recorte móvel de 800 × 450 do primeiro, na mesma velocidade. Para gravar a rota, use `.venv/bin/python -m tools.gravar_bosque --saida work/previa`. [Partida completa](../midia/lume-combate-60fps.mp4) · [Detalhe](../midia/lume-combate-detalhe-60fps.mp4)

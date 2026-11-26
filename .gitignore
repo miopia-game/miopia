@@ -48,6 +48,7 @@ Thumbs.db
 /work/
 /runtime/
 *.zip
+!/assets/arte/movimento-v2/*.zip
 *.tar.gz
 *.whl
 *.patch

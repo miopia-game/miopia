@@ -1,25 +1,25 @@
-"""Gera folhas de movimento a partir das ilustrações de Miopia.
+"""Gera os pacotes de movimento da fauna a partir das ilustrações de Miopia.
 
-Execute na raiz com Python e Pillow. O jogo só precisa dos PNGs e do manifesto.
+Execute na raiz com Python e Pillow. O jogo lê os quadros RGBA e o manifesto.
 As coordenadas dos membros abaixo seguem uma grade de 0 a 10 em cada pose.
 """
 from functools import partial
 from math import cos, exp, hypot, pi, radians, sin, tau
 from pathlib import Path
 import json
+from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 
-from PIL import Image, ImageChops, ImageDraw, ImageFilter
+from PIL import Image
 
 
 ARTE = Path(__file__).resolve().parents[1] / "assets" / "arte"
 SAIDA = ARTE / "movimento-v2"
 MARGEM = 35
-COLUNAS = 4
-QUADROS = 24
+QUADROS = 60
+GRANDES = ("asa-fendida","tecela","casco-oco","coruja","caruncho","cobra-dos-bercos")
 
 # Cada grupo alterna o apoio. A primeira posição é a junta, a segunda é a ponta.
 PATAS = {
-    "lume": ((4.2,7.2,2.7,9.8), (5.1,7.1,4.1,9.8), (5.9,7.1,5.7,9.8), (6.6,7,7.4,9.8)),
     "aranha": ((2.5,4.4,.12,9.5), (3.4,4.3,1.7,9.6), (4.7,4.3,3.4,9.9),
                (5.4,4.7,5.5,9.1), (6.1,5.2,7.1,9.8), (8.2,5,9.6,9.5)),
     "carabideo": ((2.6,6.1,.45,9.9), (3.6,6.1,2.19,9.8), (4.7,6.1,3.7,9.8),
@@ -44,30 +44,6 @@ INVESTIDAS = {
                    (6.2,7.5,7.13,9.83),(7.56,7.4,9.36,9.63)),
 }
 
-# Pivô, contorno pintado e amplitude da abertura de cada asa. As peças mantêm
-# contato com a junta enquanto a ponta percorre a batida.
-ASAS = {
-    "lume-voo": (
-        ((5.05,3.99), ((5.4,3.95),(4,3.03),(2.75,2.1),(.7,1.8),(.37,3.15),(1.37,4.02),(3.5,4.15)), 31),
-        ((4.7,4.01), ((4.8,4.10),(3.63,3.88),(1.75,3.82),(0,4.06),(0,5.26),(1.1,5.45),(2.82,4.9)), 25),
-    ),
-    "lume-planar": (
-        ((5.67,3.96), ((5.8,4),(4.65,2.4),(3.05,1.18),(1.08,.12),(0,.21),(0,1.96),(1.05,3.64),(2.89,4.35)), 14),
-        ((4.88,4.35), ((4.94,4.41),(3.1,3.95),(2.1,4.2),(.68,4.65),(0,5.5),(0,6.57),(1.31,6.57),(2.14,5.84)), 12),
-    ),
-
-}
-
-
-def origem_lume(indice):
-    atlas = Image.open(ARTE / "lume_ilustrado_atlas.png").convert("RGBA")
-    w,h = atlas.width//4,atlas.height//2
-    x,y = (indice%4)*w,(indice//4)*h
-    pose = atlas.crop((x,y,x+w,y+h))
-    caixa = pose.getchannel("A").point(lambda alpha: 255 if alpha>=160 else 0).getbbox()
-    return pose.crop(caixa)
-
-
 def original(nome, pose):
     return Image.open(ARTE / "inimigos-v2" / f"{nome}-{pose}.png").convert("RGBA")
 
@@ -79,10 +55,6 @@ def quadro_base(imagem, escala=1):
     tamanho = w*escala,h*escala
     fundo.paste(imagem.resize(tamanho,Image.Resampling.LANCZOS),(MARGEM*escala,MARGEM*escala))
     return fundo,w,h
-
-
-def coordenada(x, y, w, h):
-    return MARGEM+x*w/10,MARGEM+y*h/10
 
 
 def malha(imagem, w, h, deslocamento):
@@ -110,7 +82,6 @@ PASSADAS = {
     "aranha": (.57,.085,1.12), "tecela": (.64,.10,1.05),
     "carabideo": (.59,.015,.94), "caruncho": (.68,.032,.87),
     "casco-oco": (.72,.022,.76), "sombra": (.60,.07,1.06),
-    "lume-andar": (.54,.045,1.16),
 }
 
 
@@ -145,11 +116,11 @@ def ondular(fase,x,y):
     return corpo*ventre*.80*cos(onda), corpo*ventre*.28*sin(onda)
 
 
-def assentar(imagem,h):
+def assentar(imagem,h,densidade):
     # Usa o contorno pintado e ignora o halo semitransparente do recorte.
     limite = imagem.getchannel("A").point(lambda a: 255 if a>=80 else 0).getbbox()
     ajustada = Image.new("RGBA",imagem.size)
-    ajustada.paste(imagem,(0,MARGEM+h-limite[3]))
+    ajustada.paste(imagem,(0,(MARGEM+h)*densidade-limite[3]))
     return ajustada
 
 
@@ -192,87 +163,26 @@ def percurso_serpente(nome, faixa, dados):
     salvar(nome+"-recolher",pose,recolher,dados,piso=True)
 
 
-def mascaras(imagem,w,h,asas):
-    corpo = imagem.copy()
-    componentes = []
-    for pivo,poligono,amplitude in asas:
-        origem = coordenada(*pivo,w,h)
-        recorte = Image.new("L",imagem.size)
-        ImageDraw.Draw(recorte).polygon([coordenada(*v,w,h) for v in poligono],fill=255)
-        asa = imagem.copy()
-        asa.putalpha(ImageChops.multiply(imagem.getchannel("A"),recorte))
-        # A junta fica sobreposta ao corpo para a membrana nunca se separar.
-        retirar = recorte.copy()
-        x,y = origem
-        r = w*.068
-        ImageDraw.Draw(retirar).ellipse((x-r,y-r,x+r,y+r),fill=0)
-        corpo.putalpha(ImageChops.subtract(corpo.getchannel("A"),retirar))
-        componentes.append((asa,origem,amplitude))
-    return corpo,componentes
-
-
-def recortar_residuos(imagem):
-    """Retira fragmentos de tinta que ficam isolados ao fechar uma asa."""
-    original = imagem.getchannel("A")
-    largura,altura = original.size
-    marcas = bytearray(int(a>35) for a in original.tobytes())
-    manter = bytearray(len(marcas))
-    for i,ocupado in enumerate(marcas):
-        if not ocupado:
-            continue
-        grupo = [i]
-        marcas[i] = 0
-        for pos in grupo:
-            x,y = pos%largura,pos//largura
-            for viz in (pos-1 if x else pos,pos+1 if x<largura-1 else pos,
-                        pos-largura if y else pos,pos+largura if y<altura-1 else pos):
-                if marcas[viz]:
-                    grupo.append(viz)
-                    marcas[viz] = 0
-        if len(grupo) >= 42:
-            for pos in grupo:
-                manter[pos] = 255
-    borda = Image.frombytes("L", imagem.size, bytes(manter)).filter(ImageFilter.MaxFilter(5))
-    imagem.putalpha(ImageChops.multiply(original,borda))
-    return imagem
-
-
-def bater(pecas,fase):
-    corpo,asas = pecas
-    imagem = Image.new("RGBA",corpo.size)
-    for n,(asa,(px,py),amplitude) in enumerate(reversed(asas)):
-        t = fase+n*.10
-        a = radians(amplitude*sin(t))
-        c,s = cos(a),sin(a)
-        dobra = .82+.18*cos(t)
-        afim = (c,s,px-c*px-s*py,-s/dobra,c/dobra,py+(s*px-c*py)/dobra)
-        imagem.alpha_composite(asa.transform(asa.size,Image.Transform.AFFINE,afim,Image.Resampling.BICUBIC))
-    imagem.alpha_composite(corpo)
-    return recortar_residuos(imagem)
+def gravar_cel(pacote,indice,imagem):
+    # A entrada com data fixa permite reproduzir o pacote byte a byte.
+    entrada = ZipInfo(f"{indice:02}.rgba")
+    pacote.writestr(entrada,imagem.tobytes(),compress_type=ZIP_DEFLATED,compresslevel=6)
 
 
 def salvar(nome, fonte, funcao, dados, *, piso=False):
-    # As malhas dos inimigos trabalham no desenho em 2x. Só reduzimos
-    # depois de mover os membros. A Coruja já compõe suas peças em 3x.
-    escala = 1 if nome == "coruja" or nome.startswith("lume-") else 2
-    base,w,h = quadro_base(fonte,escala)
-    cw,ch = w+2*MARGEM,h+2*MARGEM
-    atlas = Image.new("RGBA",(cw*COLUNAS,ch*(QUADROS//COLUNAS)))
-    for indice in range(QUADROS):
-        imagem = funcao(base,w,h,tau*indice/QUADROS)
-        if escala != 1:
-            imagem = imagem.resize((cw,ch),Image.Resampling.LANCZOS)
-        if piso:
-            imagem = assentar(imagem,h)
-        atlas.paste(imagem,((indice%COLUNAS)*cw,(indice//COLUNAS)*ch))
-    atlas.save(SAIDA / f"{nome}.png",optimize=True)
-    dados[nome] = [w,h,MARGEM]
-
-
-def asas(nome,imagem,dados):
-    base,w,h = quadro_base(imagem)
-    pecas = mascaras(base,w,h,ASAS[nome])
-    salvar(nome,imagem,lambda _base,_w,_h,fase: bater(pecas,fase),dados)
+    # As criaturas grandes preservam os pixels físicos da pintura durante todo o preparo.
+    densidade = 2 if nome.startswith(GRANDES) else 1
+    base,w,h = quadro_base(fonte,1 if nome == "coruja" else 2)
+    cw,ch = (w+2*MARGEM)*densidade,(h+2*MARGEM)*densidade
+    with ZipFile(SAIDA / f"{nome}.zip","w") as pacote:
+        for indice in range(QUADROS):
+            imagem = funcao(base,w,h,tau*indice/QUADROS)
+            if imagem.size != (cw,ch):
+                imagem = imagem.resize((cw,ch),Image.Resampling.LANCZOS)
+            if piso:
+                imagem = assentar(imagem,h,densidade)
+            gravar_cel(pacote,indice,imagem)
+    dados[nome] = [w*densidade,h*densidade,MARGEM*densidade]
 
 
 # Limite horizontal da junta, altura da raiz da asa e amplitude por lado.
@@ -349,11 +259,7 @@ def passos(nome,imagem,juntas,dados,amplitude=1.):
     def quadro(base,w,h,t):
         def deslocar(x,y):
             dx,dy = passada(juntas,t,x,y,PASSADAS[especie],amplitude)
-            if nome == "lume-andar":
-                antena = max(0.,1-y/6.)*max(0.,min(1.,(x-4.8)/2))
-                dx += antena*.55*sin(t+.7)
-                dy += max(0.,1-y/8.)*.25*cos(2*t)
-            elif especie == "sombra":
+            if especie == "sombra":
                 manto = max(0.,1-x/6.4)*max(0.,1-abs(y-4.5)/3.8)
                 dy += .61*manto*sin(t-.65)
             return dx,dy
@@ -450,10 +356,10 @@ def voo_coruja(dados):
     escala = 3
     tronco = tronco.resize((84*escala,80*escala),Image.Resampling.LANCZOS)
     tronco = tronco.rotate(-24,Image.Resampling.BICUBIC,expand=True)
-    tronco = tronco.resize(tuple(round(v/escala) for v in tronco.size),Image.Resampling.LANCZOS)
     # Torna opaca a tinta sólida após a filtragem da borda. A asa que
     # passa atrás da máscara facial só aparece através do espaço livre.
-    tronco.putalpha(tronco.getchannel("A").point(lambda a: 255 if a>=248 else a))
+    tronco = tronco.resize(tuple(round(v*2/escala) for v in tronco.size),Image.Resampling.LANCZOS)
+    tronco.putalpha(tronco.getchannel("A").point(lambda a: 255 if a>=240 else a))
     def ponto(x,y):
         return (x+MARGEM)*escala, (y+MARGEM)*escala
 
@@ -467,27 +373,41 @@ def voo_coruja(dados):
                 for u,v,z,k in zip(a,b,c,d)]
         distal = asa_coruja(longe,tela,ponto(74,45),78*escala,1,pose)
         proximal = asa_coruja(perto,tela,ponto(53,43),86*escala,-1,pose)
-        imagem = distal.resize(base.size,Image.Resampling.LANCZOS)
-        imagem.alpha_composite(tronco,(MARGEM+3,MARGEM-13))
-        imagem.alpha_composite(proximal.resize(base.size,Image.Resampling.LANCZOS))
+        tamanho = tuple(v*2 for v in base.size)
+        imagem = distal.resize(tamanho,Image.Resampling.LANCZOS)
+        imagem.alpha_composite(tronco,((MARGEM+3)*2,(MARGEM-13)*2))
+        imagem.alpha_composite(proximal.resize(tamanho,Image.Resampling.LANCZOS))
         return imagem
 
     salvar("coruja",original("coruja","preparacao"),quadro,dados)
 
 
+def preparar_apoio(nome, base, w, h, t):
+    # Fecha a passada de fora para dentro e transfere o peso antes da impulsão.
+    p = t/tau*QUADROS/(QUADROS-1)
+    p = p*p*(3-2*p)
+    def ajuste(x,y):
+        ponta = max(0.,min(1.,(y-3.7)/5.8))
+        frente = (x-5)/5
+        tronco = max(0.,1-ponta)
+        if nome in ("aranha","tecela"):
+            return frente*.76*p*ponta, (tronco*.42-abs(frente)*ponta*.46)*p
+        if nome == "sombra":
+            cauda = max(0.,1-x/6)
+            return -.66*p*tronco, -cauda*1.05*p+tronco*.30*p
+        return -.40*tronco*p+frente*.4*ponta*p, (.61*tronco+.28*frente)*p
+    return malha(base,w,h,ajuste)
+
+
 def principal():
     SAIDA.mkdir(parents=True,exist_ok=True)
     dados = {}
-    passos("lume-andar",origem_lume(0),PATAS["lume"],dados,1.30)
-    asas("lume-voo",origem_lume(3),dados)
-    asas("lume-planar",origem_lume(4),dados)
     for nome,pose in (("morcego","ataque"),("asa-fendida","ataque"),("vespa","repouso"),
                       ("vespa-impulso","ataque"),("coruja-impulso","ataque")):
         voo_continuo(nome,original(nome.removesuffix("-impulso"),pose),dados)
     voo_coruja(dados)
     for nome,juntas in PATAS.items():
-        if nome == "lume":
-            continue
+        salvar(nome+"-arma",original(nome,"preparacao"),partial(preparar_apoio,nome),dados,piso=nome!="tecela")
         if nome == "tecela":
             salvar(nome,original(nome,"preparacao"),no_fio,dados)
         else:

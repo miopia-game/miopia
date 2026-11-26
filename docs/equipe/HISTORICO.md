@@ -1,3 +1,5 @@
+**26/11/2026 · Fauna em movimento.** SPR-03 liga a animação de preparação ao tempo da IA e prepara 60 quadros por ciclo para doze modelos. A cria tem escala e efeito próprios. A captura inclui os quatro guardiões e quatro variações da campanha. [Partida](../midia/fauna-1080p60.mp4) · [Mesmos quadros em detalhe](../midia/fauna-detalhe-1080p60.mp4)
+
 **26/11/2026 · Lume no traço do elenco.** Cinco poses pintadas deram origem aos ciclos do protagonista bípede. A terra e os patamares comuns receberam materiais próprios de cada bioma. [Arte e fontes](../arte/ORIGEM.md) · [Trecho jogável](../midia/lume-no-bosque.mp4)
 
 **26/11/2026 · Prévia do primeiro combate e dos pousos.** A pintura de casca e líquen passou a compor o terreno. O corte do espinho marca o contato e o morcego recolhe as asas ao cair. Nas duas versões, o piloto acertou os quatro golpes nos mesmos instantes. A prévia passou em 465 testes e 176 subcasos. A leitura por uma pessoa que ainda não jogou segue para o playtest da equipe. [Vídeo](../midia/bosque-em-jogo.mp4) · [Arte e regras do trecho](../arte/ESTUDO_DO_BOSQUE.md)

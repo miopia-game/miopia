@@ -4,15 +4,15 @@ from functools import lru_cache
 from math import floor
 import json
 from weakref import WeakKeyDictionary
+from zipfile import ZipFile
 
 import pygame
 
 from . import pygame_hd
 
-from .ilustracao import ARTE, original
+from .ilustracao import ARTE
 
-N_QUADROS = 24
-COLUNAS = 4
+N_QUADROS = 60
 
 
 @dataclass
@@ -79,19 +79,25 @@ def _medidas():
     return json.loads((ARTE / "movimento-v2" / "folhas.json").read_text(encoding="utf-8"))
 
 
-@lru_cache(maxsize=32)
-def _folha(nome):
-    return original(f"movimento-v2/{nome}.png")
+@lru_cache(maxsize=40)
+def _pacote(nome):
+    return ZipFile(ARTE / "movimento-v2" / (nome+".zip"))
+
+
+@lru_cache(maxsize=48)
+def _cel(nome, indice):
+    # Lê apenas o instante desenhado, inclusive na primeira investida de um chefe.
+    w,h,margem = _medidas()[nome]
+    dados = _pacote(nome).read(f"{indice:02}.rgba")
+    return pygame.image.frombytes(dados,(w+2*margem,h+2*margem),"RGBA")
 
 
 @lru_cache(maxsize=512)
 def _quadro(nome, indice, medida, lado, angulo, densidade=1):
     transform = pygame_hd.transform if densidade == 2 else pygame.transform
-    fonte = _folha(nome)
-    w, h, margem = _medidas()[nome]
-    linha, coluna = divmod(indice, COLUNAS)
-    largura, altura = w+2*margem, h+2*margem
-    celula = fonte.subsurface((coluna*largura, linha*altura, largura, altura))
+    celula = _cel(nome,indice)
+    w,h,margem = _medidas()[nome]
+    largura,altura = celula.get_size()
     escala = min(medida[0]/w, medida[1]/h)
     quadro = transform.smoothscale(celula, (round(largura*escala), round(altura*escala)))
     if lado < 0:

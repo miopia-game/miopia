@@ -102,6 +102,7 @@ class Encontro:
         self.frente = -1
         self.estado = "busca"
         self.tempo, self.relogio = 1.65, 0.
+        self.duracao_estado = self.tempo
         self.progresso = 0
         self.vida = self.vida_max = 100.
         self.contato_corte = None
@@ -304,6 +305,7 @@ class Encontro:
 
     def _mudar(self, estado, tempo):
         self.estado, self.tempo = estado, tempo
+        self.duracao_estado = tempo
 
     def _usar(self, corpo, eventos):
         acao = self.interacao(corpo)

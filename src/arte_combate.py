@@ -1,8 +1,8 @@
 """Silhuetas, rastros e avisos. Os sinais são desenhados no ponto usado pela colisão."""
 import math
 from . import pygame_hd as pygame
-from .ilustracao import AMBAR, OSSO, PALIDO, PERIGO, alto_contraste, brilho, claroes_suaves, imagem, losango, texto
-from . import arte_inimigos as fauna, movimento_arte
+from .ilustracao import AMBAR, OSSO, PALIDO, PERIGO, alto_contraste, brilho, claroes_suaves, losango, texto
+from . import arte_golpes_fauna as golpes, arte_inimigos as fauna, movimento_arte
 from .fauna_jardim import TEMPO_CACA
 
 CORES = {"fio": (159, 209, 211), "ferrao": (253, 185, 100), "onda": (226, 151, 118), "eco": (153,175,216),"veneno":(163,197,104)}
@@ -11,10 +11,6 @@ MEDIDAS = {
     "sombra": (64, 56), "carabideo": (79, 55), "cobra": (82, 62),
     "caruncho": (106, 69), "cobra-dos-bercos": (108, 87),
 }
-def efeito(s, nome, centro, dimensoes, espelho=False):
-    asset = "efeito_" + nome
-    textura = imagem(asset + ".png", *dimensoes, espelho)
-    pygame.blit(s, textura, textura.get_rect(center=centro))
 
 
 def criatura(e):
@@ -134,10 +130,9 @@ def aviso(s,e,cx):
         offsets=(-48,48) if getattr(e,"acao_atual","")=="fenda_dupla" else (0,)
         for dx in offsets:
             if -65<x+dx<1025:
-                efeito(s,"fenda",(round(x+dx),round(y-20)),(64,44))
                 _, p, _ = fase_da_criatura(e)
-                for lado in (-1, 1):
-                    fauna.particulas(s, x+dx, y-6, lado, p, fauna.PALETAS["sombra"])
+                golpes.fenda(s,(x+dx,y),p)
+
 
 
 def projeteis(s,e,cx,lume,raio,visivel=None):
@@ -155,7 +150,8 @@ def projeteis(s,e,cx,lume,raio,visivel=None):
         if visivel is None or visivel(e.rect.center,18):
             fase, p, tecnica = fase_da_criatura(e)
             escala = 1.24 if hasattr(e, "nome") else 1.
-            fauna.efeito_ataque(s, criatura(e), tecnica, fase, (e.rect.centerx-cx,e.rect.bottom),
+            especie = "cria" if getattr(e,"grupo",None) == "ninhada" else criatura(e)
+            golpes.efeito_ataque(s, especie, tecnica, fase, (e.rect.centerx-cx,e.rect.bottom),
                                 e.frente, p, escala)
     for p in e.projeteis:
         x,y=p.pos.x-cx,p.pos.y
@@ -166,39 +162,9 @@ def projeteis(s,e,cx,lume,raio,visivel=None):
                 ponto = round(x),round(y)
                 if not claroes_suaves():
                     brilho(s,ponto,19)
-                pygame.draw.circle(s,(73,43,111),ponto,8)
-                pygame.draw.circle(s,(196,150,233),ponto,8,2)
-                losango(s,*ponto,3,OSSO)
-            elif p.tipo == "eco":
-                lado = 1 if p.vel.x >= 0 else -1
-                a = -.85 if lado > 0 else math.pi-.85
-                for n in range(3):
-                    raio_eco = 8+3*n
-                    cx_eco = x-lado*n*6
-                    pygame.draw.arc(s,cor,(cx_eco-raio_eco,y-raio_eco,2*raio_eco,2*raio_eco),
-                                    a,a+1.7,2 if n < 2 else 1)
-            elif p.tipo == "veneno":
-                pos = round(x),round(y)
-                if not claroes_suaves():
-                    brilho(s,pos,15)
-                pygame.draw.circle(s,(64,98,48),pos,7)
-                pygame.draw.circle(s,cor,pos,7,2)
-                pygame.draw.circle(s,PALIDO,(pos[0]-2,pos[1]-2),2)
-            elif p.tipo=="onda":
-                efeito(s,"onda",(round(x),round(y)),(55,25),p.vel.x<0)
-                pygame.draw.lines(s,cor,False,[(x-17,y+5),(x-7,y-5),(x,y+3),(x+7,y-6),(x+16,y+5)],2)
+                golpes.projetil(s,"orbe",ponto,p.vel,-p.vida,golpes.PALETAS["sombra"])
             else:
-                nome="fio" if p.tipo=="fio" else "ferrao"
-                efeito(s,nome,(round(x),round(y)),(37,16),p.vel.x<0)
-                if p.tipo == "fio":
-                    pygame.draw.circle(s,cor,(round(x),round(y)),5,1)
-                    losango(s,x,y,3,PALIDO)
-                else:
-                    d = p.vel.normalize()
-                    lado = d.rotate(90)*3
-                    ponta = pygame.Vector2(x,y)+d*5
-                    cauda = pygame.Vector2(x,y)-d*9
-                    pygame.draw.polygon(s,cor,(ponta,cauda+lado,cauda+d*4,cauda-lado))
+                golpes.projetil(s,p.tipo,(x,y),p.vel,-p.vida,cor)
 
 def tranca(s, r):
     """Duas taquaras se curvam a partir do chão; a trança fecha o vão entre elas."""

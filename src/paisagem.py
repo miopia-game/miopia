@@ -159,11 +159,15 @@ def mascara_luz(raio, brilho_mata, forca=255):
     tom = (0,0,0)
     surf = pygame.Surface((r*2, r*2))
     surf.fill(tom)
-    for n in range(r, 0, -8 if r>=900 else -2):
+    passo = 8 if r>=900 else 2
+    for n in range(r, 0, -passo):
         v = min(1., (r-n)/100) if r>=900 else min(1., (1 - n / r) * 1.8)
         v = v*v*(3-2*v)
         cor = (round(forca*v),)*3
-        pygame.draw.circle(surf, cor, (r,r), n)
+        # O próximo disco encobre todo o interior. Dois pixels de sobreposição
+        # preservam a rasterização nas diagonais entre anéis.
+        borda = 0 if v>=1 or n<=passo+2 else passo+2
+        pygame.draw.circle(surf, cor, (r,r), n, borda)
         if v>=1:
             break
     return surf

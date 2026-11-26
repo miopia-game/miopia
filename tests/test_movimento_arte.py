@@ -20,8 +20,8 @@ def test_passada_nao_avanca_com_camera_estatica_pausa_ou_retorno():
     assert trilha.distancia == trilha.velocidade == 0
 
 
-def test_todas_as_folhas_renderizam_os_24_quadros_distintos(app):
-    assert arte.N_QUADROS == 24
+def test_todas_as_folhas_renderizam_os_60_quadros_distintos(app):
+    assert arte.N_QUADROS == 60
     superficie = pygame.Surface((255, 210), pygame.SRCALPHA)
     for nome in arte._medidas():
         imagens = set()
@@ -46,21 +46,19 @@ def test_assenta_a_pata_na_parada_e_retoma_da_mesma_pose():
     ator = Lume(80,442)
     arte.deslocamento(ator,80.,0.)
     passos = arte.deslocamento(ator,85.,.1)
-    assert passos.quadro_passada(20.) == 6
+    assert passos.quadro_passada(20.) == 15
     intermediario = arte.deslocamento(ator,85.,.15).quadro_passada(20.)
-    assert 0 < intermediario < 6
+    assert 0 < intermediario < 15
     assert passos.quadro_passada(20.) == intermediario
     assert arte.deslocamento(ator,85.,.34).quadro_passada(20.) == 0
-    assert arte.deslocamento(ator,86.,.35).quadro_passada(20.) == 1
+    assert arte.deslocamento(ator,86.,.35).quadro_passada(20.) == 3
 
 
 def test_patas_e_ventre_mantem_contato_com_o_piso_em_cada_quadro(app):
     for nome in ("aranha","carabideo","caruncho","sombra","casco-oco","cobra","cobra-dos-bercos"):
         w,h,margem = arte._medidas()[nome]
-        folha = arte._folha(nome)
-        cw,ch = w+2*margem,h+2*margem
         for i in range(arte.N_QUADROS):
-            quadro = folha.subsurface((i%arte.COLUNAS*cw,i//arte.COLUNAS*ch,cw,ch))
+            quadro = arte._cel(nome,i)
             assert quadro.get_bounding_rect(min_alpha=80).bottom == margem+h, (nome,i)
 
 
@@ -73,7 +71,7 @@ def test_morcego_avisa_em_voo_e_tecela_continua_segurando_o_fio():
             aviso = ciclo(ident, "preparacao", "mergulho", tempo, None, 74, .3)
             assert antes == aviso
     assert ciclo("morcego", "repouso", "", 1., None, 74, 0.) is None
-    poses = {ciclo("tecela", "recuo", "queda", i/60, None, 146, .5) for i in range(60)}
+    poses = {ciclo("tecela", "recuo", "queda", i/60, None, 146, .5) for i in range(300)}
     assert len(poses) == arte.N_QUADROS
 
 
@@ -120,12 +118,10 @@ def test_cabeca_da_coruja_tem_o_mesmo_desenho_em_cada_batida(app):
         w, h, margem = arte._medidas()[nome]
         largura, altura = w + margem*2, h + margem*2
         mascara = pygame.Surface((largura, altura), pygame.SRCALPHA)
-        pygame.draw.polygon(mascara, "white", [(x+margem,y+margem) for x,y in contorno])
-        folha = arte._folha(nome)
+        pygame.draw.polygon(mascara, "white", [(x*w/144+margem,y*w/144+margem) for x,y in contorno])
         imagens = set()
         for indice in range(arte.N_QUADROS):
-            linha, coluna = divmod(indice, arte.COLUNAS)
-            celula = folha.subsurface((coluna*largura,linha*altura,largura,altura)).copy()
+            celula = arte._cel(nome,indice).copy()
             celula.blit(mascara,(0,0),special_flags=pygame.BLEND_RGBA_MULT)
             imagens.add(pygame.image.tobytes(celula, "RGBA"))
         assert len(imagens) == 1, nome

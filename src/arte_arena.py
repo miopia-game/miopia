@@ -4,7 +4,7 @@ from math import cos, hypot, sin, tau
 from .ilustracao import AMBAR, brilho, dica_teclado, texto
 from . import pygame_hd as pygame
 
-from . import arte_inimigos as fauna, movimento_arte
+from . import arte_golpes_fauna as golpes, arte_inimigos as fauna, movimento_arte
 from .chefes import ESCURO, FERRUGEM, FIO, OURO, PELE, TEAL
 
 GUARDIOES = (("asa-fendida", (147, 108)), ("tecela", (146, 140)),
@@ -222,9 +222,7 @@ def _sinais_do_chamado(surf, e, cx, cy):
         for centro in e.coro_faixas:
             x,y = round(centro-cx),round(altura_das_penas(e)-cy)
             for dx, dy in ((-15,-6), (0,0), (15,-13)):
-                pygame.draw.polygon(surf,FIO,[(x+dx-3,y+dy-26),(x+dx+5,y+dy-15),
-                                             (x+dx,y+dy),(x+dx-6,y+dy-11)])
-                pygame.draw.line(surf,OURO,(x+dx,y+dy-14),(x+dx,y+dy+2),2)
+                golpes.pena(surf,(x+dx,y+dy-9),(dx*.015,1),FIO,1.28)
 
 
 def _sinais_do_chefe(surf, e, cx, cy):
@@ -245,14 +243,7 @@ def _sinais_do_chefe(surf, e, cx, cy):
 
 def postura(e):
     estado = e.estado
-    # Envelopes visuais. O relógio da luta permanece sob controle da arena.
-    janela = {"aviso": (.95, 1.02, .63, .66)[e.indice], "rastro": .85,
-              "chama_ninhada": .65, "muda_casco": 1.05, "muda_coruja": .95,
-              "desce": 1., "investida": 2., "investida_seiva": 3.,
-              "varrida_casco": .18, "salto_casco": .76, "freio_casco": .76,
-              "recolhe_coruja": .65, "flor": .5, "coro_aviso": .9,
-              "coro_investida": 2., "coro_queda": .55}.get(estado, 1.)
-    progresso = fauna.fracao(1-e.tempo/janela)
+    progresso = fauna.fracao(1-e.tempo/max(.001,e.duracao_estado))
     tecnica = getattr(e, "tecnica", "")
     if e.indice == 0:
         tecnica = ("mergulho" if e.asa_mira_no_ar else "rasante_baixo" if e.asa_rasteira
@@ -325,15 +316,11 @@ def sinais_encontro(surf,e,cx,cy=0,prevista=None):
             pygame.draw.lines(surf, FERRUGEM, False, [(x-6,y-32),(x,y-39),(x+6,y-32)], 2)
     for f in e.fios:
         x,y = f.x-cx, f.y-cy
-        pygame.draw.line(surf,TEAL,(x-f.vx*.07,y-f.vy*.07),(x,y),2)
-        pygame.draw.circle(surf,FIO,(round(x),round(y)),4)
-    for o in getattr(e, 'ondas', ()):
-        x,y=round(o.x-cx),round(o.y-cy)
-        pygame.draw.lines(surf,FERRUGEM,False,[(x-17,y-2),(x-7,y-16),(x,y-6),(x+8,y-14),(x+17,y-2)],3)
-    for p in getattr(e, 'penas', ()):
-        x,y=p.x-cx,p.y-cy
-        pygame.draw.line(surf,FIO,(x-p.vx*.035,y-p.vy*.035),(x,y),3)
-        pygame.draw.line(surf,OURO,(x-3,y-4),(x+4,y+4),1)
+        golpes.projetil(surf,"fio",(x,y),(f.vx,f.vy),e.relogio,FIO)
+    for o in getattr(e,"ondas",()):
+        golpes.projetil(surf,"onda",(o.x-cx,o.y-cy),(o.vx,0),e.relogio,FERRUGEM)
+    for p in getattr(e,"penas",()):
+        golpes.projetil(surf,"pena",(p.x-cx,p.y-cy),(p.vx,p.vy),e.relogio,OURO)
     for trama in e.tramas:
         faixa = trama.faixa.move(-cx,-cy)
         tom = FIO if trama.tempo > .55 else TEAL
@@ -347,5 +334,5 @@ def sinais_encontro(surf,e,cx,cy=0,prevista=None):
     fase, tecnica, progresso = postura(e)
     if not e.vencido:
         base = e.chao if e.indice == 2 and e.estado != "salto_casco" else min(e.chao,e.y+22)
-        fauna.efeito_ataque(surf, ident, tecnica, fase, (e.x-cx,base-cy), e.frente, progresso, 1.7)
+        golpes.efeito_ataque(surf, ident, tecnica, fase, (e.x-cx,base-cy), e.frente, progresso, 1.7)
     _sinais_do_chefe(surf,e,cx,cy)

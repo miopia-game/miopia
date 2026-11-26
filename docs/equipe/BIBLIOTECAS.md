@@ -45,6 +45,8 @@ Execute na raiz do projeto, em uma branch de trabalho. Os dois primeiros comando
 ```sh
 python tools/recortar_elenco.py docs/arte/fontes assets/arte/inimigos-v2
 python tools/gerar_movimento.py
+python -m tools.gravar_fauna --saida work/entrega/fauna
+python -m tools.detalhar_fauna work/entrega/fauna
 python -m tools.gravar_bosque --saida work/entrega/previa
 ```
 
