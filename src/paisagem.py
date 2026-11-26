@@ -8,10 +8,11 @@ from . import abertura_bosque, arte_bosque, arte_ilustrada, desvios_fagulha, lic
 from . import arte_fagulha, agua_pintada, vento_pintado, folhagem_trilha
 from .arte_arena import sinais_encontro
 from .arte_combate import inimigo, projeteis, golpe_lume, tranca
+from . import arte_margens
 from .arte_lume import desenhar_lume
 from .fases import FASES
 from .hud_reservas import desenhar as reservas
-from .ilustracao import (carregar_arte, original, AMBAR, alto_contraste, OSSO, PALIDO, PERIGO, ROMANOS, TEAL, TINTA, brilho, dica_teclado, fonte, imagem,
+from .ilustracao import (carregar_arte, AMBAR, alto_contraste, OSSO, PALIDO, PERIGO, ROMANOS, TEAL, TINTA, brilho, dica_teclado, fonte, imagem,
                          losango, manivela, painel, placa, sprite, tamanho_texto, texto)
 
 CORES = ((77,102,86),(81,119,119),(127,116,72),(97,86,106))
@@ -327,21 +328,8 @@ def terreno(s,t,camera,i):
             px=r.left+14+n*12
             pygame.draw.aaline(s,(157,148,115),(px,y-3),(px+7,y-4))
         return
-    pisos=("chao","galho","bambu","pedra")
     if t.tipo=="chao":
-        pygame.draw.rect(s,(24,32,32),r)
-        # The same top texture joins continuously over a filled soil cross section.
-        passo=157
-        start=max(0,(-r.left)//passo)
-        for n in range(start,min((r.w+passo-1)//passo,start+8)):
-            x=r.left+n*passo
-            w=min(passo,r.right-x)
-            s.blit(faixa_solo(pisos[i],n%2),(x,r.top),(0,0,w,50))
-        for n in range(max(0,(-r.left)//88-1),min((r.w-24)//88+1,max(0,(-r.left)//88)+14)):
-            x=r.left+20+n*88+int(math.sin(n*7.1+i)*29)
-            if n%4!=2:
-                h=12+int(abs(math.sin(n*4.6+i))*19)
-                sprite(s,"obj_folha",x,r.top+1,h*2,h,n%2==1)
+        arte_margens.chao(s, r, i)
     else:
         im=imagem("obj_bambu.png",r.w,29)
         s.blit(im,(r.x,r.y-4))
@@ -350,15 +338,6 @@ def terreno(s,t,camera,i):
     if t.descida and t.tipo!="grade":
         x=r.centerx
         pygame.draw.lines(s,(169,173,139),False,[(x-4,r.top+5),(x,r.top+8),(x+4,r.top+5)],1)
-
-
-@lru_cache(maxsize=8)
-def faixa_solo(tile,espelho):
-    im=original("obj_"+tile+".png")
-    parte=im.subsurface((im.get_width()//4,im.get_height()//5,
-                         im.get_width()//2,im.get_height()*3//5))
-    faixa=pygame.transform.smoothscale(parte,(157,50))
-    return pygame.transform.flip(faixa,espelho,False)
 
 
 def rotina(s,nome,x,y,t):
@@ -526,15 +505,10 @@ def objeto(s,o,j,cx,tempo):
 
 
 def lume(s,l,cx,t,fagulha=None):
-    pos=l.pose
-    w=58 if pos!="deslize" else 68
-    h={"agachar":22,"deslize":19,"pulo":43,"queda":41,"corda":43,"golpe":34}.get(pos,38)
     x=l.rect.centerx-cx
     y=l.rect.bottom
-    brilho(s,(x-12*l.face,y-h*.44),55)
     golpe_lume(s,l,cx)
-    if l.iframes<=0 or int(t*14)%3!=1:
-        desenhar_lume(s, l, x, y+1, (w,h), t, fagulha)
+    desenhar_lume(s, l, x, y, t, fagulha)
     if l.batida_asa>0:
         # Dois rastros curtos marcam o impulso extra sem iluminar a tela inteira.
         abertura=1-l.batida_asa/.18

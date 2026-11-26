@@ -1,3 +1,5 @@
+Lume veste o mesmo traço de Mimo, Nira e Véspera. A máscara clara, o lenço vermelho e os dois segmentos de luz aparecem na guarda, na corrida, no voo e no combate. [Lume ao lado de Véspera](../midia/lume-com-vespera.png) · [Do Bosque ao primeiro morcego, com som](../midia/lume-no-bosque.mp4)
+
 Na trilha, Lume desloca as samambaias e os colmos ao passar. A água perto da fagulha ganha reflexos âmbar durante o voo e depois do pouso. [Ver a passagem de Lume e os reflexos](../midia/reacao-ao-lume-em-jogo.mp4)
 
 Os quatro cenários ganharam movimento ambiental durante a partida. [Ver a caminhada pelos quatro cenários](../midia/cenarios-vivos-em-jogo.mp4) · [Observar o vento e a água com a câmera fixa](../midia/cenarios-vivos-em-detalhe.mp4)

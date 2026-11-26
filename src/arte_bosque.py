@@ -1,28 +1,16 @@
 """Ilustrações de casca compartilhadas pelo terreno e pelas passagens."""
 from functools import lru_cache
 
+from . import arte_margens
 from . import pygame_hd as pygame
 
 from .ilustracao import AMBAR, alto_contraste, imagem, sprite
-
-TINTA_BIOMA = ((255, 255, 255), (217, 236, 230), (255, 240, 205), (222, 222, 242))
-
-
-@lru_cache(maxsize=128)
-def _ramo(nome, largura, altura, bioma, espelho):
-    im = imagem(nome + ".png", largura, altura, espelho).copy()
-    im.fill(TINTA_BIOMA[bioma], special_flags=pygame.BLEND_RGB_MULT)
-    return im
-
 
 def galho(s, r, bioma, variante, *, raiz=False):
     if raiz:
         s.blit(imagem("galho_enraizado.png", r.w+28, 96), (r.x-23, r.y-31))
     else:
-        nome = "galho_musgo" if variante else "galho_seco"
-        altura = max(25, min(49, round(r.w*.28)))
-        topo = round(altura * (.35 if variante else .28))
-        s.blit(_ramo(nome, r.w+8, altura, bioma, variante), (r.x-4, r.y-topo))
+        arte_margens.patamar(s, r, bioma, variante)
     if alto_contraste():
         pygame.draw.line(s, (213, 199, 156), (r.x+2, r.y), (r.right-3, r.y), 2)
 

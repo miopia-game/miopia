@@ -1,3 +1,9 @@
+# S41 · Lume no traço do elenco
+
+O piloto da História saiu da abertura, passou por Véspera, lançou a fagulha, atravessou o vão e venceu o primeiro morcego com o espinho. A captura contém 532 quadros a 30 fps, 1920 × 1080 e áudio do mixer da App. A imagem da dupla vem do quadro 324. [Vídeo](../midia/lume-no-bosque.mp4) · [Lume e Véspera](../midia/lume-com-vespera.png)
+
+Nos quatro percursos preparados de AMB-02, as 480 amostras de posição, câmera, vida e estado de cada bioma coincidiram com a gravação da base 6dbc8ad. A regressão passou em 510 testes e 176 subtestes. O lançador abriu menu e Bosque em Full HD. Os testes da arte percorrem as poses nas duas direções e verificam a luz no pigmento âmbar, os apoios na corrida e o gesto na janela do golpe. A comparação com jogadores continua na fila de S41. [Regressão de Lume](../../tests/test_lume_ilustrado.py)
+
 # AMB-02 · Resposta à passagem e à fagulha
 
 O playtest da História parte de quatro pontos preparados e exercita duas passagens em sentidos opostos ou um lançamento real com G. O filme decodificado contém 1.920 quadros, 32 segundos, 1920 × 1080 a 60 fps e áudio estéreo a 44,1 kHz. O comparativo tem 840 quadros e 14 segundos. Ele usa o mesmo jogo e a mesma iluminação geral nas duas colunas. O controle desliga apenas a resposta à passagem e o reflexo no material. O recorte da gota foi ampliado igualmente nas duas colunas. [Playtest com som](../midia/reacao-ao-lume-em-jogo.mp4) · [Ver a diferença lado a lado](../midia/reacao-ao-lume-detalhes.mp4)

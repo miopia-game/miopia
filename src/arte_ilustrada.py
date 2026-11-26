@@ -2,6 +2,7 @@
 from functools import lru_cache
 from math import sin
 
+from . import arte_margens
 from . import pygame_hd as pygame
 
 from .fases import CHAO, FASES, GALHO_DO_MORCEGO, Terreno
@@ -136,40 +137,11 @@ def sombrear_terreno_fixo(fundo, j, cx, cy, fim, intensidade):
         fundo.blit(camada, (-round(cx), -cy))
 
 
-@lru_cache(maxsize=3)
-def _leito(largura, altura):
-    """Monta a margem com cortes em várias escalas da pintura de terra."""
-    margem = pygame.Surface((largura, altura), pygame.SRCALPHA)
-    margem.fill((24,20,38), (0,3,largura,altura-3))
-    trechos = ((402,149,13,369,False), (375,134,41,312,False),
-               (451,158,35,391,True), (337,135,11,307,False))
-    x = 0
-    n = 0
-    while x < largura:
-        w, h, inicio, corte, espelho = trechos[n % len(trechos)]
-        terra = imagem("pintado_solo.png", w, h, espelho)
-        camada = terra.subsurface((inicio, 3, corte, min(h-3, altura))).copy()
-        # Uma transição curta entre bordas de terra evita a costura espelhada.
-        sobreposicao = 18 if n else 0
-        for coluna in range(sobreposicao):
-            camada.fill((255,255,255,round(255*coluna/sobreposicao)), (coluna,0,1,altura),
-                         special_flags=pygame.BLEND_RGBA_MULT)
-        x -= sobreposicao
-        margem.blit(camada, (x, 0))
-        x += corte
-        n += 1
-    for y in range(altura):
-        profundidade = min(1., max(0., (y-10)/max(1, altura-25)))
-        tinta = tuple(255-round(atenuacao*profundidade) for atenuacao in (83,77,60))
-        margem.fill((*tinta,255), (0,y,largura,1), special_flags=pygame.BLEND_RGBA_MULT)
-    return margem
-
-
 def _solo(s, r):
     area = s.get_clip().clip(r)
     if not area.width:
         return
-    s.blit(_leito(r.w, r.h), r.topleft)
+    arte_margens.chao(s, r, 0)
     if alto_contraste():
         pygame.draw.line(s, BORDA, (area.left, r.y), (area.right-1, r.y), 3)
 

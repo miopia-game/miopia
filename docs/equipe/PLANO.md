@@ -1,3 +1,7 @@
+## S41 · Lume e o elenco
+
+Na próxima sessão da equipe, mostre a chegada à Véspera com a câmera normal. Observe se a pessoa identifica quem controla, onde os pés tocam o galho e em que instante o golpe alcança o morcego. A leitura artística continua para a avaliação de Victor e Thierry. [Captura da partida](../midia/lume-no-bosque.mp4)
+
 A próxima rodada da equipe é observar uma pessoa que ainda não jogou. Peça que atravesse o Bosque e vença o primeiro morcego. Depois da tentativa, pergunte onde ela achou que podia pousar e qual golpe percebeu acertar. Registre o momento no vídeo para orientar o ajuste seguinte. [Roteiro de playtest](GUIA_DE_CONTINUIDADE.md#assumindo-a-próxima-rodada)
 
 ## AMB-02 · Cenários que reagem a Lume
