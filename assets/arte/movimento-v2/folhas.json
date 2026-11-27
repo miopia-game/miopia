@@ -1,177 +1,187 @@
 {
-  "morcego": [
+  "aranha": [
     144,
-    94,
-    35
+    102,
+    46
+  ],
+  "aranha-especial": [
+    144,
+    102,
+    46
+  ],
+  "aranha-golpe": [
+    144,
+    102,
+    46
   ],
   "asa-fendida": [
-    288,
-    286,
-    70
+    294,
+    216,
+    94
+  ],
+  "asa-fendida-golpe": [
+    294,
+    216,
+    94
+  ],
+  "asa-fendida-repouso": [
+    294,
+    216,
+    94
+  ],
+  "carabideo": [
+    158,
+    110,
+    51
+  ],
+  "carabideo-especial": [
+    158,
+    110,
+    51
+  ],
+  "carabideo-golpe": [
+    158,
+    110,
+    51
+  ],
+  "caruncho": [
+    212,
+    138,
+    68
+  ],
+  "caruncho-especial": [
+    212,
+    138,
+    68
+  ],
+  "caruncho-golpe": [
+    212,
+    138,
+    68
+  ],
+  "casco-oco": [
+    292,
+    224,
+    93
+  ],
+  "casco-oco-especial": [
+    292,
+    224,
+    93
+  ],
+  "casco-oco-golpe": [
+    292,
+    224,
+    93
+  ],
+  "cobra": [
+    164,
+    124,
+    52
+  ],
+  "cobra-dos-bercos": [
+    216,
+    174,
+    112
+  ],
+  "cobra-dos-bercos-especial": [
+    216,
+    174,
+    112
+  ],
+  "cobra-dos-bercos-golpe": [
+    216,
+    174,
+    112
+  ],
+  "cobra-especial": [
+    164,
+    124,
+    52
+  ],
+  "cobra-golpe": [
+    164,
+    124,
+    52
+  ],
+  "coruja": [
+    328,
+    256,
+    105
+  ],
+  "coruja-especial": [
+    328,
+    256,
+    105
+  ],
+  "coruja-golpe": [
+    328,
+    256,
+    105
+  ],
+  "morcego": [
+    148,
+    94,
+    47
+  ],
+  "morcego-especial": [
+    148,
+    94,
+    47
+  ],
+  "morcego-golpe": [
+    148,
+    94,
+    47
+  ],
+  "morcego-repouso": [
+    52,
+    70,
+    32
+  ],
+  "sombra": [
+    128,
+    112,
+    41
+  ],
+  "sombra-especial": [
+    128,
+    112,
+    41
+  ],
+  "sombra-golpe": [
+    128,
+    112,
+    41
+  ],
+  "tecela": [
+    292,
+    280,
+    93
+  ],
+  "tecela-especial": [
+    292,
+    280,
+    93
+  ],
+  "tecela-golpe": [
+    292,
+    280,
+    93
   ],
   "vespa": [
     144,
-    122,
-    35
+    106,
+    46
   ],
-  "vespa-impulso": [
+  "vespa-especial": [
     144,
-    91,
-    35
+    106,
+    46
   ],
-  "coruja-impulso": [
-    288,
-    266,
-    70
-  ],
-  "coruja": [
-    288,
-    218,
-    70
-  ],
-  "aranha-arma": [
+  "vespa-golpe": [
     144,
-    87,
-    35
-  ],
-  "aranha": [
-    144,
-    93,
-    35
-  ],
-  "aranha-impulso": [
-    144,
-    90,
-    35
-  ],
-  "aranha-gesto": [
-    144,
-    90,
-    35
-  ],
-  "carabideo-arma": [
-    144,
-    78,
-    35
-  ],
-  "carabideo": [
-    144,
-    87,
-    35
-  ],
-  "carabideo-impulso": [
-    144,
-    88,
-    35
-  ],
-  "carabideo-gesto": [
-    144,
-    88,
-    35
-  ],
-  "sombra-arma": [
-    144,
-    122,
-    35
-  ],
-  "sombra": [
-    144,
-    119,
-    35
-  ],
-  "sombra-impulso": [
-    144,
-    105,
-    35
-  ],
-  "sombra-gesto": [
-    144,
-    105,
-    35
-  ],
-  "caruncho-arma": [
-    288,
-    192,
-    70
-  ],
-  "caruncho": [
-    288,
-    212,
-    70
-  ],
-  "caruncho-impulso": [
-    288,
-    162,
-    70
-  ],
-  "caruncho-gesto": [
-    288,
-    162,
-    70
-  ],
-  "casco-oco-arma": [
-    288,
-    202,
-    70
-  ],
-  "casco-oco": [
-    288,
-    202,
-    70
-  ],
-  "casco-oco-impulso": [
-    288,
-    226,
-    70
-  ],
-  "casco-oco-gesto": [
-    288,
-    226,
-    70
-  ],
-  "tecela-arma": [
-    288,
-    230,
-    70
-  ],
-  "tecela": [
-    288,
-    230,
-    70
-  ],
-  "tecela-gesto": [
-    288,
-    226,
-    70
-  ],
-  "cobra": [
-    144,
-    43,
-    35
-  ],
-  "cobra-recolher": [
-    144,
-    43,
-    35
-  ],
-  "cobra-impulso": [
-    144,
-    75,
-    35
-  ],
-  "cobra-dos-bercos": [
-    288,
-    78,
-    70
-  ],
-  "cobra-dos-bercos-recolher": [
-    288,
-    78,
-    70
-  ],
-  "cobra-dos-bercos-impulso": [
-    288,
-    224,
-    70
+    106,
+    46
   ]
 }

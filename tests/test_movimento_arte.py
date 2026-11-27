@@ -20,8 +20,8 @@ def test_passada_nao_avanca_com_camera_estatica_pausa_ou_retorno():
     assert trilha.distancia == trilha.velocidade == 0
 
 
-def test_todas_as_folhas_renderizam_os_60_quadros_distintos(app):
-    assert arte.N_QUADROS == 60
+def test_todas_as_folhas_renderizam_os_16_quadros_distintos(app):
+    assert arte.N_QUADROS == 16
     superficie = pygame.Surface((255, 210), pygame.SRCALPHA)
     for nome in arte._medidas():
         imagens = set()
@@ -46,12 +46,12 @@ def test_assenta_a_pata_na_parada_e_retoma_da_mesma_pose():
     ator = Lume(80,442)
     arte.deslocamento(ator,80.,0.)
     passos = arte.deslocamento(ator,85.,.1)
-    assert passos.quadro_passada(20.) == 15
+    assert passos.quadro_passada(20.) == 4
     intermediario = arte.deslocamento(ator,85.,.15).quadro_passada(20.)
-    assert 0 < intermediario < 15
+    assert 0 < intermediario < 4
     assert passos.quadro_passada(20.) == intermediario
     assert arte.deslocamento(ator,85.,.34).quadro_passada(20.) == 0
-    assert arte.deslocamento(ator,86.,.35).quadro_passada(20.) == 3
+    assert arte.deslocamento(ator,86.,.35).quadro_passada(20.) == 1
 
 
 def test_patas_e_ventre_mantem_contato_com_o_piso_em_cada_quadro(app):
@@ -66,17 +66,20 @@ def test_morcego_avisa_em_voo_e_tecela_continua_segurando_o_fio():
     from src.arte_inimigos import ciclo
 
     for ident in ("morcego", "asa-fendida", "vespa"):
-        for tempo in (.07, .83, 31.23):
-            antes = ciclo(ident, "neutro", "", tempo, None, 74, 0)
-            aviso = ciclo(ident, "preparacao", "mergulho", tempo, None, 74, .3)
-            assert antes == aviso
-    assert ciclo("morcego", "repouso", "", 1., None, 74, 0.) is None
+        assert len({ciclo(ident,"neutro","",i/60,None,74,0.) for i in range(180)}) == 16
+        for fase, limites in (("preparacao",(0,4)),("ataque",(5,11)),("recuo",(12,15))):
+            escolhas = [ciclo(ident,fase,"mergulho",0.,None,74,i/60) for i in range(61)]
+            assert all(nome == ident+("-especial" if ident=="vespa" else "-golpe") for nome,_ in escolhas)
+            assert set(i for _,i in escolhas) == set(range(limites[0],limites[1]+1))
+    for ident in ("morcego","asa-fendida"):
+        assert {ciclo(ident,"repouso","",i/60,None,74,0.) for i in range(150)} == {
+            (ident+"-repouso",n) for n in range(16)}
     poses = {ciclo("tecela", "recuo", "queda", i/60, None, 146, .5) for i in range(300)}
     assert len(poses) == arte.N_QUADROS
 
 
 def test_coruja_conserva_uma_silhueta_do_ombro_a_ponta_da_asa(app):
-    for nome in ("coruja", "coruja-impulso"):
+    for nome in ("coruja", "coruja-golpe", "coruja-especial"):
         for indice in range(arte.N_QUADROS):
             imagem, _, _ = arte._quadro(nome, indice, (164, 128), 1, 0)
             opacidade = pygame.mask.from_surface(imagem, 90)
@@ -86,7 +89,7 @@ def test_coruja_conserva_uma_silhueta_do_ombro_a_ponta_da_asa(app):
 
 
 def test_extremos_das_duas_asas_sobem_e_descem_juntos_no_voo(app):
-    for nome in ("coruja", "coruja-impulso", "morcego", "asa-fendida"):
+    for nome in ("coruja", "coruja-golpe", "morcego", "asa-fendida"):
         alturas = [[], []]
         for indice in range(arte.N_QUADROS):
             imagem, caixa, _ = arte._quadro(nome, indice, (164, 128), 1, 0)
@@ -105,26 +108,75 @@ def test_extremos_das_duas_asas_sobem_e_descem_juntos_no_voo(app):
         assert longe[baixa]-longe[alta] > (max(longe)-min(longe))*.5, nome
 
 
-def test_cabeca_da_coruja_tem_o_mesmo_desenho_em_cada_batida(app):
-    # Coordenadas na célula sem margem. O contorno acompanha a crista,
-    # a máscara e o bico. A asa distante pode passar pelo espaço ao redor.
-    rostos = {
-        "coruja": [(63,16),(68,10),(76,13),(79,10),(90,17),(97,24),
-                   (101,32),(101,38),(99,41),(98,43),(94,43),(90,48),
-                   (79,44),(65,38),(60,29)],
-        "coruja-impulso": [(79,65),(122,65),(122,107),(79,107)],
-    }
-    for nome, contorno in rostos.items():
-        w, h, margem = arte._medidas()[nome]
-        largura, altura = w + margem*2, h + margem*2
-        mascara = pygame.Surface((largura, altura), pygame.SRCALPHA)
-        pygame.draw.polygon(mascara, "white", [(x*w/144+margem,y*w/144+margem) for x,y in contorno])
-        imagens = set()
-        for indice in range(arte.N_QUADROS):
-            celula = arte._cel(nome,indice).copy()
-            celula.blit(mascara,(0,0),special_flags=pygame.BLEND_RGBA_MULT)
-            imagens.add(pygame.image.tobytes(celula, "RGBA"))
-        assert len(imagens) == 1, nome
+def test_mascara_facial_da_coruja_permanece_registrada_no_voo(app):
+    # Mede o disco facial claro em relação ao tronco. As penas das asas ficam fora do recorte.
+    w, h, margem = arte._medidas()["coruja"]
+    area = pygame.Rect(0, 0, round(w*.46), round(h*.50))
+    area.center = round(margem+w*.68), round(margem+h*.50)
+    rostos = []
+    for i in range(arte.N_QUADROS):
+        cel = arte._cel("coruja",i).subsurface(area)
+        mascara = pygame.mask.from_threshold(cel,(248,229,207,255),(30,39,51,26))
+        rostos.append(max(mascara.get_bounding_rects(), key=lambda r:r.w*r.h))
+    for eixo in ("centerx","centery"):
+        pontos = [getattr(r,eixo) for r in rostos]
+        assert max(pontos)-min(pontos) <= 6
+    for eixo in ("w","h"):
+        medidas = [getattr(r,eixo) for r in rostos]
+        assert max(medidas) < 1.25*min(medidas)
+
+
+def test_disco_facial_tem_a_mesma_escala_entre_voo_e_golpes(app):
+    from statistics import median
+
+    medidas = []
+    for nome in ("coruja","coruja-golpe","coruja-especial"):
+        w,h,margem = arte._medidas()[nome]
+        area = pygame.Rect(0,0,round(w*.46),round(h*.65))
+        area.center = round(margem+w*.68),round(margem+h*.50)
+        rostos = []
+        for i in range(arte.N_QUADROS):
+            cel = arte._cel(nome,i).subsurface(area)
+            pigmento = pygame.mask.from_threshold(cel,(248,229,207,255),(30,39,51,26))
+            rostos.append(max(pigmento.get_bounding_rects(),key=lambda r:r.w*r.h))
+        medidas.append((median(r.w for r in rostos),median(r.h for r in rostos)))
+    for eixo in zip(*medidas):
+        assert max(eixo) <= min(eixo)*1.10
+
+
+def test_cobra_da_ponte_se_desloca_na_espreita_e_apos_o_bote():
+    from src.arte_combate import fase_da_criatura
+    from src.arte_inimigos import ciclo
+    from src.fauna_jardim import MoradorDaPonte
+
+    cobra = MoradorDaPonte("cobra",2720,790,"normal")
+    for estado in ("espreita","recuo_caca"):
+        cobra.estado, cobra.t = estado,.30
+        fase,p,tecnica = fase_da_criatura(cobra)
+        escolhas = {ciclo("cobra",fase,tecnica,0.,arte.Passos(0.,0.,distancia=d),82,p)
+                    for d in range(80)}
+        assert escolhas == {("cobra",i) for i in range(arte.N_QUADROS)}
+
+
+def test_todo_pacote_preserva_os_desenhos_fonte(app):
+    import json
+    import pytest
+    from pathlib import Path
+    Image = pytest.importorskip("PIL.Image", reason="Ferramentas de criação de arte")
+    fontes = Path(__file__).resolve().parents[1]/"docs/arte/fontes/fauna-quadros"
+    registro = json.loads((fontes/"registro.json").read_text())
+    assert set(registro) == set(arte._medidas())
+    for nome, folha in registro.items():
+        escala = folha["escala"]
+        w, h, margem = folha["medida"]
+        with Image.open(fontes/(nome+".png")) as pintura:
+            assert len(folha["quadros"]) == len({tuple(q[:4]) for q in folha["quadros"]}) == 16
+            for i,(x0,y0,x1,y1,x,y) in enumerate(folha["quadros"]):
+                recorte = pintura.crop((x0,y0,x1,y1)).convert("RGBA")
+                tamanho = tuple(round(v*escala) for v in recorte.size)
+                esperado = Image.new("RGBA",(w+2*margem,h+2*margem))
+                esperado.paste(recorte.resize(tamanho,Image.Resampling.LANCZOS),(x,y))
+                assert esperado.tobytes() == pygame.image.tobytes(arte._cel(nome,i),"RGBA"), (nome,i)
 
 
 def test_o_render_da_coruja_conserva_a_escala_do_sprite(monkeypatch):

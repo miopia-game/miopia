@@ -32,12 +32,14 @@ def fase_da_criatura(e):
         return "ataque", fauna.fracao(1-e.t/.31), "bote_caca"
     if e.estado == "investida":
         return "ataque", fauna.fracao(1-e.t/max(e.duracao,.01)), tecnica
+    if e.estado == "recuo_caca" and e.t < .55:
+        return "neutro", 0., "bote_caca"
     if e.estado in {"recuo", "recuo_caca"}:
         duracao = .74 if e.estado == "recuo_caca" else .65/e.ritmo
         return "recuo", fauna.fracao(1-e.t/duracao), tecnica
     if e.estado == "atordoado":
         return "ferido", 0., tecnica
-    if e.estado in {"poleiro", "espreita"}:
+    if e.estado == "poleiro":
         return "repouso", 0., tecnica
     if e.estado in {"patrulha", "manobra", "investigar"} and criatura(e) in fauna.TERRESTRES:
         return "passos", 0., tecnica
@@ -63,7 +65,7 @@ def corpo(s,e,cx,t):
     passos = movimento_arte.deslocamento(e, e.rect.centerx, t, e.frente)
     rect = fauna.corpo(s, ident, fase, x, pe, (w,h), e.frente, t, p, tecnica,
                        centro=e.tipo in {"morcego", "vespa"} and e.estado != "poleiro",
-                       passos=passos)
+                       passos=passos, duracao=e.duracao)
     h = y-rect.top
     if e.estado in ("isca_fagulha","fuga_fagulha"):
         cor = AMBAR if e.estado == "isca_fagulha" else (189,161,213)
@@ -113,11 +115,14 @@ def inimigo(s,e,cx,lume,t):
     marca = getattr(e, "impacto_corte", None)
     if marca and marca.abate and 0 <= t-marca.inicio < .27:
         p = (t-marca.inicio)/.27
-        # Recolhe as asas e perde altura. A pose gira inteira, sem deformar o corpo.
-        pose = fauna.quadro("morcego", "preparacao", 69, 45, e.frente, round(8+24*p)).copy()
+        ident = criatura(e)
+        destino = pygame.destino(s)
+        cel, _, _ = movimento_arte._quadro(ident+"-golpe", 12+round(3*p), MEDIDAS[ident],
+                                            e.frente, 0, destino.escala)
+        pose = cel.copy()
         pose.set_alpha(round(225*(1-p)))
         centro = (round(e.rect.centerx-cx+marca.lado*16*p), round(e.rect.centery+26*p*p))
-        s.blit(pose, pose.get_rect(center=centro))
+        destino.blit(pose, pose.get_rect(center=centro))
 
 def aviso(s,e,cx):
     if e.estado in {"aviso", "aviso_caca"}:

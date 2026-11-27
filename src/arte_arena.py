@@ -292,8 +292,12 @@ def desenhar_encontro(surf,e,cx,cy=0):
     centro = not (e.indice == 2 and e.estado != "salto_casco")
     pe = y if centro else round(e.chao-cy+2)
     passos = movimento_arte.deslocamento(e, e.x, e.relogio, e.frente)
-    fauna.corpo(surf, ident, fase, x, pe, medida, e.frente, e.relogio, progresso, tecnica,
-                centro=centro, passos=passos)
+    gesto = "chama_ninhada" if e.estado == "chama_ninhada" else tecnica
+    if gesto == "chama_ninhada":
+        # O chamado tem uma única janela de IA, incluindo o gesto de soltar a cria.
+        fase = "chamado"
+    fauna.corpo(surf, ident, fase, x, pe, medida, e.frente, e.relogio, progresso, gesto,
+                centro=centro, passos=passos, duracao=e.duracao_estado)
     if e.indice in (2,3) and getattr(e,'fase',1)==2 and not e.vencido:
         # Cicatrizes e penas destacadas conservam a leitura da fase em mudo.
         for n in range(3):

@@ -1,10 +1,18 @@
+## SPR-06 · Fauna quadro a quadro
+
+As criaturas de 17 encontros usam desenhos completos para a locomoção e o combate. As variantes têm a IA própria e compartilham os desenhos da espécie. As folhas de ataque acompanham a preparação, o contato e a recuperação definidos no combate. [Fontes e preparo](../../assets/arte/movimento-v2/ORIGEM.md)
+
+O Lume em jogo troca entre desenhos completos para andar, correr, voar e combater. O vídeo mostra a passagem do Bosque e a luta, seguidas de trechos em câmera lenta. [Partida e desenhos](../midia/lume-quadro-a-quadro-1080p60.mp4)
+
+O primeiro estudo do abdômen segmentado ficou registrado para comparação. [Do Bosque ao primeiro morcego e galeria das poses](../midia/lume-abdomen-1080p60.mp4)
+
 No fundo da Galeria das Sementes, o jogo deixa de pintar o céu e o bambu atrás das raízes opacas. A rodada corrigida do ferrão teve picos de 20,4 ms sem gravador e 22,5 ms com gravador. [Vídeo comparativo](../midia/vespa-da-fenda-ferrao-1080p60.mp4)
 
 O clarão conserva o desenho em Full HD ao mudar de raio. No playtest dos 16 encontros, o primeiro quadro passou de 88,2 para 26,7 ms de desenho na mediana. [Ver os 20 capítulos](../midia/cadencia-encontros-1080p60.mp4) · [Medições por encontro](VALIDACAO.md#s42-fa--cadência-dos-encontros-em-1080p)
 
 No macOS, o jogo apresenta a pausa ao perder o foco. Quando a janela reaparece, ela retoma a apresentação com a imagem atual. Seis lutas da aranha tiveram média próxima de 60 fps na janela visível. [Ver a troca de Mesa e a volta à luta](../midia/aranha-retorno-mesa-1080p60.mp4) · [Três ataques em 1080p60](../midia/aranha-cadencia-1080p60.mp4)
 
-A fauna usa 60 poses por ciclo. O Carabídeo firma as patas antes da carga, a Cobra recolhe o pescoço antes do bote e a Coruja articula as duas asas ao buscar Lume. Seda, ferrões, seiva, penas e estilhaços acompanham o ataque que a IA executa. [Playtest a 60 fps](../midia/fauna-1080p60.mp4) · [Ver de perto](../midia/fauna-detalhe-1080p60.mp4)
+Na versão anterior, a fauna usava 60 poses por ciclo. O Carabídeo firma as patas antes da carga, a Cobra recolhe o pescoço antes do bote e a Coruja articula as duas asas ao buscar Lume. Seda, ferrões, seiva, penas e estilhaços acompanham o ataque que a IA executa. [Playtest a 60 fps](../midia/fauna-1080p60.mp4) · [Ver de perto](../midia/fauna-detalhe-1080p60.mp4)
 
 O passo e a corrida de Lume acompanham a distância percorrida. O lançamento da fagulha tem um gesto próprio, e o combo alterna o sentido do espinho. O rastro acompanha a mão e as lascas partem do contato com o inimigo. [Do Bosque até o morcego, em 1080p a 60 fps](../midia/lume-combate-60fps.mp4) · [Mesma sequência em detalhe](../midia/lume-combate-detalhe-60fps.mp4)
 

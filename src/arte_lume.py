@@ -1,7 +1,7 @@
 """Poses de Lume e articulações desenhadas em coordenadas da partida."""
 from functools import lru_cache
 import json
-from math import cos, floor, pi
+from math import floor
 
 from . import movimento_arte, pygame_hd as pygame
 from .ilustracao import ARTE, brilho, original
@@ -35,7 +35,7 @@ def _folha(nome):
 @lru_cache(maxsize=1)
 def preparar():
     # Decodifica na entrada da partida, antes de receber o primeiro golpe ou salto.
-    for nome in (*_farois(),"asas","asas-planeio"):
+    for nome in _farois():
         _folha(nome)
     _juntas()
 
@@ -94,7 +94,7 @@ def animacao(lume, tempo, fagulha=None):
         face = 1 if fagulha.destino[0] >= fagulha.origem[0] else -1
         # O disparo parte no comando. A extensão vem cedo e a manga termina o gesto em seguida.
         t = idade/.19
-        return "lancar",round((1-(1-t)**2)*59),face
+        return "lancar",round(t*(total_quadros("lancar")-1)),face
     nome = POSES[pose]
     n = total_quadros(nome)
     if pose in ("andar","correr"):
@@ -105,12 +105,15 @@ def animacao(lume, tempo, fagulha=None):
         fase = 1-lume.pulso/.55
     elif pose == "deslize":
         fase = 1-lume.slide/.62
-    elif pose == "pulo":
-        fase = 1+lume.vy/505
-    elif pose == "queda":
-        fase = lume.vy/430
-    elif pose == "planar":
-        fase = (1-cos(tempo*2*pi*.85))*.5
+    elif pose == "dano":
+        fase = 1-lume.impacto/.25
+    elif pose in ("pulo", "queda", "planar"):
+        # As membranas fazem parte do cel. A batida extra completa uma volta
+        # durante o impulso e reencontra a fase normal sem saltar um quadro.
+        voltas = tempo * (1.35 if pose == "planar" else 3.)
+        if lume.batida_asa > 0 and pose != "planar":
+            voltas += 1-lume.batida_asa/.18
+        return nome, floor(voltas*n)%n, lume.face
     else:
         ritmo = 1.1 if pose == "corda" else .78
         return nome,int(tempo*ritmo*n)%n,lume.face
@@ -128,11 +131,5 @@ def desenhar_lume(s, lume, x, pe, tempo, fagulha=None):
         mx,my = _ponto(_juntas()["punho"][nome][indice],espelho)
         desenhar(s,lume,(caixa.x+mx,caixa.y+my),x,pe)
     if lume.iframes <= 0 or int(tempo*14)%3 != 1:
-        if nome in ("voo","queda","planeio"):
-            ombro = _ponto(_juntas()["ombro"][nome][indice],espelho)
-            planeio = nome == "planeio"
-            ritmo = 1.35 if planeio else 8 if lume.batida_asa>0 else 5.2
-            asas = _imagem("asas-planeio" if planeio else "asas",int(tempo*ritmo*60)%60,espelho)
-            pygame.blit(s,asas,(caixa.x+ombro[0]-48,caixa.y+ombro[1]-40))
         pygame.blit(s,im,caixa)
     return caixa

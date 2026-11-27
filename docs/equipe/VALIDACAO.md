@@ -1,3 +1,49 @@
+## SPR-06 · Fauna quadro a quadro
+
+A App executou 17 encontros preparados com perfil temporário e a IA do jogo. Em cada capítulo houve deslocamento e ataque visíveis. O observador acompanhou as células escolhidas pelo desenho do próprio ator. A seleção percorreu de 11 a 16 desenhos de locomoção por encontro. Cada clipe tem cinco segundos, gravados com uma atualização de 1/60 s por quadro. Os dois filmes têm 5.100 quadros em 1920 × 1080, 17 capítulos e áudio. A segunda câmera amplia a primeira gravação para acompanhar o animal. [Enquadramento do jogo](../midia/fauna-quadro-a-quadro-1080p60.mp4) · [Detalhe dos movimentos](../midia/fauna-quadro-a-quadro-detalhe-1080p60.mp4)
+
+| Início | Encontro | Golpes observados |
+|---|---|---|
+| 0:00 | Morcego | rasante, rasante baixo |
+| 0:05 | Aranha | mordida, salto |
+| 0:10 | Vespa | leque ferrao, mergulho, queda |
+| 0:15 | Carabídeo | carga |
+| 0:20 | Sombra | fenda dupla, orbe |
+| 0:25 | Cobra | mordida, rasteira |
+| 0:30 | Caruncho do Viveiro | carga, onda, onda dupla |
+| 0:35 | Cobra dos Berços | rasteira, veneno |
+| 0:40 | Cria da ninhada | fio, pique |
+| 0:45 | Asa Fendida | rasante |
+| 0:50 | Tecelã do Vão | fio |
+| 0:55 | Casco Oco | carga |
+| 1:00 | A Coruja | garra, rasante |
+| 1:05 | Morcego do Galho | mergulho, queda, rasante, rasante baixo |
+| 1:10 | Vespa da Fenda | ferrao, mergulho |
+| 1:15 | Caçada na Ponte | bote caca |
+| 1:20 | Último Chamado | coro investida, coro queda |
+
+Regressão com `./qa.sh` em perfil temporário: 543 testes e 176 subtestes passaram. A verificação específica comparou os 592 desenhos empacotados com seus recortes originais, mediu o contato com o chão, a excursão das duas asas em voo e a estabilidade do disco facial da Coruja. O empacotador reproduziu todos os 37 pacotes e o manifesto byte a byte. A equipe pode avaliar a fluidez e a leitura dos ataques em velocidade normal. [Testes de movimento](../../tests/test_movimento_arte.py)
+
+# SPR-05 · Lume quadro a quadro
+
+A retirada da malha de interpolação trocou a animação do protagonista por 16 pinturas distintas em cada uma das 16 ações. O jogo seleciona um desenho pela distância percorrida, pela fase da ação ou pelo tempo. No salto e no planeio as duas asas estão pintadas no corpo. A posição do punho foi registrada nos 48 desenhos dos três cortes. A ponta do abdômen tem uma marca de luz em cada uma das 256 pinturas. [Folhas de produção](../arte/fontes/lume/quadros) · [Preparo dos atlas](../../tools/animar_lume.py)
+
+A conferência percorreu todos os desenhos e os dois sentidos de movimento. Um teste reconstruiu cada célula diretamente do seu recorte de origem com escala uniforme e translação, comparou os pixels com os da App e confirmou 16 desenhos distintos por ação. Os testes de apoio verificaram o contato das botas e os dois momentos de suspensão da corrida. A suíte passou em 540 testes e 176 subcasos.
+
+O playtest por comandos na App percorreu o Bosque até a vitória sobre o primeiro morcego. A sequência de posição, ação, fagulha e impacto coincidiu nos 1.076 quadros com o percurso registrado no SPR-04. Três execuções separadas do jogo com relógio real em saída de software, no Mac, registraram médias de 59,98 a 60,02 fps a 1920 × 1080 em 600 intervalos por tomada. A medição em janela física fica em aberto.
+
+O vídeo tem 2.076 quadros, cinco capítulos e áudio do jogo durante o percurso. Aos 0:18 e 0:22, os mesmos quadros da passada e do combo reaparecem a um quarto da velocidade. A partir de 0:27, a galeria percorre os desenhos a oito por segundo para facilitar a inspeção. [Assistir em 1080p60](../midia/lume-quadro-a-quadro-1080p60.mp4)
+
+# SPR-04 · Abdômen de Lume
+
+A guarda usa o desenho aprovado por Victor. Nas chaves de movimento, a inclinação da placa acompanha a postura de Lume. A capa, as luvas e as pernas passam à frente dela. A luz segue a ponta âmbar em cada quadro e nos dois sentidos de movimento. [Pinturas e preparo](../arte/ORIGEM.md)
+
+A comparação com `9507cf4` cobriu os 740 quadros das 16 animações do corpo. Cada folha manteve sua quantidade de desenhos distintos, inclusive as pausas intencionais. Os arquivos das duas batidas de asa e as posições do punho e do ombro coincidiram byte a byte. O teste dos atlas percorre todos os quadros para conferir a área visível das placas, o ponto luminoso espelhado e o apoio no chão. A regressão passou em 539 testes e 176 subcasos.
+
+Na App do macOS, três execuções antes e três depois usaram os mesmos comandos no Bosque e um perfil temporário por processo. A saída de software desenhou a 1920 × 1080 em segundo plano, com 600 intervalos medidos por tomada após o aquecimento. A versão anterior registrou 60,00 fps nas três tomadas. Com o novo desenho, as médias variaram de 59,67 a 60,00 fps, com mediana de 59,88 fps. O compositor da janela física ficou fora da medição.
+
+O vídeo começa com uma aproximação da partida do Bosque até a vitória sobre o primeiro morcego. Aos 0:18 entram as folhas de movimento e aos 0:22 as poses de combate. Nessas duas páginas as animações percorrem seus quadros em ciclos de um segundo para comparar a silhueta. A partida usa os tempos de cada ação. A decodificação confirmou 1.556 quadros a 60 fps. [Playtest em Full HD](../midia/lume-abdomen-1080p60.mp4)
+
 # S42-VF · Ferrão da Vespa da Fenda
 
 O pico original continua visível por volta de **0:02,6** no primeiro capítulo. Aos 0:06 começa a pior tomada gravada da série anterior ao ajuste. Aos 0:12 aparece uma tomada central da série corrigida, escolhida pela ordem dos picos. Aos 0:18 começa a tomada corrigida com o maior intervalo durante o ferrão. Cada trecho preserva o ritmo do relógio da App, incluindo as imagens repetidas durante uma espera. [Vídeo em 1080p60 com som](../midia/vespa-da-fenda-ferrao-1080p60.mp4) · [Dados por tomada](vespa-ferrao-cadencia.json)

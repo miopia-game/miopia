@@ -12,7 +12,7 @@ from . import pygame_hd
 
 from .ilustracao import ARTE
 
-N_QUADROS = 60
+N_QUADROS = 16
 
 
 @dataclass

@@ -1,3 +1,11 @@
+## SPR-06 · Fauna quadro a quadro
+
+Os pacotes com poses articuladas deram lugar a 37 folhas de 16 desenhos. A renderização carrega a célula do instante atual. A Coruja tem asas e cabeça ilustradas juntas. [Fontes e preparo](../../assets/arte/movimento-v2/ORIGEM.md)
+
+**27/11/2026 · Lume quadro a quadro.** SPR-05 substituiu as poses deformadas da revisão anterior por 256 desenhos de corpo inteiro. As asas integram o desenho e a lâmina segue a mão marcada em cada ataque. [Fontes de arte](../arte/fontes/lume/quadros) · [Vídeo da revisão](../midia/lume-quadro-a-quadro-1080p60.mp4)
+
+**27/11/2026 · Abdômen de Lume.** SPR-04 levou o desenho aprovado às 16 animações do protagonista. O farol acompanha a extremidade âmbar durante a corrida, o voo, os cortes e o lançamento da fagulha. [Playtest e poses](../midia/lume-abdomen-1080p60.mp4)
+
 **27/11/2026 · Ferrão da Vespa da Fenda.** S42-VF localizou o quadro de 120 ms na transição de bloqueio da tela e eliminou trabalho de desenho encoberto na galeria. [Diagnóstico e medições](VALIDACAO.md#s42-vf--ferrão-da-vespa-da-fenda)
 
 **27/11/2026 · Cadência dos encontros.** S42-FA antecipou a leitura dos panoramas e da arte de combate. O clarão passou a compor máscaras simétricas de um byte por pixel. O playtest percorreu o elenco e os quatro guardiões em combate avançado. [Medições por encontro](VALIDACAO.md#s42-fa--cadência-dos-encontros-em-1080p)

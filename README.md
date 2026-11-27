@@ -4,7 +4,7 @@ Lume é um vaga-lume míope numa floresta em seca. De perto, ele enxerga o galho
 
 ![Lume e Véspera no Bosque. Uma fagulha ilumina o poleiro do morcego no próximo galho.](docs/midia/bosque-poleiro.png)
 
-[Assistir ao combate de Lume em 1080p a 60 fps](docs/midia/lume-combate-60fps.mp4) · [Ver o mesmo combate de perto](docs/midia/lume-combate-detalhe-60fps.mp4) · [Ver inimigos e chefes em 17 capítulos a 60 fps](docs/midia/fauna-1080p60.mp4) · [Abrir o guia para continuar o projeto](docs/equipe/GUIA_DE_CONTINUIDADE.md)
+[Ver Lume quadro a quadro no Bosque e no combate](docs/midia/lume-quadro-a-quadro-1080p60.mp4) · [Ver a fauna quadro a quadro nos 17 encontros](docs/midia/fauna-quadro-a-quadro-1080p60.mp4) · [Acompanhar de perto os movimentos e ataques](docs/midia/fauna-quadro-a-quadro-detalhe-1080p60.mp4) · [Abrir o guia para continuar o projeto](docs/equipe/GUIA_DE_CONTINUIDADE.md)
 
 Lume afasta a folhagem ao passar. A fagulha projeta um reflexo partido na água do Córrego e acende a face das gotas voltada para ela na Gruta. [Ver o playtest dos quatro biomas](docs/midia/reacao-ao-lume-em-jogo.mp4) · [Comparar o mesmo trecho com e sem a reação local](docs/midia/reacao-ao-lume-detalhes.mp4)
 

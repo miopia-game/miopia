@@ -1,3 +1,15 @@
+## SPR-06 · Fauna quadro a quadro
+
+Na gravação, observar o contato das patas do Carabídeo, o deslocamento do ventre das cobras e a estabilidade da face da Coruja ao atacar. A leitura dos golpes em velocidade normal segue para avaliação de Victor e Thierry. [Fontes e preparo](../../assets/arte/movimento-v2/ORIGEM.md)
+
+## SPR-05 · Animação quadro a quadro
+
+A equipe pode avaliar a passada, a suspensão e a recuperação do corte na captura da partida e nas repetições em câmera lenta. [Validação das pinturas](VALIDACAO.md#spr-05--lume-quadro-a-quadro)
+
+## SPR-04 · Silhueta de vaga-lume
+
+A equipe pode avaliar a leitura do abdômen no planeio, no deslize e na virada do combo com a câmera normal. A guarda foi aprovada por Victor. [Playtest e validação das poses](VALIDACAO.md#spr-04--abdômen-de-lume)
+
 ## S42-VF · Ferrão da Vespa da Fenda
 
 O cartão registra as medições com e sem gravador, a coincidência com o bloqueio de tela e o ajuste das camadas da galeria. Thierry pode conferir a mesma luta no monitor da equipe. [Diagnóstico e medições](VALIDACAO.md#s42-vf--ferrão-da-vespa-da-fenda)
