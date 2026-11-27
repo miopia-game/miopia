@@ -1,3 +1,27 @@
+# S42-AR · Cadência da aranha no Bosque
+
+O registro da SPR-03 mediu 1.062,42 ms entre atualização e apresentação. O Dock do macOS registrou mudanças de Mesa durante aquele encontro. O registro original não guardou a pilha nem separou as etapas do quadro.
+
+Na reprodução controlada em um MacBook Pro M1 Max, com janela Cocoa encoberta, o ensaio reteve as três imagens disponíveis da camada Metal por um segundo. Uma amostra da thread principal identificou a espera em `SDL_RenderPresent → CAMetalLayer.nextDrawable`. Antes da correção, duas repetições gastaram 1.014,94 e 1.014,15 ms na etapa de apresentação. Depois, o quadro equivalente levou 0,040, 0,039 e 0,043 ms nessa etapa com as imagens retidas. A janela consulta o estado de oclusão do AppKit antes do envio. Um teste automatizado cobre janela exposta, oclusão e reexposição com o quadro mais recente. [Apresentação da janela](../../src/janela_hd.py) · [Renderização Metal no SDL 2.32.10](https://github.com/libsdl-org/SDL/blob/release-2.32.10/src/render/metal/SDL_render_metal.m#L435)
+
+A primeira rodada foi feita com a sessão física bloqueada. Seis controles com a indicação de visibilidade fixada em verdadeiro percorreram o renderer nativo, com médias de 59,75 a 60,03 fps e intervalo máximo de 38,27 ms. Em três rodadas normais sob o bloqueio o SDL recebeu zero quadros depois do aquecimento.
+
+**Janela em primeiro plano, Mac desbloqueado.** Seis encontros de 300 quadros usaram o laço da App, o compositor real, áudio dummy e controles programados. Após os 60 quadros de aquecimento de cada encontro, a janela enviou todos os 1.440 quadros. As médias por encontro foram de 60,01 a 60,02 fps. O percentil 95 do intervalo entre apresentações foi 18,11 ms e o máximo foi 20,66 ms. O aquecimento inclui a abertura e o carregamento.
+
+**Troca real de Mesa.** Com a primeira correção, a janela perdeu o foco e a App entrou em pausa. O AppKit continuou indicando visibilidade durante a animação da Mesa. Um envio nessa janela de tempo levou 1.124,11 ms, com intervalo de 1.138,49 ms entre apresentações consecutivas. A correção atual envia a imagem de pausa uma vez ao perder o foco. Depois de uma oclusão completa, a janela pode reapresentar a pausa uma vez. Ao recuperar o foco, ela volta a enviar continuamente.
+
+Em três ciclos completos de saída e retorno, dois sem gravador e um filmado, o primeiro envio após a reexposição levou 3,27, 2,38 e 2,82 ms, respectivamente. A maior duração do laço durante essas trocas foi 32,20 ms. O piloto retomou a partida com o comando de continuar. Uma tentativa adicional interrompida antes do retorno ficou fora dessa contagem. O vídeo mostra a janela do jogo em tempo real, inclusive a pausa que permanece na tela durante a troca. [Ver a luta, a pausa e a retomada em 1080p60](../midia/aranha-retorno-mesa-1080p60.mp4)
+
+A regressão passou em 535 testes e 176 subtestes. A entrada normal abriu o menu e desenhou o Bosque em 1920 × 1080.
+
+A gravação dos três ataques usa o relógio real do jogo, os quadros Full HD da App e o som do mixer. Os três encontros começam no mesmo ponto do Bosque. A primeira técnica é preparada, a IA executa os golpes e o piloto controla Lume. Cada capítulo tem seis segundos. A conversão para o vídeo de 60 fps conserva o tempo transcorrido entre imagens. [Playtest com mordida, fio e leque de seda](../midia/aranha-cadencia-1080p60.mp4)
+
+Com o ambiente de arte e playtest instalado, rode o medidor na Mesa visível, mantendo a janela em primeiro plano. O JSON registra atualização, desenho, apresentação, intervalo e envio real de cada quadro. Os primeiros 60 entram no arquivo e ficam fora da média, para permitir comparação com a SPR-03.
+
+```sh
+.venv/bin/python -m tools.medir_cadencia_aranha --repeticoes 6 --saida cadencia-aranha.json
+```
+
 # SPR-03 · Fauna em 1080p a 60 fps
 
 O playtest usa a App e um perfil temporário. Cada capítulo dura cinco segundos e registra uma atualização por quadro com o som do mixer. Os patrulheiros comuns começam em confrontos isolados de posição e família de ataque conhecidas. Os minichefes e guardiões usam os ensaios do jogo. A Cobra dos Berços começa com metade da vida e a cria começa na arena da Tecelã. O piloto envia comandos a Lume. A IA decide quando se mover, lançar o projétil, entrar em contato e recuar. A faixa ampliada acompanha um recorte de 960 × 540 dos mesmos quadros e conserva a velocidade. O nome de cada capítulo é uma legenda da gravação. [Câmera do jogo](../midia/fauna-1080p60.mp4) · [Ver os movimentos de perto](../midia/fauna-detalhe-1080p60.mp4)

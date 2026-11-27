@@ -31,3 +31,36 @@ def test_regiao_visivel_e_coordenadas_do_ponteiro(pontos,pixels,centro,origem,mo
     roda_sem_pos=pygame.event.Event(pygame.MOUSEWHEEL, x=0, y=1, pos=None)
     assert janela.evento_logico(roda_sem_pos).pos == (480,270)
     assert janela.evento_logico(pygame.event.Event(pygame.WINDOWCLOSE)).type == pygame.QUIT
+
+
+@pytest.mark.parametrize("visibilidade, foco, esperados", [
+    ([True, False, False, True], [True] * 4, [10, 40]),
+    # O compositor ainda informa "visível" durante a saída da Mesa.
+    ([True] * 5, [True, False, False, False, True], [10, 20, 50]),
+    # A pausa se reapresenta ao voltar para a Mesa ainda sem foco.
+    ([True, True, False, True, True, True], [True, False, False, False, False, True], [10, 20, 40, 60]),
+])
+def test_janela_reapresenta_o_quadro_atual_ao_voltar(visibilidade, foco, esperados):
+    from unittest.mock import Mock
+
+    janela = Janela.__new__(Janela)
+    janela.nativa = SimpleNamespace(handle=7)
+    janela.renderer = Mock()
+    janela.renderer.get_viewport.return_value = pygame.Rect((0, 0), QUADRO)
+    janela.textura = Mock()
+    janela._visivel = Mock(side_effect=visibilidade)
+    janela._apresentou_sem_foco = False
+    quadro = pygame.Surface(QUADRO, depth=32)
+    cores = []
+    janela.textura.update.side_effect = lambda pixels: cores.append(pixels.get_at((0, 0)).r)
+
+    enviados = []
+    for i, em_foco in enumerate(foco, start=1):
+        janela.nativa.focused = em_foco
+        vermelho = i * 10
+        quadro.set_at((0, 0), (vermelho, 0, 0))
+        enviados.append(janela.apresentar(quadro))
+
+    assert enviados == [i * 10 in esperados for i in range(1, len(foco) + 1)]
+    assert cores == esperados
+    assert janela.renderer.present.call_count == janela.textura.draw.call_count == len(esperados)

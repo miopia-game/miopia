@@ -1,3 +1,5 @@
+**27/11/2026 · Cadência da aranha no Bosque.** O teste em uma Mesa do macOS reproduziu uma espera de 1,12 s ao perder o foco. O cartão S42-AR corrigiu a apresentação da pausa nesse intervalo e registrou a volta à luta em vídeo. [Reprodução, medições e vídeos](VALIDACAO.md#s42-ar--cadência-da-aranha-no-bosque)
+
 **26/11/2026 · Fauna em movimento.** SPR-03 liga a animação de preparação ao tempo da IA e prepara 60 quadros por ciclo para doze modelos. A cria tem escala e efeito próprios. A captura inclui os quatro guardiões e quatro variações da campanha. [Partida](../midia/fauna-1080p60.mp4) · [Mesmos quadros em detalhe](../midia/fauna-detalhe-1080p60.mp4)
 
 **26/11/2026 · Lume no traço do elenco.** Cinco poses pintadas deram origem aos ciclos do protagonista bípede. A terra e os patamares comuns receberam materiais próprios de cada bioma. [Arte e fontes](../arte/ORIGEM.md) · [Trecho jogável](../midia/lume-no-bosque.mp4)

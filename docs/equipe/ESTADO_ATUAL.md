@@ -1,3 +1,5 @@
+No macOS, o jogo apresenta a pausa ao perder o foco. Quando a janela reaparece, ela retoma a apresentação com a imagem atual. Seis lutas da aranha tiveram média próxima de 60 fps na janela visível. [Ver a troca de Mesa e a volta à luta](../midia/aranha-retorno-mesa-1080p60.mp4) · [Três ataques em 1080p60](../midia/aranha-cadencia-1080p60.mp4)
+
 A fauna usa 60 poses por ciclo. O Carabídeo firma as patas antes da carga, a Cobra recolhe o pescoço antes do bote e a Coruja articula as duas asas ao buscar Lume. Seda, ferrões, seiva, penas e estilhaços acompanham o ataque que a IA executa. [Playtest a 60 fps](../midia/fauna-1080p60.mp4) · [Ver de perto](../midia/fauna-detalhe-1080p60.mp4)
 
 O passo e a corrida de Lume acompanham a distância percorrida. O lançamento da fagulha tem um gesto próprio, e o combo alterna o sentido do espinho. O rastro acompanha a mão e as lascas partem do contato com o inimigo. [Do Bosque até o morcego, em 1080p a 60 fps](../midia/lume-combate-60fps.mp4) · [Mesma sequência em detalhe](../midia/lume-combate-detalhe-60fps.mp4)

@@ -1,3 +1,7 @@
+## S42-AR · Cadência da luta da aranha
+
+A cadência da aranha foi medida em seis lutas no Mac desbloqueado. O teste da troca de Mesa localizou a espera durante a perda de foco e confirmou a reapresentação da pausa e a retomada da luta após o ajuste. [Medições e vídeos](VALIDACAO.md#s42-ar--cadência-da-aranha-no-bosque)
+
 ## SPR-03 · Animação dos adversários
 
 Na próxima sessão com jogadores, peça que apontem quando o Carabídeo vai arrancar, em que direção a cobra recolhe a cabeça e quando a Coruja abre as garras. Registre também qual efeito identificam como seda, ferrão ou veneno em velocidade normal. Victor e Thierry podem comparar a leitura em janela e tela cheia. [Repetir os encontros](VALIDACAO.md#spr-03--fauna-em-1080p-a-60-fps)

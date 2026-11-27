@@ -23,7 +23,10 @@ class Janela:
     def __init__(self, icone):
         self.cheia = False
         self.nativa = self.renderer = self.textura = None
-        if pygame.display.get_driver() == 'dummy':
+        self._visivel = None
+        self._apresentou_sem_foco = False
+        driver = pygame.display.get_driver()
+        if driver == 'dummy':
             # O piloto usa a mesma superfície Full HD com o driver de software.
             self.quadro = pygame.display.set_mode(QUADRO)
             pygame.display.set_caption(TITULO)
@@ -32,6 +35,9 @@ class Janela:
         self.nativa = pygame.Window(TITULO, size=LOGICA, hidden=True, resizable=True,
                                     allow_high_dpi=True)
         try:
+            if driver == "cocoa" and self.nativa.handle:
+                from .visibilidade_macos import janela_visivel
+                self._visivel = janela_visivel
             self.renderer = Renderer(self.nativa, vsync=False)
             self.renderer.draw_color = (0, 0, 0, 255)
             self.textura = Texture(self.renderer, QUADRO, streaming=True, scale_quality=1)
@@ -61,17 +67,29 @@ class Janela:
             raise
 
     def apresentar(self, quadro):
+        """Retorna se o quadro foi enviado à saída de vídeo."""
         if quadro.get_size() != QUADRO:
             raise ValueError(f"O quadro de apresentação deve medir {QUADRO}.")
         if self.renderer is None:
             if quadro is not self.quadro:
                 self.quadro.blit(quadro,(0,0))
             pygame.display.flip()
-            return
+            return True
+        if self._visivel is not None:
+            if not self._visivel(self.nativa.handle):
+                self._apresentou_sem_foco = False
+                return False
+            # Ao sair da Mesa, o Cocoa perde o foco antes de notificar a oclusão.
+            # Entrega a pausa uma vez e evita esperar pelo compositor na transição.
+            sem_foco = not self.nativa.focused
+            if sem_foco and self._apresentou_sem_foco:
+                return False
+            self._apresentou_sem_foco = sem_foco
         self.textura.update(quadro)
         self.renderer.clear()
         self.textura.draw(dstrect=area_de_jogo(self.renderer.get_viewport().size))
         self.renderer.present()
+        return True
 
     def tela_cheia(self, ativa):
         self.cheia = ativa
