@@ -1,3 +1,11 @@
+## S42-VF · Ferrão da Vespa da Fenda
+
+O cartão registra as medições com e sem gravador, a coincidência com o bloqueio de tela e o ajuste das camadas da galeria. Thierry pode conferir a mesma luta no monitor da equipe. [Diagnóstico e medições](VALIDACAO.md#s42-vf--ferrão-da-vespa-da-fenda)
+
+## S42-FA · Cadência dos demais encontros
+
+O teste em 1080p com saída de software cobre 16 encontros e uma rodada avançada dos quatro guardiões. Thierry pode repetir a Asa Fendida e a segunda leva da Tecelã em janela visível na máquina da equipe para conferir a apresentação. [Medições por encontro](VALIDACAO.md#s42-fa--cadência-dos-encontros-em-1080p)
+
 ## S42-AR · Cadência da luta da aranha
 
 A cadência da aranha foi medida em seis lutas no Mac desbloqueado. O teste da troca de Mesa localizou a espera durante a perda de foco e confirmou a reapresentação da pausa e a retomada da luta após o ajuste. [Medições e vídeos](VALIDACAO.md#s42-ar--cadência-da-aranha-no-bosque)

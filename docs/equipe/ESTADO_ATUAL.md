@@ -1,3 +1,7 @@
+No fundo da Galeria das Sementes, o jogo deixa de pintar o céu e o bambu atrás das raízes opacas. A rodada corrigida do ferrão teve picos de 20,4 ms sem gravador e 22,5 ms com gravador. [Vídeo comparativo](../midia/vespa-da-fenda-ferrao-1080p60.mp4)
+
+O clarão conserva o desenho em Full HD ao mudar de raio. No playtest dos 16 encontros, o primeiro quadro passou de 88,2 para 26,7 ms de desenho na mediana. [Ver os 20 capítulos](../midia/cadencia-encontros-1080p60.mp4) · [Medições por encontro](VALIDACAO.md#s42-fa--cadência-dos-encontros-em-1080p)
+
 No macOS, o jogo apresenta a pausa ao perder o foco. Quando a janela reaparece, ela retoma a apresentação com a imagem atual. Seis lutas da aranha tiveram média próxima de 60 fps na janela visível. [Ver a troca de Mesa e a volta à luta](../midia/aranha-retorno-mesa-1080p60.mp4) · [Três ataques em 1080p60](../midia/aranha-cadencia-1080p60.mp4)
 
 A fauna usa 60 poses por ciclo. O Carabídeo firma as patas antes da carga, a Cobra recolhe o pescoço antes do bote e a Coruja articula as duas asas ao buscar Lume. Seda, ferrões, seiva, penas e estilhaços acompanham o ataque que a IA executa. [Playtest a 60 fps](../midia/fauna-1080p60.mp4) · [Ver de perto](../midia/fauna-detalhe-1080p60.mp4)

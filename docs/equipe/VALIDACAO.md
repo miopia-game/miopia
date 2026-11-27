@@ -1,3 +1,74 @@
+# S42-VF · Ferrão da Vespa da Fenda
+
+O pico original continua visível por volta de **0:02,6** no primeiro capítulo. Aos 0:06 começa a pior tomada gravada da série anterior ao ajuste. Aos 0:12 aparece uma tomada central da série corrigida, escolhida pela ordem dos picos. Aos 0:18 começa a tomada corrigida com o maior intervalo durante o ferrão. Cada trecho preserva o ritmo do relógio da App, incluindo as imagens repetidas durante uma espera. [Vídeo em 1080p60 com som](../midia/vespa-da-fenda-ferrao-1080p60.mp4) · [Dados por tomada](vespa-ferrao-cadencia.json)
+
+**O registro original.** Dos 120,186 ms do quadro 151, o jogo passou 116,706 ms no desenho, 1,907 ms na atualização, 1,481 ms em espera e entrada e 0,092 ms na apresentação. A medição inclui tempo em que o sistema pode ter suspendido a thread. O log da época só mediu o tempo decorrido nessas etapas.
+
+No horário local de 27/11/2026, o macOS iniciou a transição visual de bloqueio às 10:27:49,358 e a concluiu às 10:27:49,876. O sistema registrou a exibição da janela de bloqueio entre 10:27:49,618 e 10:27:49,636. Estimamos o início do quadro entre 10:27:49.601 e 10:27:49.619, e o fim entre 10:27:49.721 e 10:27:49.739. A estimativa cruza a criação e o fechamento do MP4 original com três tomadas novas que marcaram cada apresentação no relógio do sistema e no relógio monotônico. A coincidência coloca a transição do sistema entre as hipóteses para o pico. A participação exata dela na espera original permanece indeterminada.
+
+**Contraprova no jogo.** Foram 24 execuções de seis segundos na Galeria das Sementes, em processos novos. A ordem com e sem gravador alternou entre os pares. O piloto partiu da mesma posição e usou os mesmos comandos. Cada quadro foi associado à fase real da IA. A tabela usa apenas o ataque visível da Vespa com a técnica `ferrao`. O desenho inclui a cena inteira. A captura usa saída de software em segundo plano no Mac M1 Max.
+
+| Versão | Captura | Tomadas | Quadros do ferrão | P95 do intervalo (ms) | Pior intervalo (ms) | CPU mediana do desenho (ms) |
+|---|---|---:|---:|---:|---:|---:|
+| Antes | Sem gravação | 6 | 75 | 21,5 | 23,6 | 11,3 |
+| Antes | Com gravação | 6 | 70 | 20,4 | 21,8 | 11,8 |
+| Depois | Sem gravação | 6 | 78 | 19,1 | 20,4 | 9,4 |
+| Depois | Com gravação | 6 | 74 | 21,1 | 22,5 | 9,9 |
+
+**Correção.** A câmera ficou em y = 540 durante todos os quadros do ferrão. Nessa profundidade as raízes cobrem a tela inteira. O jogo ainda pintava o panorama e animava os colmos ao vento atrás das raízes. Em uma tomada gravada houve outro intervalo de 87,6 ms fora do ferrão. Desse intervalo, 32,6 ms decorreram na rotina do panorama, com 2,65 ms de CPU da thread nessa rotina. O ajuste pula a pintura e a animação de fundo quando a camada de raízes atinge opacidade total. O panorama reaparece no primeiro nível de transparência ao subir. O quadro do ataque e os controles são os mesmos. [Renderização do cenário](../../src/paisagem.py)
+
+A comparação determinística conferiu os 360 quadros consecutivos do encontro e 56 quadros de descida e subida distribuídos pelos quatro biomas. Todos coincidiram pixel a pixel entre as versões. A regressão passou em 538 testes e 176 subcasos. O vídeo foi decodificado por inteiro, com 1.440 quadros em 1920 × 1080, 60 fps, quatro capítulos e áudio estéreo.
+
+# S42-FA · Cadência dos encontros em 1080p
+
+O playtest percorreu os 16 encontros além da aranha do Bosque. Quatro capítulos adicionais mostram os guardiões com o combate avançado, incluindo a segunda leva da Tecelã. [Vídeo de dois minutos com áudio e capítulos](../midia/cadencia-encontros-1080p60.mp4)
+
+**Entrada da arena.** O primeiro quadro do Morcego levou 133,2 ms para desenhar na janela visível do MacBook Pro M1 Max. O perfil apontou 81 ms na decodificação de imagens. A abertura já lia os quatro panoramas, mas só dois cabiam no cache. Durante o primeiro desenho do combate, o jogo voltava a ler o panorama e abria os atlas de galhos, objetos e reservas de Lume. Agora mantém os quatro panoramas, prepara a arte comum antes do menu e antecipa os recursos da área ao entrar na partida e no replay. Na rodada a frio, a mediana de desenho do primeiro quadro passou de **88,2 para 26,7 ms**. A preparação desde a criação da App até posicionar os atores passou de 253 para 382 ms de mediana.
+
+**Clarão durante a luta.** Na investigação da Asa Fendida, recriar uma das máscaras conforme o raio mudava ocupou 43,0 ms do quadro, com 8,2 ms de CPU na thread do jogo. A forma é simétrica. A abertura agora prepara um quadrante por raio, com um byte por pixel. Durante o combate, o jogo espelha esse quadrante, aplica a intensidade por paleta e converte apenas a área visível num buffer reutilizável. A maior máscara do clarão passou de 16,50 para 4,13 MiB. Os quadrantes preparados ocupam 22,26 MiB no total. Com a mudança de iluminação, o pico no ensaio avançado da Asa Fendida passou de 85,5 para 32,8 ms. Na Tecelã com duas crias passou de 84,3 para 32,9 ms. O teste percorreu os raios de 520 a 160 três vezes. A mediana de CPU para montar uma máscara passou de 2,62 para 0,49 ms.
+
+**Medição.** Cada encontro partiu de um processo novo, com perfil temporário, controles programados e IA do jogo. O quadro de jogo mede 1920 × 1080, com alvo de 60 Hz no relógio da App. Antes da correção, a medição em primeiro plano com Metal completou Morcego, Vespa, Caruncho, Casco Oco, Coruja, Morcego do Galho, Vespa da Fenda e Caçada na Ponte. As demais tomadas físicas perderam foco ou deixaram de enviar quadros. Com o Mac em uso, a comparação entre as versões e o filme usaram saída SDL de software. Uma nova confirmação do compositor em janela visível continua pendente.
+
+Cada linha mostra o início do capítulo e os ataques enquadrados no vídeo. Os tempos vêm da rodada sem gravador. A entrada mede o desenho do primeiro quadro após preparar o encontro. A média, o percentil 99 e o pico usam os 300 intervalos seguintes ao aquecimento de 60 quadros.
+
+| Início | Encontro | Ataques visíveis no vídeo | Entrada antes → depois (ms) | Média (fps) | P99 (ms) | Pico (ms) |
+|---|---|---|---:|---:|---:|---:|
+| 0:00 | Morcego | rasante, rasante baixo | 119,3 → 25,3 | 60,04 | 20,7 | 29,7 |
+| 0:06 | Vespa | leque ferrao, queda | 74,0 → 29,1 | 60,02 | 20,3 | 20,5 |
+| 0:12 | Carabídeo | carga | 104,6 → 26,0 | 60,01 | 19,8 | 21,0 |
+| 0:18 | Sombra | fenda dupla, orbe | 69,0 → 26,0 | 60,02 | 19,4 | 20,3 |
+| 0:24 | Cobra | mordida, rasteira | 107,6 → 20,0 | 60,02 | 19,3 | 19,8 |
+| 0:30 | Caruncho do Viveiro | carga, onda, onda dupla | 118,9 → 27,0 | 60,00 | 18,8 | 25,2 |
+| 0:36 | Cobra dos Berços | pique, rasteira, veneno | 76,2 → 31,0 | 60,00 | 23,8 | 29,1 |
+| 0:42 | Cria da ninhada | fio, pique | 86,1 → 24,3 | 58,67 | 29,0 | 56,5 |
+| 0:48 | Asa Fendida | rasante | 110,0 → 36,9 | 60,02 | 20,8 | 24,3 |
+| 0:54 | Tecelã do Vão | fio | 91,3 → 24,5 | 59,84 | 20,6 | 34,2 |
+| 1:00 | Casco Oco | carga | 71,6 → 30,1 | 59,68 | 22,1 | 30,0 |
+| 1:06 | A Coruja | garra, rasante | 68,8 → 26,4 | 59,81 | 26,0 | 37,0 |
+| 1:12 | Morcego do Galho | mergulho, queda, rasante, rasante baixo | 122,9 → 25,5 | 59,99 | 22,2 | 26,0 |
+| 1:18 | Vespa da Fenda | ferrao | 71,6 → 44,2 | 59,99 | 22,7 | 26,8 |
+| 1:24 | Caçada na Ponte | bote caca | 90,2 → 40,7 | 59,05 | 27,2 | 44,1 |
+| 1:30 | Último Chamado | coro investida, coro queda | 70,9 → 28,4 | 59,96 | 21,1 | 26,0 |
+
+As médias por encontro variaram de 58,67 a 60,04 fps. Dos 4.800 intervalos, 99% ficaram em até 22,1 ms. O maior foi 56,5 ms em Cria da ninhada. Na repetição, a Asa Fendida chegou a 41,5 ms e a Cobra a 51,6 ms. Também se repetiram Morcego, Casco Oco, Coruja, Último Chamado, Vespa da Fenda e Caçada na Ponte.
+
+**Rodada avançada.** O piloto começou os quatro confrontos com o chefe a 30% de vida. A Asa já havia sofrido um crítico e a Tecelã já havia gasto a primeira leva. A IA convocou duas crias e os outros dois guardiões entraram na segunda fase pelas regras do jogo. A medição terminou aos 720 quadros ou quando Lume caiu. Os quatro capítulos finais mostram seis segundos de uma segunda execução gravada. No teste longo sem gravador, o maior intervalo após o aquecimento foi 42,3 ms em Casco Oco.
+
+| Início no filme | Guardião | Quadros medidos | Término | Média (fps) | Pico (ms) |
+|---|---|---:|---|---:|---:|
+| 1:36 | Asa Fendida | 720 | Fim da amostra | 59,89 | 32,8 |
+| 1:42 | Tecelã do Vão | 681 | Queda de Lume | 60,01 | 32,9 |
+| 1:48 | Casco Oco | 597 | Queda de Lume | 59,52 | 42,3 |
+| 1:54 | A Coruja | 720 | Fim da amostra | 59,68 | 31,9 |
+
+**Conferência.** O vídeo tem 7.200 quadros H.264, áudio estéreo do mixer e 20 capítulos. A captura usa o relógio real e conserva a última imagem nos intervalos mais longos. As médias do jogo nos trechos filmados após o aquecimento ficaram entre 53,73 a 60,03 fps. Na gravação do elenco houve um intervalo de 120,2 ms no golpe ferrao de Vespa da Fenda. A repetição comum da Vespa da Fenda sem gravador chegou a 23,2 ms. Três novas tomadas com medição da thread principal tiveram máximos de 21,3 ms com gravação, 21,4 ms sem gravação e 58,3 ms com gravação. Observando só o ferrão, os máximos nas mesmas três rodadas foram 19,2, 21,1 e 31,7 ms. A origem daquele intervalo de 120,2 ms permanece em aberto. O teste com simulação determinística comparou oito quadros de cada encontro, incluindo a iluminação após o clarão. Os 128 quadros ficaram idênticos pixel a pixel. As máscaras também coincidiram com a base para cada um dos 46 raios do clarão a três intensidades, num total de 138 comparações. A suíte passou em 537 testes e 176 subcasos.
+
+O medidor aceita qualquer encontro do elenco. Com as dependências de testes e de arte instaladas, este comando registra os intervalos e o tempo gasto em cada etapa. Cada invocação começa a frio. Repetições adicionais no mesmo processo reutilizam caches de imagem.
+
+```sh
+SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy .venv/bin/python -m tools.medir_cadencia_aranha --encontro "Asa Fendida" --quadros 360 --repeticoes 1 --saida cadencia-asa.json
+```
+
 # S42-AR · Cadência da aranha no Bosque
 
 O registro da SPR-03 mediu 1.062,42 ms entre atualização e apresentação. O Dock do macOS registrou mudanças de Mesa durante aquele encontro. O registro original não guardou a pilha nem separou as etapas do quadro.

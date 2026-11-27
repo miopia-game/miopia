@@ -44,3 +44,23 @@ def test_fundo_de_repouso_continua_integro(app):
         app.atualizar(1 / 60)
         app.desenhar()
     assert antes == pygame.image.tobytes(original.pixels.subsurface(area), "RGB")
+
+
+def test_panorama_acompanha_transparencia_das_raizes_na_ida_e_volta(app, monkeypatch):
+    from src.travessia import Jornada
+
+    app.jogo = Jornada(etapa=2)
+    app.jogar()
+    alturas_pintadas = []
+    desenhar = paisagem.desenhar_panorama
+
+    def observar(*args, **kwargs):
+        alturas_pintadas.append(app.jogo.camera_y)
+        return desenhar(*args, **kwargs)
+
+    monkeypatch.setattr(paisagem, "desenhar_panorama", observar)
+    for altura in (60, 61, 291, 292, 540, 292, 291, 61, 60):
+        app.jogo.camera_y = altura
+        app.desenhar()
+
+    assert alturas_pintadas == [60, 61, 291, 291, 61, 60]

@@ -3,6 +3,8 @@ import math
 import random
 import unicodedata
 from functools import lru_cache
+
+import pygame as sdl
 from . import pygame_hd as pygame
 from . import abertura_bosque, arte_bosque, arte_ilustrada, desvios_fagulha, licao_vespera, travessia_fagulha
 from . import arte_fagulha, agua_pintada, vento_pintado, folhagem_trilha
@@ -11,9 +13,11 @@ from .arte_combate import inimigo, projeteis, tranca
 from . import arte_margens
 from .arte_lume import desenhar_lume
 from .fases import FASES
+from .visao import ALCANCE
 from .hud_reservas import desenhar as reservas
 from .ilustracao import (carregar_arte, AMBAR, alto_contraste, OSSO, PALIDO, PERIGO, ROMANOS, TEAL, TINTA, brilho, dica_teclado, fonte, imagem,
-                         losango, manivela, painel, placa, sprite, tamanho_texto, texto)
+                         losango, manivela, original, painel, placa, sprite, tamanho_texto, texto,
+                         OBJETOS_ATLAS, GALHOS_ATLAS, HUD_MIOPIA)
 
 CORES = ((77,102,86),(81,119,119),(127,116,72),(97,86,106))
 OBJETOS = {"orvalho":("orvalho",21,31), "valvula":("valvula",51,65), "corda":("corda",38,118),
@@ -40,7 +44,7 @@ PANORAMAS = ("bosque", "corrego", "taquaral", "gruta")
 TONS_PANORAMA = ((65,72,89), (119,129,148), (152,164,183), (190,202,218))
 
 
-@lru_cache(maxsize=2)
+@lru_cache(maxsize=len(PANORAMAS))
 def fundo(i):
     # A câmera avança sobre pixels do panorama. Cada janela consome 1920 × 1080.
     arte = carregar_arte(f"panoramas/{PANORAMAS[i]}.jpg")
@@ -153,28 +157,56 @@ def aplicar_nevoa(camada, luz, cy=0, fundo=None, nivel=1, cor=None, nitidez=0., 
         camada.blit(nitido,(0,cy))
 
 
+CINZAS = tuple((tom, tom, tom) for tom in range(256))
+RAIO_INDEXADO = 160
+
+
+def _aneis(r):
+    passo = 8 if r >= 900 else 2
+    for n in range(r, 0, -passo):
+        v = min(1., (r-n)/100) if r >= 900 else min(1., (1-n/r)*1.8)
+        v = v*v*(3-2*v)
+        # A sobreposição preserva os pixels diagonais entre discos contíguos.
+        yield n, v, 0 if v >= 1 or n <= passo+2 else passo+2
+        if v >= 1:
+            break
+
+
+@lru_cache(maxsize=(ALCANCE-RAIO_INDEXADO)//8+1)
+def _quadrante_luz(r):
+    # A geometria ocupa um quadrante de um byte por pixel. A paleta aplicada
+    # depois permite usar a mesma pintura com qualquer intensidade de clarão.
+    q = pygame.Surface((r,r), depth=8)
+    q.pixels.set_palette(CINZAS)
+    for indice, (n, _, borda) in enumerate(_aneis(r)):
+        pygame.draw.circle(q, indice, (r,r), n, borda)
+    return q.pixels
+
+
 @lru_cache(maxsize=16)
 def mascara_luz(raio, brilho_mata, forca=255):
     r = max(4, raio)
-    tom = (0,0,0)
-    surf = pygame.Surface((r*2, r*2))
-    surf.fill(tom)
-    passo = 8 if r>=900 else 2
-    for n in range(r, 0, -passo):
-        v = min(1., (r-n)/100) if r>=900 else min(1., (1 - n / r) * 1.8)
-        v = v*v*(3-2*v)
-        cor = (round(forca*v),)*3
-        # O próximo disco encobre todo o interior. Dois pixels de sobreposição
-        # preservam a rasterização nas diagonais entre anéis.
-        borda = 0 if v>=1 or n<=passo+2 else passo+2
-        pygame.draw.circle(surf, cor, (r,r), n, borda)
-        if v>=1:
-            break
+    if RAIO_INDEXADO <= r <= ALCANCE and r % 8 == 0:
+        q = _quadrante_luz(r)
+        surf = pygame.Surface((r*2,r*2), depth=8)
+        pixels = surf.pixels
+        pixels.set_palette(CINZAS)
+        lado = q.get_width()
+        pixels.blit(q, (0,0))
+        pixels.blit(sdl.transform.flip(q, True, False), (lado,0))
+        topo = pixels.subsurface((0,0,lado*2,lado))
+        pixels.blit(sdl.transform.flip(topo, False, True), (0,lado))
+        pixels.set_palette([CINZAS[round(forca*v)] for _, v, _ in _aneis(r)])
+        return surf
+    surf = pygame.Surface((r*2,r*2))
+    for n, v, borda in _aneis(r):
+        pygame.draw.circle(surf, CINZAS[round(forca*v)], (r,r), n, borda)
     return surf
 
 
 @lru_cache(maxsize=1)
 def buffer_luz():
+    """Expande a parte visível da máscara para aplicar o máximo em RGB."""
     return pygame.Surface((960,540))
 
 
@@ -189,7 +221,16 @@ def compor_luz(luz,j,cx,cy,brilho_mata, minimo=0):
     def aplicar(x, y, raio, forca=255):
         r=round(raio/8)*8
         if r>=8 and x+r>=cx and x-r<=cx+960 and y+r>=cy and y-r<=cy+540:
-            luz.blit(mascara_luz(r,brilho_mata,forca),(round(x-cx)-r,round(y-cy)-r),special_flags=pygame.BLEND_RGB_MAX)
+            pos = round(x-cx)-r, round(y-cy)-r
+            mascara = mascara_luz(r,brilho_mata,forca)
+            if mascara.pixels.get_bitsize() == 8:
+                area = mascara.get_rect(topleft=pos).clip(luz.get_clip())
+                if area.width and area.height:
+                    rgb = buffer_luz()
+                    rgb.blit(mascara, (0,0), area.move(-pos[0], -pos[1]))
+                    luz.blit(rgb, area.topleft, (0,0,*area.size), special_flags=pygame.BLEND_RGB_MAX)
+            else:
+                luz.blit(mascara, pos, special_flags=pygame.BLEND_RGB_MAX)
     for x,y,raio in fontes(j, vestigios=not modo_suave):
         aplicar(x,y,raio)
     if modo_suave:
@@ -540,7 +581,14 @@ class Paisagem:
     def __init__(self):
         # Decodificar os fundos no início evita o pico de leitura quando
         # Lume já está se movendo e uma região aparece pela primeira vez.
-        for i in range(4):fundo(i)
+        for i in range(len(PANORAMAS)):
+            fundo(i)
+        for nome in (*GALHOS_ATLAS, *OBJETOS_ATLAS, *HUD_MIOPIA, "passagem_raizes.png"):
+            original(nome)
+        for raio in range(RAIO_INDEXADO, ALCANCE+1, 8):
+            _quadrante_luz(raio)
+        buffers_nevoa()
+        buffer_luz()
         self.luz=pygame.Surface((960,540))
         self.brilho_mata=1
         self.particulas=[]
@@ -548,6 +596,17 @@ class Paisagem:
         self.ultimo_jogo=None
         self.lampejos=()
         self.mundo=pygame.Surface((960,620))
+
+    def preparar_jornada(self, j):
+        if j.em_vertical:
+            from .arte_corte import camadas
+            camadas()
+        elif abertura_bosque.intensidade(j):
+            abertura_bosque.fundo_sombrio()
+            for nome in ("bosque_terreno_atlas.png", "bosque_elenco_atlas.png", "bosque_flora_atlas.png"):
+                original(nome)
+        arte_margens.preparar(j.etapa)
+        margens(j.etapa)
 
     def ecos(self,s,j,cx):
         # Datas pertencem ao relógio da partida; abrir o diário congela as partículas.
@@ -603,18 +662,18 @@ class Paisagem:
         i,cx=j.etapa,j.camera
         intensidade = abertura_bosque.intensidade(j)
         limite_arte = abertura_bosque.FIM_TRILHA if abertura_bosque.ativa(j) else 0
-        panorama = fundo(i)
-        margem = panorama.get_width() - recorte.w
-        deslocamento = margem * cx / max(1, j.fase.width-recorte.w)
-        origem = (-deslocamento, cy-108)
         reflexo = agua_pintada.luz_da_fagulha(j,cx) if i in (1,3) else None
-        desenhar_panorama(s, i, origem, t, intensidade, passagem=j.passagem, camera=cx, luz=reflexo)
-        abertura_bosque.fundo(s,j,cx,cy)
-        if cy>60:
-            # As raízes cobrem progressivamente o céu ao descer, no mesmo mundo.
+        alfa_raizes = max(0, min(255, round((cy-60)*1.1)))
+        # No fundo da galeria as raízes cobrem todo o recorte da câmera.
+        if alfa_raizes < 255:
+            margem = fundo(i).get_width() - recorte.w
+            deslocamento = margem * cx / max(1, j.fase.width-recorte.w)
+            origem = (-deslocamento, cy-108)
+            desenhar_panorama(s, i, origem, t, intensidade, passagem=j.passagem, camera=cx, luz=reflexo)
+            abertura_bosque.fundo(s,j,cx,cy)
+        if alfa_raizes:
             sub=raizes_subsolo()
-            alfa=min(255,round((cy-60)*1.1))
-            sub.set_alpha(None if alfa==255 else alfa)
+            sub.set_alpha(None if alfa_raizes==255 else alfa_raizes)
             s.blit(sub,(0,cy),pygame.Rect(int(cx*.12)%320,0,960,540))
         for n in range(28):
             x=(n*97-cx*.31+math.sin(n+t*.31)*10)%980-10

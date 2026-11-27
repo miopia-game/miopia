@@ -1,0 +1,287 @@
+{
+  "codigo_anterior_sha256": "3e4066ca21bea1184f1fa2608c1c9d5bed13a9a56e1992fd9e225d12ad750978",
+  "codigo_corrigido_sha256": "84d10dcbeb944a15ab11c8bcf02b9c42fdd73529e82e5ca7b6631fdfa3fb81c9",
+  "video_sha256": "4b65e47def3242e74e03f93f62658d0c84475f9e2b1b545f69b0d7235098b089",
+  "metodo": "Processos novos, perfil temporário e SDL dummy, no relógio da App. Quadros de ataque visível com técnica ferrao. Os grupos com gravação usam VideoToolbox, fila e mixer do piloto original.",
+  "original": {
+    "quadro": 151,
+    "intervalo_ms": 120.186,
+    "espera_e_entrada_ms": 1.481,
+    "atualizacao_ms": 1.907,
+    "desenho_ms": 116.706,
+    "apresentacao_ms": 0.092,
+    "faixa_estimada_hora_inicio": [
+      "10:27:49.601",
+      "10:27:49.619"
+    ],
+    "faixa_estimada_hora_fim": [
+      "10:27:49.721",
+      "10:27:49.739"
+    ],
+    "fuso": "America/Sao_Paulo",
+    "transicao_bloqueio_macos": [
+      "10:27:49.358",
+      "10:27:49.876"
+    ],
+    "janela_bloqueio_exibida": [
+      "10:27:49.618",
+      "10:27:49.636"
+    ],
+    "calibracao": [
+      {
+        "criacao_menos_primeiro_quadro_ms": 35.91,
+        "fechamento_menos_ultimo_quadro_ms": 38.81
+      },
+      {
+        "criacao_menos_primeiro_quadro_ms": 22.27,
+        "fechamento_menos_ultimo_quadro_ms": 26.97
+      },
+      {
+        "criacao_menos_primeiro_quadro_ms": 20.85,
+        "fechamento_menos_ultimo_quadro_ms": 31.08
+      }
+    ]
+  },
+  "resultados": {
+    "antes": {
+      "sem": {
+        "quadros_com_ataque_visivel": 75,
+        "p95_intervalo_ms": 21.543,
+        "pico_intervalo_ms": 23.633,
+        "mediana_cpu_desenho_ms": 11.318,
+        "mediana_panorama_ms": 1.431,
+        "fila_maxima_no_quadro_anterior_ms": 0,
+        "tomadas": [
+          {
+            "nome": "antes-01-sem",
+            "quadros": 10,
+            "pico_ms": 23.633,
+            "desenho_no_pico_ms": 16.878,
+            "cpu_desenho_no_pico_ms": 12.957
+          },
+          {
+            "nome": "antes-02-sem",
+            "quadros": 13,
+            "pico_ms": 21.543,
+            "desenho_no_pico_ms": 14.807,
+            "cpu_desenho_no_pico_ms": 14.48
+          },
+          {
+            "nome": "antes-03-sem",
+            "quadros": 13,
+            "pico_ms": 22.895,
+            "desenho_no_pico_ms": 13.831,
+            "cpu_desenho_no_pico_ms": 10.564
+          },
+          {
+            "nome": "antes-04-sem",
+            "quadros": 13,
+            "pico_ms": 20.355,
+            "desenho_no_pico_ms": 14.533,
+            "cpu_desenho_no_pico_ms": 14.092
+          },
+          {
+            "nome": "antes-05-sem",
+            "quadros": 13,
+            "pico_ms": 21.886,
+            "desenho_no_pico_ms": 13.835,
+            "cpu_desenho_no_pico_ms": 13.521
+          },
+          {
+            "nome": "antes-06-sem",
+            "quadros": 13,
+            "pico_ms": 20.27,
+            "desenho_no_pico_ms": 15.688,
+            "cpu_desenho_no_pico_ms": 13.981
+          }
+        ]
+      },
+      "com": {
+        "quadros_com_ataque_visivel": 70,
+        "p95_intervalo_ms": 20.438,
+        "pico_intervalo_ms": 21.782,
+        "mediana_cpu_desenho_ms": 11.831,
+        "mediana_panorama_ms": 1.487,
+        "fila_maxima_no_quadro_anterior_ms": 0.021,
+        "tomadas": [
+          {
+            "nome": "antes-01-com",
+            "quadros": 11,
+            "pico_ms": 21.782,
+            "desenho_no_pico_ms": 20.641,
+            "cpu_desenho_no_pico_ms": 14.421
+          },
+          {
+            "nome": "antes-02-com",
+            "quadros": 11,
+            "pico_ms": 19.766,
+            "desenho_no_pico_ms": 12.747,
+            "cpu_desenho_no_pico_ms": 12.597
+          },
+          {
+            "nome": "antes-03-com",
+            "quadros": 13,
+            "pico_ms": 20.544,
+            "desenho_no_pico_ms": 11.656,
+            "cpu_desenho_no_pico_ms": 10.669
+          },
+          {
+            "nome": "antes-04-com",
+            "quadros": 11,
+            "pico_ms": 19.187,
+            "desenho_no_pico_ms": 12.183,
+            "cpu_desenho_no_pico_ms": 12.105
+          },
+          {
+            "nome": "antes-05-com",
+            "quadros": 13,
+            "pico_ms": 20.159,
+            "desenho_no_pico_ms": 11.938,
+            "cpu_desenho_no_pico_ms": 11.688
+          },
+          {
+            "nome": "antes-06-com",
+            "quadros": 11,
+            "pico_ms": 20.438,
+            "desenho_no_pico_ms": 11.722,
+            "cpu_desenho_no_pico_ms": 10.644
+          }
+        ]
+      }
+    },
+    "depois": {
+      "sem": {
+        "quadros_com_ataque_visivel": 78,
+        "p95_intervalo_ms": 19.117,
+        "pico_intervalo_ms": 20.371,
+        "mediana_cpu_desenho_ms": 9.388,
+        "mediana_panorama_ms": 0.0,
+        "fila_maxima_no_quadro_anterior_ms": 0,
+        "tomadas": [
+          {
+            "nome": "depois-01-sem",
+            "quadros": 13,
+            "pico_ms": 17.834,
+            "desenho_no_pico_ms": 9.154,
+            "cpu_desenho_no_pico_ms": 8.831
+          },
+          {
+            "nome": "depois-02-sem",
+            "quadros": 13,
+            "pico_ms": 20.371,
+            "desenho_no_pico_ms": 12.057,
+            "cpu_desenho_no_pico_ms": 11.364
+          },
+          {
+            "nome": "depois-03-sem",
+            "quadros": 13,
+            "pico_ms": 19.191,
+            "desenho_no_pico_ms": 11.809,
+            "cpu_desenho_no_pico_ms": 11.359
+          },
+          {
+            "nome": "depois-04-sem",
+            "quadros": 13,
+            "pico_ms": 18.951,
+            "desenho_no_pico_ms": 11.118,
+            "cpu_desenho_no_pico_ms": 11.095
+          },
+          {
+            "nome": "depois-05-sem",
+            "quadros": 13,
+            "pico_ms": 19.447,
+            "desenho_no_pico_ms": 10.686,
+            "cpu_desenho_no_pico_ms": 10.643
+          },
+          {
+            "nome": "depois-06-sem",
+            "quadros": 13,
+            "pico_ms": 18.493,
+            "desenho_no_pico_ms": 11.996,
+            "cpu_desenho_no_pico_ms": 11.058
+          }
+        ]
+      },
+      "com": {
+        "quadros_com_ataque_visivel": 74,
+        "p95_intervalo_ms": 21.139,
+        "pico_intervalo_ms": 22.495,
+        "mediana_cpu_desenho_ms": 9.91,
+        "mediana_panorama_ms": 0.0,
+        "fila_maxima_no_quadro_anterior_ms": 0.019,
+        "tomadas": [
+          {
+            "nome": "depois-01-com",
+            "quadros": 13,
+            "pico_ms": 19.697,
+            "desenho_no_pico_ms": 10.496,
+            "cpu_desenho_no_pico_ms": 10.363
+          },
+          {
+            "nome": "depois-02-com",
+            "quadros": 11,
+            "pico_ms": 22.495,
+            "desenho_no_pico_ms": 16.748,
+            "cpu_desenho_no_pico_ms": 12.552
+          },
+          {
+            "nome": "depois-03-com",
+            "quadros": 11,
+            "pico_ms": 19.014,
+            "desenho_no_pico_ms": 11.422,
+            "cpu_desenho_no_pico_ms": 10.852
+          },
+          {
+            "nome": "depois-04-com",
+            "quadros": 13,
+            "pico_ms": 21.284,
+            "desenho_no_pico_ms": 14.155,
+            "cpu_desenho_no_pico_ms": 12.092
+          },
+          {
+            "nome": "depois-05-com",
+            "quadros": 13,
+            "pico_ms": 19.854,
+            "desenho_no_pico_ms": 10.937,
+            "cpu_desenho_no_pico_ms": 9.984
+          },
+          {
+            "nome": "depois-06-com",
+            "quadros": 13,
+            "pico_ms": 19.669,
+            "desenho_no_pico_ms": 10.515,
+            "cpu_desenho_no_pico_ms": 10.438
+          }
+        ]
+      }
+    }
+  },
+  "quadros_identicos": [
+    360,
+    56
+  ],
+  "capitulos": [
+    [
+      "filme",
+      "Registro original",
+      120.186
+    ],
+    [
+      "antes-01-com",
+      "Antes do ajuste · maior pico",
+      21.782
+    ],
+    [
+      "depois-01-com",
+      "Após o ajuste · tomada central",
+      19.697
+    ],
+    [
+      "depois-02-com",
+      "Após o ajuste · maior pico",
+      22.495
+    ]
+  ],
+  "testes": 538,
+  "subcasos": 176
+}

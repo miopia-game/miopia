@@ -180,6 +180,7 @@ class App:
         self.reproducao=iterar_reproducao(dados,self.jogo)
         self.espera_replay=0.
         self.replay_pausado=False
+        self.paisagem.preparar_jornada(self.jogo)
         self.mudar("replay")
         self.musica("bosque")
 
@@ -256,6 +257,7 @@ class App:
             self.jogar()
 
     def jogar(self):
+        self.paisagem.preparar_jornada(self.jogo)
         preparar_lume()
         self.mudar("jogo")
         self.musica(self.tema_jornada())

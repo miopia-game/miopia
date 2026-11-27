@@ -2,7 +2,7 @@
 from functools import lru_cache
 
 from . import pygame_hd as pygame
-from .ilustracao import imagem
+from .ilustracao import imagem, original
 
 # Mesma tinta da borda inferior da pintura de cada solo.
 SUBSOLO = ((32, 30, 39), (30, 38, 45), (48, 37, 36), (39, 29, 44))
@@ -16,6 +16,12 @@ def _faixa(bioma):
     opaca = pygame.Surface((LARGURA, ALTURA))
     opaca.blit(imagem(f"margens/solo-{bioma}.png", LARGURA, ALTURA), (0, 0))
     return opaca
+
+
+def preparar(bioma):
+    _faixa(bioma)
+    original(f"margens/patamar-{bioma}.png")
+    original(f"beiral_{bioma}.png")
 
 
 def chao(s, r, bioma):

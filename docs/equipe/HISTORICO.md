@@ -1,3 +1,7 @@
+**27/11/2026 · Ferrão da Vespa da Fenda.** S42-VF localizou o quadro de 120 ms na transição de bloqueio da tela e eliminou trabalho de desenho encoberto na galeria. [Diagnóstico e medições](VALIDACAO.md#s42-vf--ferrão-da-vespa-da-fenda)
+
+**27/11/2026 · Cadência dos encontros.** S42-FA antecipou a leitura dos panoramas e da arte de combate. O clarão passou a compor máscaras simétricas de um byte por pixel. O playtest percorreu o elenco e os quatro guardiões em combate avançado. [Medições por encontro](VALIDACAO.md#s42-fa--cadência-dos-encontros-em-1080p)
+
 **27/11/2026 · Cadência da aranha no Bosque.** O teste em uma Mesa do macOS reproduziu uma espera de 1,12 s ao perder o foco. O cartão S42-AR corrigiu a apresentação da pausa nesse intervalo e registrou a volta à luta em vídeo. [Reprodução, medições e vídeos](VALIDACAO.md#s42-ar--cadência-da-aranha-no-bosque)
 
 **26/11/2026 · Fauna em movimento.** SPR-03 liga a animação de preparação ao tempo da IA e prepara 60 quadros por ciclo para doze modelos. A cria tem escala e efeito próprios. A captura inclui os quatro guardiões e quatro variações da campanha. [Partida](../midia/fauna-1080p60.mp4) · [Mesmos quadros em detalhe](../midia/fauna-detalhe-1080p60.mp4)
